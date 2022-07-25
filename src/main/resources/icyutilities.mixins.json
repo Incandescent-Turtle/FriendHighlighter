@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "mod.icy_turtle.icyutilities.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "OutlineCheckMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
