@@ -1,6 +1,8 @@
 {
   "key.category.icyutilities.utils": "Icy Utilities",
   "key.icyutilities.align": "Align Player Key",
+  "key.icyutilities.lock_orientation": "Lock Player/Boat Orientation",
+  "key.icyutilities.highlight": "Highlight SO",
 
   "message.highlight.drank_water": "Drank Water!",
   "message.highlight.no_water": "No Water around!"

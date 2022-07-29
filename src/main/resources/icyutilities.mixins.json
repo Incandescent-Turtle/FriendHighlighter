@@ -4,8 +4,7 @@
   "package": "mod.icy_turtle.icyutilities.mixins",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "OutlineCheckMixin"
-  ],
+    "EntityMixin"],
   "injectors": {
     "defaultRequire": 1
   }

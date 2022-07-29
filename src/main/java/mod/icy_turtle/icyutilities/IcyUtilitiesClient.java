@@ -11,7 +11,10 @@ public class IcyUtilitiesClient implements ClientModInitializer {
 
     public static final String MOD_ID = "icyutilities";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-    public static boolean isHighlightEnabled = false;
+    public static final float ANGLE_TO_LOCK_AT = 45;
+
+    public static boolean isHighlightEnabled = false,
+                            isOrientationLocked = false;
 
     @Override
     public void onInitializeClient() {
