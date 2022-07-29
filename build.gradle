@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-	modImplementation 'com.ptsmods:devlogin:2.1'
+	modImplementation "com.ptsmods:devlogin:2.1"
 
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"

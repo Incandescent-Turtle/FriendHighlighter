@@ -1,35 +1,37 @@
 package mod.icy_turtle.icyutilities.event;
 
 import mod.icy_turtle.icyutilities.IcyUtilitiesClient;
-import mod.icy_turtle.icyutilities.IcyUtils;
+import mod.icy_turtle.icyutilities.util.ModUtils;
+import mod.icy_turtle.icyutilities.util.RotationUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.vehicle.BoatEntity;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.Texts;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
-public class    KeyInputHandler {
+public class KeyInputHandler
+{
     public static final String KEY_CATEGORY_ICY_UTILITIES = "key.category.icyutilities.utils";
 
     public static final String KEY_ALIGN_PLAYER = "key.icyutilities.align",
-                                KEY_HIGHLIGHT_PLAYERS = "key.icyutilities.highlight",
-                                KEY_ORIENTATION_LOCK = "key.icyutilities.lock_orientation";
+            KEY_HIGHLIGHT_PLAYERS = "key.icyutilities.highlight",
+            KEY_ORIENTATION_LOCK = "key.icyutilities.lockOrientation";
 
     public static KeyBinding alignKey, highlightKey, orientationLockKey;
 
-    public static void register() {
+    public static void register()
+    {
         alignKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-            KEY_ALIGN_PLAYER,
-            InputUtil.Type.KEYSYM,
-            GLFW.GLFW_KEY_O,
+                KEY_ALIGN_PLAYER,
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_O,
                 KEY_CATEGORY_ICY_UTILITIES
         ));
 
@@ -47,61 +49,53 @@ public class    KeyInputHandler {
                 KEY_CATEGORY_ICY_UTILITIES
         ));
 
-        registerKeyInputs();
+        ClientTickEvents.END_CLIENT_TICK.register(KeyInputHandler::registerKeyInputs);
     }
 
-    private static void registerKeyInputs() {
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if(alignKey.wasPressed()) {
-                if(client.player == null) return;
-                IcyUtils.lockToClosestLockAngle(client.player);
+    private static void registerKeyInputs(MinecraftClient client)
+    {
+        if (client.player == null) return;
+        var player = client.player;
 
-                if(client.player.getVehicle() instanceof BoatEntity boat)
-                {
-                    IcyUtils.lockToClosestLockAngle(boat);
-                    try {
-                        Field yawVel = BoatEntity.class.getDeclaredField("yawVelocity");
-                        yawVel.setAccessible(true);
-                        yawVel.set(boat, 0);
-                    } catch (IllegalAccessException | NoSuchFieldException e) {
-                        e.printStackTrace();
-                    }
-                }
-            } else if(highlightKey.wasPressed()) {
-                IcyUtilitiesClient.isHighlightEnabled = !IcyUtilitiesClient.isHighlightEnabled;
-                var player = client.player;
-                List<Text> state = null;
-                if(IcyUtilitiesClient.isHighlightEnabled) {
-                    state = Text.of("ENABLED").getWithStyle(Style.EMPTY.withBold(true).withColor(Formatting.GREEN));
-                } else {
-                    state = Text.of("DISABLED").getWithStyle(Style.EMPTY.withBold(true).withColor(Formatting.RED));
-                }
-                state.add(0, Text.of("SO highlight"));
-                player.sendMessage(Texts.join(state, Text.of(" ")));
-            } else if(orientationLockKey.wasPressed()) {
-                boolean isUnlocking = IcyUtilitiesClient.isOrientationLocked;
-                var player = client.player;
-                List<Text> state = null;
-                if(isUnlocking) {
-                    state = Text.of("UNLOCKED").getWithStyle(Style.EMPTY.withBold(true).withColor(Formatting.GREEN));
-                } else {
-                    state = Text.of("LOCKED").getWithStyle(Style.EMPTY.withBold(true).withColor(Formatting.RED));
-                }
-                state.add(0, Text.of("Orientation is"));
-                player.sendMessage(Texts.join(state, Text.of(" ")));
-
-                if(isUnlocking)
-                {
-                    IcyUtils.lockToClosestLockAngle(player);
-                    if(player.getVehicle() instanceof BoatEntity boat)
-                    {
-                        IcyUtils.lockToClosestLockAngle(boat);
-                        player.setYaw(IcyUtils.roundToClosestLockAngle(boat.getYaw()));
-                    }
-                }
-
-                IcyUtilitiesClient.isOrientationLocked = !IcyUtilitiesClient.isOrientationLocked;
+        if (alignKey.wasPressed())
+        {
+            if (player.getVehicle() instanceof BoatEntity boat)
+            {
+                RotationUtils.snapBoat(boat);
             }
-        });
+        }
+
+        if (highlightKey.wasPressed())
+        {
+            IcyUtilitiesClient.isHighlightEnabled = !IcyUtilitiesClient.isHighlightEnabled;
+
+            Text state = IcyUtilitiesClient.isHighlightEnabled
+                    ? getPositiveMessage("ENABLED")
+                    : getNegativeMessage("DISABLED");
+            player.sendMessage(Texts.join(List.of(Text.of("SO highlight"), state), Text.of(" ")));
+        }
+
+        if (orientationLockKey.wasPressed())
+        {
+            IcyUtilitiesClient.isOrientationLocked = !IcyUtilitiesClient.isOrientationLocked;
+            Text state = !IcyUtilitiesClient.isOrientationLocked
+                    ? getPositiveMessage("UNLOCKED")
+                    : getNegativeMessage("LOCKED");
+            player.sendMessage(Texts.join(List.of(Text.of("Orientation is"), state), Text.of(" ")));
+            if (player.getVehicle() instanceof BoatEntity boat)
+            {
+                RotationUtils.snapBoat(boat);
+            }
+        }
+    }
+
+    private static Text getPositiveMessage(String msg)
+    {
+        return ModUtils.getBoldAndColored(msg, Formatting.GREEN).get(0);
+    }
+
+    private static Text getNegativeMessage(String msg)
+    {
+        return ModUtils.getBoldAndColored(msg, Formatting.RED).get(0);
     }
 }
