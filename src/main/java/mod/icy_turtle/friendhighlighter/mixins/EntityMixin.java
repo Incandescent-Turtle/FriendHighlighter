@@ -1,12 +1,16 @@
-package mod.icy_turtle.icyutilities.mixins;
+package mod.icy_turtle.friendhighlighter.mixins;
 
-import mod.icy_turtle.icyutilities.IcyUtilitiesClient;
+import mod.icy_turtle.friendhighlighter.FriendHighlighter;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.scoreboard.Team;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.awt.*;
 
 @Mixin(Entity.class)
 public class EntityMixin
@@ -16,16 +20,15 @@ public class EntityMixin
     {
         if(((Entity)(Object)this) instanceof PlayerEntity)
         {
-            cir.setReturnValue(IcyUtilitiesClient.isHighlightEnabled);
+            cir.setReturnValue(FriendHighlighter.isHighlightEnabled);
         }
     }
 
-//    @Redirect(method = "changeLookDirection(DD)V",
-//            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setYaw(F)V"))
-//    private void lockYaw(Entity boat, float input) {
-//        if(!IcyUtilitiesClient.isOrientationLocked)
-//        {
-//            boat.setYaw(input);
-//        }
-//    }
+    @Inject(method = "getTeamColorValue", at = @At("HEAD"), cancellable = true)
+    private void getTeamColor(CallbackInfoReturnable<Integer> cir) {
+//        Entity entity = (Entity) (Object) this;
+        cir.setReturnValue(Color.RED.getRGB());
+    }
+
+    //isPartVisible in living enetitiy rendfeder
 }

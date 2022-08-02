@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "id": "icyutilities",
+  "id": "friendhighlighter",
   "version": "${version}",
 
-  "name": "Icy Utilities",
-  "description": "This is a mod that adds extra utilities to the game",
+  "name": "Friend Highlighter",
+  "description": "This is a mod that uses the vanilla glowing mechanic to highlight your friends",
   "authors": [
     "icy_turtle aka IncandescentTurtle"
   ],
@@ -14,12 +14,12 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "mod.icy_turtle.icyutilities.IcyUtilitiesClient"
+      "mod.icy_turtle.friendhighlighter.FriendHighlighter"
     ]
   },
 
   "mixins": [
-    "icyutilities.mixins.json"
+    "friendhighlighter.mixins.json"
   ],
 
   "depends": {

@@ -12,6 +12,8 @@ group = project.maven_group
 
 repositories {
 	mavenCentral()
+	maven { 	url "https://maven.shedaniel.me/" }
+	maven { url "https://maven.terraformersmc.com/" }
 
 	// Add repositories to retrieve artifacts from in here.
 	// You should only use this when depending on other mods because
@@ -21,6 +23,7 @@ repositories {
 }
 
 dependencies {
+	//	login
 	modImplementation "com.ptsmods:devlogin:2.1"
 
 	// To change the versions see the gradle.properties file
@@ -36,7 +39,12 @@ dependencies {
 
 	// modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
 
-	//	auth to join servers
+	modImplementation("me.shedaniel.cloth:cloth-config-fabric:7.0.69") {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+	modCompileOnly modRuntimeOnly("com.terraformersmc:modmenu:4.0.0") {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
 
 }
 

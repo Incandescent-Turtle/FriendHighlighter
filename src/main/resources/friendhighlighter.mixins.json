@@ -1,12 +1,10 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "mod.icy_turtle.icyutilities.mixins",
+  "package": "mod.icy_turtle.friendhighlighter.mixins",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "EntityMixin",
-    "BoatSteeringMixin",
-    "ClientPlayerEntityMixin"
+    "EntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

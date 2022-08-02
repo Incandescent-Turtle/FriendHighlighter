@@ -1,4 +1,4 @@
-package mod.icy_turtle.icyutilities.util;
+package mod.icy_turtle.friendhighlighter.util;
 
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
