@@ -15,6 +15,9 @@
   "entrypoints": {
     "client": [
       "mod.icy_turtle.friendhighlighter.FriendHighlighter"
+    ],
+    "modmenu": [
+      "mod.icy_turtle.friendhighlighter.config.ModMenuIntegration"
     ]
   },
 

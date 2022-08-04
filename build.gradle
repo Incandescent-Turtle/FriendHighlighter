@@ -39,13 +39,12 @@ dependencies {
 
 	// modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
 
-	modImplementation("me.shedaniel.cloth:cloth-config-fabric:7.0.69") {
+	modImplementation("me.shedaniel.cloth:cloth-config-fabric:8.0.75") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 	modCompileOnly modRuntimeOnly("com.terraformersmc:modmenu:4.0.0") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
-
 }
 
 processResources {

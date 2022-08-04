@@ -1,8 +1,10 @@
 package mod.icy_turtle.friendhighlighter.mixins;
 
 import mod.icy_turtle.friendhighlighter.FriendHighlighter;
+import mod.icy_turtle.friendhighlighter.config.ModConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.scoreboard.Team;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,17 +20,34 @@ public class EntityMixin
     @Inject(method = "isGlowing()Z", at = @At("HEAD"), cancellable = true)
     private void forceHighlight(CallbackInfoReturnable<Boolean> cir)
     {
-        if(((Entity)(Object)this) instanceof PlayerEntity)
-        {
+//        if(((Entity)(Object)this) instanceof Entity)
+//        {
             cir.setReturnValue(FriendHighlighter.isHighlightEnabled);
-        }
+//        }
     }
 
     @Inject(method = "getTeamColorValue", at = @At("HEAD"), cancellable = true)
-    private void getTeamColor(CallbackInfoReturnable<Integer> cir) {
-//        Entity entity = (Entity) (Object) this;
-        cir.setReturnValue(Color.RED.getRGB());
-    }
+    private void getTeamColor(CallbackInfoReturnable<Integer> cir)
+    {
+        int value = Color.WHITE.getRGB();
 
-    //isPartVisible in living enetitiy rendfeder
+        if(((Entity)(Object)this) instanceof PigEntity)
+        {
+            if(FriendHighlighter.CONFIG() != null)
+            {
+                var list = FriendHighlighter.CONFIG().list;
+
+                for (ModConfig.Player p : list)
+                {
+                    if(p.name.equals(((Entity)(Object)this).getDisplayName().getString()))
+                    {
+                        value = p.color;
+                    }
+                }
+            }
+        }
+
+//        Entity entity = (Entity) (Object) this;
+        cir.setReturnValue(value);
+    }
 }
