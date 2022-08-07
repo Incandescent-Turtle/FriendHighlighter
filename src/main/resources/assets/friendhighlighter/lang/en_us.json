@@ -1,7 +1,7 @@
 {
   "key.category.friendhighlighter.utils": "Friend Highlighter",
   "key.friendhighlighter.highlight": "Highlight Friends",
-  "text.autoconfig.friendhighlighter.option.list":  "Friend List",
+  "text.autoconfig.friendhighlighter.option.playerList":  "Friend List",
   "text.autoconfig.friendhighlighter.option.Player": "Friend",
   "text.autoconfig.friendhighlighter.option.Player.name": "Player Name",
   "text.autoconfig.friendhighlighter.option.Player.color": "Highlight Color",

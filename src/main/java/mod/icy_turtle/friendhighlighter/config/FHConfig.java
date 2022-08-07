@@ -8,13 +8,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Config(name = "friendhighlighter")
-@Config.Gui.Background("minecraft:textures/block/stone.png")
-public class ModConfig implements ConfigData
+public class FHConfig implements ConfigData
 {
-    public List<Player> list = new ArrayList<>();
+    public List<Player> playerList = new ArrayList<>();
 
     public static class Player
     {
+        public Player(){}
+
+        public Player(String name, int color)
+        {
+            this.name = name;
+            this.color = color;
+        }
+
         public String name = "";
 
         @ConfigEntry.ColorPicker

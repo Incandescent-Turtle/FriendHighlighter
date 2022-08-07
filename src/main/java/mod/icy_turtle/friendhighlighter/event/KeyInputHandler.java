@@ -1,18 +1,12 @@
 package mod.icy_turtle.friendhighlighter.event;
 
 import mod.icy_turtle.friendhighlighter.FriendHighlighter;
-import mod.icy_turtle.friendhighlighter.util.ModUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.Text;
-import net.minecraft.text.Texts;
-import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
-
-import java.util.List;
 
 public class KeyInputHandler
 {
@@ -42,22 +36,7 @@ public class KeyInputHandler
 
         if (highlightKey.wasPressed())
         {
-            FriendHighlighter.isHighlightEnabled = !FriendHighlighter.isHighlightEnabled;
-
-            Text state = FriendHighlighter.isHighlightEnabled
-                    ? getPositiveMessage("ENABLED")
-                    : getNegativeMessage("DISABLED");
-            player.sendMessage(Texts.join(List.of(Text.of("SO highlight"), state), Text.of(" ")));
+            FriendHighlighter.toggleHighlight();
         }
-    }
-
-    private static Text getPositiveMessage(String msg)
-    {
-        return ModUtils.getBoldAndColored(msg, Formatting.GREEN).get(0);
-    }
-
-    private static Text getNegativeMessage(String msg)
-    {
-        return ModUtils.getBoldAndColored(msg, Formatting.RED).get(0);
     }
 }

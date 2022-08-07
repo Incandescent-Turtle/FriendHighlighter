@@ -4,7 +4,8 @@
   "package": "mod.icy_turtle.friendhighlighter.mixins",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "EntityMixin"
+    "EntityMixin",
+    "LivingEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
