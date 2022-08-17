@@ -5,15 +5,18 @@ import net.minecraft.text.Text;
 import net.minecraft.text.Texts;
 import net.minecraft.util.Formatting;
 
-import java.util.List;
-
 public class FHUtils
 {
 	private FHUtils(){}
 
-	public static List<Text> getBoldAndColored(String msg, Formatting color)
+	public static Text getBoldAndColored(String msg, Formatting color)
 	{
-		return Text.of(msg).getWithStyle(Style.EMPTY.withBold(true).withColor(color));
+		return Texts.join(Text.of(msg).getWithStyle(Style.EMPTY.withBold(true).withColor(color)), Text.of(""));
+	}
+
+	public static Text getBoldAndColored(String msg, int color)
+	{
+		return Texts.join(Text.of(msg).getWithStyle(Style.EMPTY.withBold(true).withColor(color)), Text.of(""));
 	}
 
 	public static Text colorText(String str, int rgb)
@@ -23,12 +26,12 @@ public class FHUtils
 
 	public static Text getPositiveMessage(String msg)
 	{
-		return FHUtils.getBoldAndColored(msg, Formatting.GREEN).get(0);
+		return FHUtils.getBoldAndColored(msg, Formatting.GREEN);
 	}
 
 	public static Text getNegativeMessage(String msg)
 	{
-		return FHUtils.getBoldAndColored(msg, Formatting.RED).get(0);
+		return FHUtils.getBoldAndColored(msg, Formatting.RED);
 	}
 
 	public static int hexToRGB(String hex)

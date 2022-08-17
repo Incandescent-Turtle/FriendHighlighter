@@ -18,9 +18,9 @@ import java.util.List;
 
 /*
     TODO:
-        fix up name tag stuff - only render when on list
-        only glow when on list
-        add a pet functionality??
+        add two booleans -
+            allow mobs (or players only)
+            whether it glows
  */
 public class FriendHighlighter implements ClientModInitializer
 {

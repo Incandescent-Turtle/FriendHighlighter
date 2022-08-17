@@ -14,8 +14,8 @@ import java.lang.reflect.Method;
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin
 {
-    @Redirect(method = "render",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRenderer;hasLabel(Lnet/minecraft/entity/Entity;)Z"))
+
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRenderer;hasLabel(Lnet/minecraft/entity/Entity;)Z"))
     public boolean renderNameTag(EntityRenderer er, Entity e) {
         if(FriendHighlighter.isHighlightEnabled && FHConfig.getInstance().mapContainsEntity(e))
             return true;

@@ -46,29 +46,7 @@ public class EntityMixin
         if(FriendHighlighter.isHighlightEnabled && (Entity)(Object)this instanceof PigEntity entity)
         {
             if(FHConfig.getInstance().mapContainsEntity(entity))
-                cir.setReturnValue(FHUtils.colorText(entity.getName().getString(), FHConfig.getInstance().getColorOrWhite(entity)));
+                cir.setReturnValue(FHUtils.getBoldAndColored(entity.getName().getString(), FHConfig.getInstance().getColorOrWhite(entity)));
         }
     }
-
-//    @Inject(method = "shouldRenderName", at = @At("HEAD"), cancellable = true)
-//    private void shouldRenderName(CallbackInfoReturnable<Boolean> cir)
-//    {
-//        if(FriendHighlighter.isHighlightEnabled)
-//            cir.setReturnValue(true);
-//    }
-//
-//    @Inject(method = "hasCustomName", at = @At("HEAD"), cancellable = true)
-//    private void hasCustomName(CallbackInfoReturnable<Boolean> cir)
-//    {
-//        if(FriendHighlighter.isHighlightEnabled)
-//            cir.setReturnValue(true);
-//    }
-//
-//
-//    @Inject(method = "isCustomNameVisible", at = @At("HEAD"), cancellable = true)
-//    private void isCustomNameVisible(CallbackInfoReturnable<Boolean> cir)
-//    {
-//        if(FriendHighlighter.isHighlightEnabled)
-//            cir.setReturnValue(true);
-//    }
 }
