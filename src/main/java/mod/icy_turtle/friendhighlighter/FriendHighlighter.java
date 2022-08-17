@@ -1,9 +1,6 @@
 package mod.icy_turtle.friendhighlighter;
 
-import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import mod.icy_turtle.friendhighlighter.commands.Commands;
-import mod.icy_turtle.friendhighlighter.config.FHConfig;
 import mod.icy_turtle.friendhighlighter.event.KeyInputHandler;
 import mod.icy_turtle.friendhighlighter.event.PlayerTickHandler;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
@@ -21,13 +18,14 @@ import java.util.List;
 
 /*
     TODO:
-
+        fix up name tag stuff - only render when on list
+        only glow when on list
+        add a pet functionality??
  */
 public class FriendHighlighter implements ClientModInitializer
 {
     public static final String MOD_ID = "friendhighlighter";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-    private static FHConfig CONFIG;
 
     public static boolean isHighlightEnabled = false;
 
@@ -36,8 +34,6 @@ public class FriendHighlighter implements ClientModInitializer
     {
         KeyInputHandler.register();
         ClientTickEvents.START_CLIENT_TICK.register(new PlayerTickHandler());
-        AutoConfig.register(FHConfig.class, JanksonConfigSerializer::new);
-        CONFIG = AutoConfig.getConfigHolder(FHConfig.class).getConfig();
         ClientCommandRegistrationCallback.EVENT.register(Commands::registerCommands);
     }
 
@@ -51,10 +47,4 @@ public class FriendHighlighter implements ClientModInitializer
         MinecraftClient.getInstance().player.sendMessage(Texts.join(List.of(Text.of("Friend highlight"), state), Text.of(" ")), true);
         return 1;
     }
-
-    public static final FHConfig CONFIG()
-    {
-        return CONFIG;
-    }
-
 }

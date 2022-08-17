@@ -11,7 +11,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -19,10 +18,10 @@ import java.util.function.Supplier;
 public class StringListArgumentType implements ArgumentType<String>
 {
     private final Collection<String> examples;
-    private final Supplier<List<String>> listSupplier;
+    private final Supplier<Collection<String>> listSupplier;
     private final Function<String, Text> exceptionFunction;
 
-    public StringListArgumentType(Supplier<List<String>> listSupplier, Function<String, Text> exceptionFunction, Collection<String> examples)
+    public StringListArgumentType(Supplier<Collection<String>> listSupplier, Function<String, Text> exceptionFunction, Collection<String> examples)
     {
         this.listSupplier = listSupplier;
         this.exceptionFunction = exceptionFunction;
@@ -31,8 +30,7 @@ public class StringListArgumentType implements ArgumentType<String>
     }
 
     @Override
-    public String parse(StringReader reader
-    ) throws CommandSyntaxException
+    public String parse(StringReader reader) throws CommandSyntaxException
     {
         String name = reader.readUnquotedString();
         if(listSupplier.get().contains(name))
@@ -47,7 +45,7 @@ public class StringListArgumentType implements ArgumentType<String>
         {
             StringReader stringReader = new StringReader(builder.getInput());
             stringReader.setCursor(builder.getStart());
-            List<String> collection = listSupplier.get();
+            Collection<String> collection = listSupplier.get();
             return CommandSource.suggestMatching(collection, builder);
         } else {
             return Suggestions.empty();

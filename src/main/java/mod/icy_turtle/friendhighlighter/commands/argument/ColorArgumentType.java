@@ -46,10 +46,10 @@ public class ColorArgumentType implements ArgumentType<String>
 
         if(color.charAt(0) == '#')
         {
-            if(color.matches("^#([0-9A-Fa-f]{1,8})$"))
+            if(color.matches("^#([0-9A-Fa-f]{1,6})$"))
                 return color;
             else
-                throw new SimpleCommandExceptionType(Text.literal("Invalid color. Valid hex codes are 1-8 digits comprising of 0-9 and A-F.")).createWithContext(reader);
+                throw new SimpleCommandExceptionType(Text.literal("Invalid color. Valid hex codes are 1-6 digits comprising of 0-9 and A-F.")).createWithContext(reader);
         }
         throw new SimpleCommandExceptionType(Text.literal("Invalid color. Use a pre-programmed colour or a hex code starting with #.")).createWithContext(reader);
     }

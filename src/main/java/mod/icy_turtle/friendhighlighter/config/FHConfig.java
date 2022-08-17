@@ -1,30 +1,78 @@
 package mod.icy_turtle.friendhighlighter.config;
 
-import me.shedaniel.autoconfig.ConfigData;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import me.shedaniel.autoconfig.annotation.Config;
-import me.shedaniel.autoconfig.annotation.ConfigEntry;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.entity.Entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+
+import static mod.icy_turtle.friendhighlighter.FriendHighlighter.LOGGER;
 
 @Config(name = "friendhighlighter")
-public class FHConfig implements ConfigData
+public class FHConfig
 {
-    public List<Player> playerList = new ArrayList<>();
+    private transient static final Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("FriendHighlighterConfig.json");
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private transient static FHConfig INSTANCE;
 
-    public static class Player
+    public Map<String, Integer> playerMap = new HashMap<>();
+
+    public boolean mapContainsEntity(Entity entity)
     {
-        public Player(){}
+        return playerMap.containsKey(entity.getName().getString());
+    }
 
-        public Player(String name, int color)
-        {
-            this.name = name;
-            this.color = color;
+    public int getColorOrWhite(Entity entity)
+    {
+        return playerMap.getOrDefault(entity.getName().getString(), 0xFFFFFF);
+    }
+
+    public static FHConfig getInstance()
+    {
+        if (INSTANCE == null)
+            loadConfig();
+        return INSTANCE;
+    }
+
+    public static void loadConfig()
+    {
+        LOGGER.info(INSTANCE == null ? "Loading config..." : "Reloading config...");
+        INSTANCE = readFile();
+        if (INSTANCE == null)
+            INSTANCE = new FHConfig();
+        saveConfig();
+    }
+
+    private static FHConfig readFile()
+    {
+        try (BufferedReader reader = Files.newBufferedReader(CONFIG_FILE)) {
+            return GSON.fromJson(reader, FHConfig.class);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
+    }
 
-        public String name = "";
-
-        @ConfigEntry.ColorPicker
-        public int color = 0xFFFFFF;
+    public static void saveConfig()
+    {
+        LOGGER.info("Attempting to save config...");
+        if(INSTANCE != null)
+        {
+            try(BufferedWriter writer = Files.newBufferedWriter(CONFIG_FILE)) {
+                GSON.toJson(INSTANCE, writer);
+                LOGGER.info("Saved config.");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        } else {
+            LOGGER.error("Can't save config as config instance is null.");
+        }
     }
 }

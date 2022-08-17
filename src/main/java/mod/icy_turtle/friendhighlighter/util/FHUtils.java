@@ -2,6 +2,7 @@ package mod.icy_turtle.friendhighlighter.util;
 
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.text.Texts;
 import net.minecraft.util.Formatting;
 
 import java.util.List;
@@ -15,9 +16,9 @@ public class FHUtils
 		return Text.of(msg).getWithStyle(Style.EMPTY.withBold(true).withColor(color));
 	}
 
-	public static Text color(String str, int rgb)
+	public static Text colorText(String str, int rgb)
 	{
-		return Text.of(str).getWithStyle(Style.EMPTY.withColor(rgb)).get(0);
+		return Texts.join(Text.of(str).getWithStyle(Style.EMPTY.withColor(rgb)), Text.of(""));
 	}
 
 	public static Text getPositiveMessage(String msg)
