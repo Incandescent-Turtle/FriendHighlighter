@@ -41,15 +41,8 @@ public class StringListArgumentType implements ArgumentType<String>
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder)
     {
-        if (context.getSource() instanceof CommandSource commandSource)
-        {
-            StringReader stringReader = new StringReader(builder.getInput());
-            stringReader.setCursor(builder.getStart());
-            Collection<String> collection = listSupplier.get();
-            return CommandSource.suggestMatching(collection, builder);
-        } else {
-            return Suggestions.empty();
-        }
+        Collection<String> collection = listSupplier.get();
+        return CommandSource.suggestMatching(collection, builder);
     }
 
     @Override

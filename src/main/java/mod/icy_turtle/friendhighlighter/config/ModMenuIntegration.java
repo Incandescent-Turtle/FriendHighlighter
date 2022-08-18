@@ -12,7 +12,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.text.Text;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
 public class ModMenuIntegration implements ModMenuApi
@@ -59,7 +58,7 @@ public class ModMenuIntegration implements ModMenuApi
 
             ConfigEntryBuilder entryBuilder = builder.entryBuilder();
             ConfigCategory testing = builder.getOrCreateCategory(Text.translatable("config.friendHighlighter.category.test"));
-            testing.addEntry(new NestedListListEntry<HighlightedPlayer, MultiElementListEntry<HighlightedPlayer>>(
+            testing.addEntry(new NestedListListEntry<HighlightedFriend, MultiElementListEntry<HighlightedFriend>>(
                     Text.literal("Friend's List"),
                     mapToPlayerList(FHConfig.getInstance().playerMap),
                     true,
@@ -72,7 +71,7 @@ public class ModMenuIntegration implements ModMenuApi
                     (player, nestedListListEntry) -> {
                         //  when adding a new player
                         if (player == null) {
-                            var defaultPlayer = new HighlightedPlayer();
+                            var defaultPlayer = new HighlightedFriend();
                             return new MultiElementListEntry<>(
                                     Text.literal("Player"), defaultPlayer,
                                     List.of(entryBuilder.startTextField(Text.literal("Name"), defaultPlayer.name)
@@ -80,6 +79,12 @@ public class ModMenuIntegration implements ModMenuApi
                                                     .build(),
                                             entryBuilder.startColorField(Text.literal("Color"), defaultPlayer.color)
                                                     .setSaveConsumer(color -> defaultPlayer.color = color)
+                                                    .build(),
+                                            entryBuilder.startBooleanToggle(Text.literal("Only Players"), defaultPlayer.onlyPlayers)
+                                                    .setSaveConsumer(color -> {})
+                                                    .build(),
+                                            entryBuilder.startBooleanToggle(Text.literal("Outline Friend"), defaultPlayer.outlineFriend)
+                                                    .setSaveConsumer(color -> {})
                                                     .build()),
                                     true);
                         //  when loading a player from the config
@@ -91,6 +96,12 @@ public class ModMenuIntegration implements ModMenuApi
                                                     .build(),
                                             entryBuilder.startColorField(Text.literal("Color"), player.color)
                                                     .setSaveConsumer(color -> player.color = color)
+                                                    .build(),
+                                            entryBuilder.startBooleanToggle(Text.literal("Only Players"), player.onlyPlayers)
+                                                    .setSaveConsumer(onlyPlayers -> player.onlyPlayers = onlyPlayers)
+                                                    .build(),
+                                            entryBuilder.startBooleanToggle(Text.literal("Outline Friend"), player.outlineFriend)
+                                                    .setSaveConsumer(outlineFriend -> player.outlineFriend = outlineFriend)
                                                     .build()),
                                     true);
                         }
@@ -104,15 +115,15 @@ public class ModMenuIntegration implements ModMenuApi
         };
     }
 
-    private static Map<String, Integer> playerListToMap(List<HighlightedPlayer> list)
+    private static Map<String, HighlightedFriend> playerListToMap(List<HighlightedFriend> list)
     {
         Map map = new HashMap();
-        list.forEach(p -> map.put(p.name, p.color));
+        list.forEach(p -> map.put(p.name, p));
         return map;
     }
 
-    private static List<HighlightedPlayer> mapToPlayerList(Map<String, Integer> map)
+    private static List<HighlightedFriend> mapToPlayerList(Map<String, HighlightedFriend> map)
     {
-        return map.keySet().stream().map(name -> new HighlightedPlayer(name, map.get(name))).collect(Collectors.toList());
+        return map.values().stream().toList();
     }
 }

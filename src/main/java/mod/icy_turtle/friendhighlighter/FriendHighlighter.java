@@ -18,9 +18,17 @@ import java.util.List;
 
 /*
     TODO:
-        add two booleans -
-            allow mobs (or players only)
-            whether it glows
+        change the way the booleans work?
+            type their name instead of true or false??
+        list display command
+            sentinel loop to remove trailing comma
+            add advanced feature to show booleans
+        make booleans actually work
+            highlight all mobs if allowed
+            dont highlight if not allowed
+        name suggestions
+        take from nearby mobs as well.
+            all nearby mobs with custom name
  */
 public class FriendHighlighter implements ClientModInitializer
 {

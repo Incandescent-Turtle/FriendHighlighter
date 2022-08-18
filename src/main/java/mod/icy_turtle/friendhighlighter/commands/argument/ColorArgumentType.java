@@ -40,7 +40,6 @@ public class ColorArgumentType implements ArgumentType<String>
 
         String color = reader.getString().substring(argBeginning, reader.getCursor());
         String hexFromName = FHColor.getHex(color);
-        System.out.println(color);
         if(hexFromName != null)
             return hexFromName;
 

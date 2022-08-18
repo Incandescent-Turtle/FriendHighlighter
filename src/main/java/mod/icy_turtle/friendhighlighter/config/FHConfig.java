@@ -23,16 +23,21 @@ public class FHConfig
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private transient static FHConfig INSTANCE;
 
-    public Map<String, Integer> playerMap = new HashMap<>();
+    public Map<String, HighlightedFriend> playerMap = new HashMap<>();
 
     public boolean mapContainsEntity(Entity entity)
     {
         return playerMap.containsKey(entity.getName().getString());
     }
 
-    public int getColorOrWhite(Entity entity)
+    public int getColorOrDefault(Entity entity)
     {
-        return playerMap.getOrDefault(entity.getName().getString(), 0xFFFFFF);
+        return playerMap.getOrDefault(entity.getName().getString(), new HighlightedFriend()).color;
+    }
+
+    public int getColorOrDefault(String str)
+    {
+        return playerMap.getOrDefault(str, new HighlightedFriend()).color;
     }
 
     public static FHConfig getInstance()
@@ -56,7 +61,8 @@ public class FHConfig
         try (BufferedReader reader = Files.newBufferedReader(CONFIG_FILE)) {
             return GSON.fromJson(reader, FHConfig.class);
         } catch (IOException ex) {
-            throw new RuntimeException(ex);
+            ex.printStackTrace();
+            return null;
         }
     }
 

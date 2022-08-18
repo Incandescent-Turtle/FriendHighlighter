@@ -24,13 +24,7 @@ public class EntityRendererMixin
             Method method = EntityRenderer.class.getDeclaredMethod("hasLabel", Entity.class);
             method.setAccessible(true);
             return (boolean) method.invoke(er, e);
-        } catch (NoSuchMethodException ex)
-        {
-            ex.printStackTrace();
-        } catch (InvocationTargetException ex)
-        {
-            ex.printStackTrace();
-        } catch (IllegalAccessException ex)
+        } catch (NoSuchMethodException|InvocationTargetException|IllegalAccessException ex)
         {
             ex.printStackTrace();
         }

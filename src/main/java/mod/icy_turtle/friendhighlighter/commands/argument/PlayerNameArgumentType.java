@@ -42,16 +42,8 @@ public class PlayerNameArgumentType implements ArgumentType<String>
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder)
     {
-        if (context.getSource() instanceof CommandSource)
-        {
-            StringReader stringReader = new StringReader(builder.getInput());
-            stringReader.setCursor(builder.getStart());
-
-            List<String> collection = MinecraftClient.getInstance().world.getPlayers().stream().map(p -> p.getDisplayName().getString()).collect(Collectors.toList());
-            return CommandSource.suggestMatching(collection, builder);
-        } else {
-            return Suggestions.empty();
-        }
+        List<String> playerList = MinecraftClient.getInstance().world.getPlayers().stream().map(p -> p.getDisplayName().getString()).collect(Collectors.toList());
+        return CommandSource.suggestMatching(playerList, builder);
     }
 
     @Override

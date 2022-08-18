@@ -22,8 +22,6 @@ public class EntityMixin
             if(FHConfig.getInstance().mapContainsEntity(entity))
             {
                 cir.setReturnValue(true);
-            } else {
-                System.out.println(entity.getName());
             }
         }
     }
@@ -35,7 +33,7 @@ public class EntityMixin
         {
             if(FHConfig.getInstance().mapContainsEntity(entity))
             {
-                cir.setReturnValue(FHConfig.getInstance().getColorOrWhite(entity));
+                cir.setReturnValue(FHConfig.getInstance().getColorOrDefault(entity));
             }
         }
     }
@@ -46,7 +44,7 @@ public class EntityMixin
         if(FriendHighlighter.isHighlightEnabled && (Entity)(Object)this instanceof PigEntity entity)
         {
             if(FHConfig.getInstance().mapContainsEntity(entity))
-                cir.setReturnValue(FHUtils.getBoldAndColored(entity.getName().getString(), FHConfig.getInstance().getColorOrWhite(entity)));
+                cir.setReturnValue(FHUtils.getBoldAndColored(entity.getName().getString(), FHConfig.getInstance().getColorOrDefault(entity)));
         }
     }
 }
