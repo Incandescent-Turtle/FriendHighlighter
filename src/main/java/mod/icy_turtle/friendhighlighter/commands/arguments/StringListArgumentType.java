@@ -1,4 +1,4 @@
-package mod.icy_turtle.friendhighlighter.commands.argument;
+package mod.icy_turtle.friendhighlighter.commands.arguments;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import mod.icy_turtle.friendhighlighter.commands.CommandHandler;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
 
@@ -26,13 +27,20 @@ public class StringListArgumentType implements ArgumentType<String>
         this.listSupplier = listSupplier;
         this.exceptionFunction = exceptionFunction;
         this.examples = examples;
+    }
 
+    public StringListArgumentType(Supplier<Collection<String>> listSupplier, Collection<String> examples)
+    {
+        this.listSupplier = listSupplier;
+        this.exceptionFunction = str -> Text.of("\"" + str + "\" is not one of " + listSupplier.toString());
+        this.examples = examples;
     }
 
     @Override
     public String parse(StringReader reader) throws CommandSyntaxException
     {
-        String name = reader.readUnquotedString();
+//        String name = Commands.getArgument(reader);
+        var name = CommandHandler.getArgumentFromReader(reader);
         if(listSupplier.get().contains(name))
             return name;
         throw new SimpleCommandExceptionType(exceptionFunction.apply(name)).createWithContext(reader);

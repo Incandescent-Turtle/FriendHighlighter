@@ -1,6 +1,6 @@
 package mod.icy_turtle.friendhighlighter;
 
-import mod.icy_turtle.friendhighlighter.commands.Commands;
+import mod.icy_turtle.friendhighlighter.commands.CommandHandler;
 import mod.icy_turtle.friendhighlighter.event.KeyInputHandler;
 import mod.icy_turtle.friendhighlighter.event.PlayerTickHandler;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
@@ -18,31 +18,22 @@ import java.util.List;
 
 /*
     TODO:
-        change the way the booleans work?
-            type their name instead of true or false??
-        list display command
-            sentinel loop to remove trailing comma
-            add advanced feature to show booleans
-        make booleans actually work
-            highlight all mobs if allowed
-            dont highlight if not allowed
-        name suggestions
-        take from nearby mobs as well.
-            all nearby mobs with custom name
- */
+*/
 public class FriendHighlighter implements ClientModInitializer
 {
     public static final String MOD_ID = "friendhighlighter";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+    public static final CommandHandler COMMAND_HANDLER = new CommandHandler();
 
     public static boolean isHighlightEnabled = false;
+
 
     @Override
     public void onInitializeClient()
     {
         KeyInputHandler.register();
         ClientTickEvents.START_CLIENT_TICK.register(new PlayerTickHandler());
-        ClientCommandRegistrationCallback.EVENT.register(Commands::registerCommands);
+        ClientCommandRegistrationCallback.EVENT.register(COMMAND_HANDLER::registerCommands);
     }
 
     public static int toggleHighlight()

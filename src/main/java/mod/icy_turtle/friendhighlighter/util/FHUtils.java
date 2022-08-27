@@ -1,35 +1,38 @@
 package mod.icy_turtle.friendhighlighter.util;
 
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.Texts;
+import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
 public class FHUtils
 {
 	private FHUtils(){}
 
-	public static Text getBoldAndColored(String msg, Formatting color)
+	public static MutableText getBoldAndColored(String msg, int color)
 	{
-		return Texts.join(Text.of(msg).getWithStyle(Style.EMPTY.withBold(true).withColor(color)), Text.of(""));
+		return Text.literal(msg).styled(style -> style.withBold(true).withColor(color));
 	}
 
-	public static Text getBoldAndColored(String msg, int color)
+	public static MutableText getBoldAndColored(String msg, Formatting color)
 	{
-		return Texts.join(Text.of(msg).getWithStyle(Style.EMPTY.withBold(true).withColor(color)), Text.of(""));
+		return getBoldAndColored(msg, color.getColorValue());
 	}
 
-	public static Text colorText(String str, int rgb)
+	public static MutableText colorText(String str, int rgb)
 	{
-		return Texts.join(Text.of(str).getWithStyle(Style.EMPTY.withColor(rgb)), Text.of(""));
+		return Text.literal(str).styled(style -> style.withColor(rgb));
 	}
 
-	public static Text getPositiveMessage(String msg)
+	public static MutableText colorText(String str, Formatting color)
+	{
+		return colorText(str, color.getColorValue());
+	}
+
+	public static MutableText getPositiveMessage(String msg)
 	{
 		return FHUtils.getBoldAndColored(msg, Formatting.GREEN);
 	}
 
-	public static Text getNegativeMessage(String msg)
+	public static MutableText getNegativeMessage(String msg)
 	{
 		return FHUtils.getBoldAndColored(msg, Formatting.RED);
 	}
@@ -45,5 +48,15 @@ public class FHUtils
 				((r & 0xFF) << 16) |
 				((g & 0xFF) << 8)  |
 				((b & 0xFF) << 0);
+	}
+
+	public static MutableText createCopyableText(Text input)
+	{
+		MutableText txt = Text.literal("");
+		txt.append(input);
+		txt.styled(style -> style
+				.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, txt.getString()))
+				.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of("Click to copy!"))));
+		return txt;
 	}
 }

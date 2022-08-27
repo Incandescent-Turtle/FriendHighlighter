@@ -7,49 +7,19 @@ import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.gui.entries.MultiElementListEntry;
 import me.shedaniel.clothconfig2.gui.entries.NestedListListEntry;
+import mod.icy_turtle.friendhighlighter.FriendHighlighter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.text.Text;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Environment(EnvType.CLIENT)
 public class ModMenuIntegration implements ModMenuApi
 {
-    class Pair<T, R>
-    {
-        T t;
-        R r;
-
-        public Pair(T t, R r)
-        {
-            this.t = t;
-            this.r = r;
-        }
-
-        public T getLeft()
-        {
-            return t;
-        }
-
-        public R getRight()
-        {
-            return r;
-        }
-
-        @Override
-        public boolean equals(Object o)
-        {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            Pair<?, ?> pair = (Pair<?, ?>) o;
-
-            if (!Objects.equals(t, pair.t)) return false;
-            return Objects.equals(r, pair.r);
-        }
-    }
-
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory()
     {
@@ -60,48 +30,48 @@ public class ModMenuIntegration implements ModMenuApi
             ConfigCategory testing = builder.getOrCreateCategory(Text.translatable("config.friendHighlighter.category.test"));
             testing.addEntry(new NestedListListEntry<HighlightedFriend, MultiElementListEntry<HighlightedFriend>>(
                     Text.literal("Friend's List"),
-                    mapToPlayerList(FHConfig.getInstance().playerMap),
+                    mapToPlayerList(FHConfig.getInstance().friendsMap),
                     true,
                     Optional::empty,
-                    list -> FHConfig.getInstance().playerMap = playerListToMap(list),
-                    () -> mapToPlayerList(FHConfig.getInstance().playerMap),
+                    list -> FHConfig.getInstance().friendsMap = playerListToMap(list),
+                    () -> mapToPlayerList(FHConfig.getInstance().friendsMap),
                     entryBuilder.getResetButtonKey(),
                     true,
                     false,
-                    (player, nestedListListEntry) -> {
+                    (friend, nestedListListEntry) -> {
                         //  when adding a new player
-                        if (player == null) {
-                            var defaultPlayer = new HighlightedFriend();
+                        if (friend == null) {
+                            var defaultFriend = new HighlightedFriend();
                             return new MultiElementListEntry<>(
-                                    Text.literal("Player"), defaultPlayer,
-                                    List.of(entryBuilder.startTextField(Text.literal("Name"), defaultPlayer.name)
-                                                    .setSaveConsumer(str -> defaultPlayer.name = str)
+                                    Text.literal("Friend"), defaultFriend,
+                                    List.of(entryBuilder.startTextField(Text.literal("Name"), defaultFriend.name)
+                                                    .setSaveConsumer(str -> defaultFriend.name = str)
                                                     .build(),
-                                            entryBuilder.startColorField(Text.literal("Color"), defaultPlayer.color)
-                                                    .setSaveConsumer(color -> defaultPlayer.color = color)
+                                            entryBuilder.startColorField(Text.literal("Color"), defaultFriend.color)
+                                                    .setSaveConsumer(color -> defaultFriend.color = color)
                                                     .build(),
-                                            entryBuilder.startBooleanToggle(Text.literal("Only Players"), defaultPlayer.onlyPlayers)
+                                            entryBuilder.startBooleanToggle(Text.literal("Only Players"), defaultFriend.onlyPlayers)
                                                     .setSaveConsumer(color -> {})
                                                     .build(),
-                                            entryBuilder.startBooleanToggle(Text.literal("Outline Friend"), defaultPlayer.outlineFriend)
+                                            entryBuilder.startBooleanToggle(Text.literal("Outline Friend"), defaultFriend.outlineFriend)
                                                     .setSaveConsumer(color -> {})
                                                     .build()),
                                     true);
                         //  when loading a player from the config
                         } else {
                             return new MultiElementListEntry<>(
-                                    Text.literal(player.name.equals("") ? "Player" : player.name), player,
-                                    List.of(entryBuilder.startTextField(Text.literal("Name"), player.name)
-                                                    .setSaveConsumer(str -> player.name = str)
+                                    Text.literal(friend.name.equals("") ? "Friend" : friend.name), friend,
+                                    List.of(entryBuilder.startTextField(Text.literal("Name"), friend.name)
+                                                    .setSaveConsumer(str -> friend.name = str)
                                                     .build(),
-                                            entryBuilder.startColorField(Text.literal("Color"), player.color)
-                                                    .setSaveConsumer(color -> player.color = color)
+                                            entryBuilder.startColorField(Text.literal("Color"), friend.color)
+                                                    .setSaveConsumer(color -> friend.color = color)
                                                     .build(),
-                                            entryBuilder.startBooleanToggle(Text.literal("Only Players"), player.onlyPlayers)
-                                                    .setSaveConsumer(onlyPlayers -> player.onlyPlayers = onlyPlayers)
+                                            entryBuilder.startBooleanToggle(Text.literal("Only Players"), friend.onlyPlayers)
+                                                    .setSaveConsumer(onlyPlayers -> friend.onlyPlayers = onlyPlayers)
                                                     .build(),
-                                            entryBuilder.startBooleanToggle(Text.literal("Outline Friend"), player.outlineFriend)
-                                                    .setSaveConsumer(outlineFriend -> player.outlineFriend = outlineFriend)
+                                            entryBuilder.startBooleanToggle(Text.literal("Outline Friend"), friend.outlineFriend)
+                                                    .setSaveConsumer(outlineFriend -> friend.outlineFriend = outlineFriend)
                                                     .build()),
                                     true);
                         }
@@ -110,6 +80,7 @@ public class ModMenuIntegration implements ModMenuApi
             builder.setSavingRunnable(()->{
                 FHConfig.saveConfig();
                 FHConfig.loadConfig();
+                FriendHighlighter.COMMAND_HANDLER.updateList(false,false);
             });
             return builder.setParentScreen(screen).build();
         };

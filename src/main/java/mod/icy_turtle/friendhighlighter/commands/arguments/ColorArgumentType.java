@@ -1,4 +1,4 @@
-package mod.icy_turtle.friendhighlighter.commands.argument;
+package mod.icy_turtle.friendhighlighter.commands.arguments;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import mod.icy_turtle.friendhighlighter.commands.CommandHandler;
 import mod.icy_turtle.friendhighlighter.util.FHColor;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
@@ -28,17 +29,7 @@ public class ColorArgumentType implements ArgumentType<String>
     @Override
     public String parse(StringReader reader) throws CommandSyntaxException
     {
-        int argBeginning = reader.getCursor();
-        if (!reader.canRead()) {
-            reader.skip();
-        }
-
-        while (reader.canRead() && reader.peek() != ' ')
-        {
-            reader.skip();
-        }
-
-        String color = reader.getString().substring(argBeginning, reader.getCursor());
+        String color = CommandHandler.getArgumentFromReader(reader);
         String hexFromName = FHColor.getHex(color);
         if(hexFromName != null)
             return hexFromName;

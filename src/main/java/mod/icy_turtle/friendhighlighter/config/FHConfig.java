@@ -2,7 +2,6 @@ package mod.icy_turtle.friendhighlighter.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import me.shedaniel.autoconfig.annotation.Config;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
 
@@ -16,28 +15,32 @@ import java.util.Map;
 
 import static mod.icy_turtle.friendhighlighter.FriendHighlighter.LOGGER;
 
-@Config(name = "friendhighlighter")
 public class FHConfig
 {
-    private transient static final Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("FriendHighlighterConfig.json");
+    private transient static final Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("FriendHighlighter.json");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private transient static FHConfig INSTANCE;
 
-    public Map<String, HighlightedFriend> playerMap = new HashMap<>();
+    public Map<String, HighlightedFriend> friendsMap = new HashMap<>();
 
     public boolean mapContainsEntity(Entity entity)
     {
-        return playerMap.containsKey(entity.getName().getString());
+        return friendsMap.containsKey(entity.getName().getString());
+    }
+
+    public HighlightedFriend getFriendFromEntity(Entity entity)
+    {
+        return friendsMap.get(entity.getName().getString());
     }
 
     public int getColorOrDefault(Entity entity)
     {
-        return playerMap.getOrDefault(entity.getName().getString(), new HighlightedFriend()).color;
+        return getColorOrDefault(entity.getName().getString());
     }
 
     public int getColorOrDefault(String str)
     {
-        return playerMap.getOrDefault(str, new HighlightedFriend()).color;
+        return friendsMap.getOrDefault(str, new HighlightedFriend()).color;
     }
 
     public static FHConfig getInstance()

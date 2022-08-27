@@ -4,6 +4,7 @@ import mod.icy_turtle.friendhighlighter.FriendHighlighter;
 import mod.icy_turtle.friendhighlighter.config.FHConfig;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -17,8 +18,12 @@ public class EntityRendererMixin
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRenderer;hasLabel(Lnet/minecraft/entity/Entity;)Z"))
     public boolean renderNameTag(EntityRenderer er, Entity e) {
-        if(FriendHighlighter.isHighlightEnabled && FHConfig.getInstance().mapContainsEntity(e))
-            return true;
+        if(FriendHighlighter.isHighlightEnabled)
+        {
+            var friend = FHConfig.getInstance().getFriendFromEntity(e);
+            if(friend != null && (e instanceof PlayerEntity || (!friend.onlyPlayers && e.hasCustomName())))
+                return true;
+        }
         try
         {
             Method method = EntityRenderer.class.getDeclaredMethod("hasLabel", Entity.class);
