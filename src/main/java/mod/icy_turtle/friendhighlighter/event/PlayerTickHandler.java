@@ -9,7 +9,5 @@ public class PlayerTickHandler implements ClientTickEvents.StartTick
     public void onStartTick(MinecraftClient client)
     {
         if(client.player == null) return;
-//        if(FriendHighlighter.CONFIG() == null) return;
-//        System.out.println(FriendHighlighter.CONFIG().list);
     }
 }

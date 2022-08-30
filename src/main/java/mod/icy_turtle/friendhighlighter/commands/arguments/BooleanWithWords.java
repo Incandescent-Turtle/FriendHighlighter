@@ -7,7 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import mod.icy_turtle.friendhighlighter.commands.CommandHandler;
+import mod.icy_turtle.friendhighlighter.util.CommandUtils;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
 
@@ -28,7 +28,7 @@ public class BooleanWithWords implements ArgumentType<Boolean>
     @Override
     public Boolean parse(StringReader reader) throws CommandSyntaxException
     {
-        String arg = CommandHandler.getArgumentFromReader(reader);
+        String arg = CommandUtils.readSpacelessArgument(reader);
         if(arg.equals(trueStr) || arg.equals("true"))
             return true;
         if(arg.equals(falseStr) || arg.equals("false"))

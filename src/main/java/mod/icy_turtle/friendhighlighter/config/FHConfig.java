@@ -4,31 +4,32 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static mod.icy_turtle.friendhighlighter.FriendHighlighter.LOGGER;
 
 public class FHConfig
 {
-    private transient static final Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("FriendHighlighter.json");
+    private static final Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("FriendHighlighter.json");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private transient static FHConfig INSTANCE;
+    private static FHConfig INSTANCE;
 
-    public Map<String, HighlightedFriend> friendsMap = new HashMap<>();
+    public Map<String, HighlightedFriend> friendsMap = new LinkedHashMap<>();
 
     public boolean mapContainsEntity(Entity entity)
     {
         return friendsMap.containsKey(entity.getName().getString());
     }
 
-    public HighlightedFriend getFriendFromEntity(Entity entity)
+    public @Nullable HighlightedFriend getFriendFromEntity(Entity entity)
     {
         return friendsMap.get(entity.getName().getString());
     }

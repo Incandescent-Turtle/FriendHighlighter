@@ -4,14 +4,16 @@ import mod.icy_turtle.friendhighlighter.config.FHConfig;
 import net.minecraft.text.Text;
 
 import java.util.List;
-import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ExistingFriendArgumentType extends StringListArgumentType
 {
-    public ExistingFriendArgumentType(Function<String, String> errorMsg)
+    public ExistingFriendArgumentType()
     {
-        super(() -> FHConfig.getInstance().friendsMap.keySet(),
-                name -> Text.of(errorMsg.apply(name)),
+        super(
+                () -> FHConfig.getInstance().friendsMap.keySet(),
+                () -> FHConfig.getInstance().friendsMap.keySet().stream().map(name -> "\""+name+"\"").collect(Collectors.toList()),
+                name -> Text.of(name + " cannot be removed as they are not on your friends list."),
                 List.of("icy_turtle", "Player123", "Xx_Notch_xX"));
     }
 }
