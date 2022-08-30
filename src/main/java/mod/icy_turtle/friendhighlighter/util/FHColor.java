@@ -25,7 +25,6 @@ public enum FHColor
     WHITE("#ffffff"),
     BLACK("#000000");
 
-
     public static final Map<String, String> COLOR_MAP = new HashMap<>();
 
     static

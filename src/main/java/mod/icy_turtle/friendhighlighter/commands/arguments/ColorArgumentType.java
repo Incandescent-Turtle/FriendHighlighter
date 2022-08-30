@@ -1,4 +1,4 @@
-package mod.icy_turtle.friendhighlighter.commands.argument;
+package mod.icy_turtle.friendhighlighter.commands.arguments;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import mod.icy_turtle.friendhighlighter.util.CommandUtils;
 import mod.icy_turtle.friendhighlighter.util.FHColor;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
@@ -28,28 +29,17 @@ public class ColorArgumentType implements ArgumentType<String>
     @Override
     public String parse(StringReader reader) throws CommandSyntaxException
     {
-        int argBeginning = reader.getCursor();
-        if (!reader.canRead()) {
-            reader.skip();
-        }
-
-        while (reader.canRead() && reader.peek() != ' ')
-        {
-            reader.skip();
-        }
-
-        String color = reader.getString().substring(argBeginning, reader.getCursor());
+        String color = CommandUtils.readSpacelessArgument(reader);
         String hexFromName = FHColor.getHex(color);
-        System.out.println(color);
         if(hexFromName != null)
             return hexFromName;
 
         if(color.charAt(0) == '#')
         {
-            if(color.matches("^#([0-9A-Fa-f]{1,8})$"))
+            if(color.matches("^#([0-9A-Fa-f]{1,6})$"))
                 return color;
             else
-                throw new SimpleCommandExceptionType(Text.literal("Invalid color. Valid hex codes are 1-8 digits comprising of 0-9 and A-F.")).createWithContext(reader);
+                throw new SimpleCommandExceptionType(Text.literal("Invalid color. Valid hex codes are 1-6 digits comprising of 0-9 and A-F.")).createWithContext(reader);
         }
         throw new SimpleCommandExceptionType(Text.literal("Invalid color. Use a pre-programmed colour or a hex code starting with #.")).createWithContext(reader);
     }

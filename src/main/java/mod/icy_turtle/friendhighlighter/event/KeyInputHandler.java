@@ -12,15 +12,13 @@ public class KeyInputHandler
 {
     public static final String KEY_CATEGORY_ICY_UTILITIES = "key.category.friendhighlighter.utils";
 
-    public static final String
-            KEY_HIGHLIGHT_PLAYERS = "key.friendhighlighter.highlight";
+    public static final String KEY_HIGHLIGHT_FRIENDS = "key.friendhighlighter.highlight";
 
     public static KeyBinding highlightKey;
 
     public static void register()
     {
-        highlightKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                KEY_HIGHLIGHT_PLAYERS,
+        highlightKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(KEY_HIGHLIGHT_FRIENDS,
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_H,
                 KEY_CATEGORY_ICY_UTILITIES
@@ -31,9 +29,6 @@ public class KeyInputHandler
 
     private static void registerKeyInputs(MinecraftClient client)
     {
-        if (client.player == null) return;
-        var player = client.player;
-
         if (highlightKey.wasPressed())
         {
             FriendHighlighter.toggleHighlight();

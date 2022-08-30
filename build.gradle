@@ -47,6 +47,10 @@ dependencies {
 	}
 }
 
+loom {
+	accessWidenerPath = file("src/main/resources/friendHighlighter.accesswidener")
+}
+
 processResources {
 	inputs.property "version", project.version
 
