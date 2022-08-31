@@ -16,32 +16,28 @@ import java.util.Map;
 
 import static mod.icy_turtle.friendhighlighter.FriendHighlighter.LOGGER;
 
+/**
+ * Handles the config values and loading/unloading.
+ */
 public class FHConfig
 {
     private static final Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("FriendHighlighter.json");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static FHConfig INSTANCE;
 
+    /**
+     * The map to be used throughout the mod to check which names are on the friends list.
+     */
     public Map<String, HighlightedFriend> friendsMap = new LinkedHashMap<>();
 
-    public boolean mapContainsEntity(Entity entity)
-    {
-        return friendsMap.containsKey(entity.getName().getString());
-    }
-
+    /**
+     * Returns the instance of {@link HighlightedFriend} associated to this entity via {@link Entity#getName()}.
+     * @param entity the entity to use to get the friend.
+     * @return the associated {@link HighlightedFriend} instance, or null if there isn't one.
+     */
     public @Nullable HighlightedFriend getFriendFromEntity(Entity entity)
     {
         return friendsMap.get(entity.getName().getString());
-    }
-
-    public int getColorOrDefault(Entity entity)
-    {
-        return getColorOrDefault(entity.getName().getString());
-    }
-
-    public int getColorOrDefault(String str)
-    {
-        return friendsMap.getOrDefault(str, new HighlightedFriend()).color;
     }
 
     public static FHConfig getInstance()
@@ -51,6 +47,10 @@ public class FHConfig
         return INSTANCE;
     }
 
+    /**
+     * Loads the config from {@link #CONFIG_FILE} into {@link #INSTANCE}.
+     * @see #readFile()
+     */
     public static void loadConfig()
     {
         LOGGER.info(INSTANCE == null ? "Loading config..." : "Reloading config...");
@@ -60,6 +60,10 @@ public class FHConfig
         saveConfig();
     }
 
+    /**
+     * Reads {@link #CONFIG_FILE} and deserializes it into a {@link FHConfig} instance.
+     * @return the deserialized config.
+     */
     private static FHConfig readFile()
     {
         try (BufferedReader reader = Files.newBufferedReader(CONFIG_FILE)) {
@@ -70,6 +74,9 @@ public class FHConfig
         }
     }
 
+    /**
+     * Serializes the config and puts it in {@link #CONFIG_FILE}.
+     */
     public static void saveConfig()
     {
         LOGGER.info("Attempting to save config...");

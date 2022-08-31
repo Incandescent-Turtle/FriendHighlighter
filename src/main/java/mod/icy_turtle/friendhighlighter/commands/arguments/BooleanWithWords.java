@@ -15,9 +15,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * A custom argument that replaces <b>true</b> and <b>false</b> with custom strings. Still allows for 'true' and 'false.'
+ */
 public class BooleanWithWords implements ArgumentType<Boolean>
 {
-    private String trueStr, falseStr;
+    private final String trueStr, falseStr;
 
     public BooleanWithWords(String trueStr, String falseStr)
     {
@@ -29,9 +32,9 @@ public class BooleanWithWords implements ArgumentType<Boolean>
     public Boolean parse(StringReader reader) throws CommandSyntaxException
     {
         String arg = CommandUtils.readSpacelessArgument(reader);
-        if(arg.equals(trueStr) || arg.equals("true"))
+        if(arg.equals(trueStr) || arg.equalsIgnoreCase("true"))
             return true;
-        if(arg.equals(falseStr) || arg.equals("false"))
+        if(arg.equals(falseStr) || arg.equalsIgnoreCase("false"))
             return false;
         throw new SimpleCommandExceptionType(Text.literal("Invalid entry, please type either " + trueStr + " or " + falseStr)).createWithContext(reader);
     }

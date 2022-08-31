@@ -12,6 +12,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(WorldRenderer.class)
 public class WorldRendererMixin
 {
+
+	//	changes which color the entitiy should be highlighted in.
 	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getTeamColorValue()I"))
 	private int forceHighlightColor(Entity entity)
 	{
@@ -20,7 +22,7 @@ public class WorldRendererMixin
 			var friend = FHConfig.getInstance().getFriendFromEntity(entity);
 			if(friend != null && (entity instanceof PlayerEntity || !friend.onlyPlayers))
 			{
-				return FHConfig.getInstance().getColorOrDefault(entity);
+				return friend.color;
 			}
 		}
 		return entity.getTeamColorValue();

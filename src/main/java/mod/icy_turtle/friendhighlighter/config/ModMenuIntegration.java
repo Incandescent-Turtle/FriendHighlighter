@@ -13,7 +13,10 @@ import net.fabricmc.api.Environment;
 import net.minecraft.text.Text;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
+/**
+ * Integration for the ModMenu mod.
+ */
 
 @Environment(EnvType.CLIENT)
 public class ModMenuIntegration implements ModMenuApi
@@ -26,11 +29,13 @@ public class ModMenuIntegration implements ModMenuApi
 
             ConfigEntryBuilder entryBuilder = builder.entryBuilder();
             ConfigCategory friendsList = builder.getOrCreateCategory(Text.translatable("config.friendHighlighter.category.friendsList"));
+
+            //  adding the friends list
             friendsList.addEntry(new NestedListListEntry<HighlightedFriend, MultiElementListEntry<HighlightedFriend>>(
                     Text.literal("Friend's List"),
-                    mapToFriendsList(FHConfig.getInstance().friendsMap),
+                    mapToFriendsList(FHConfig.getInstance().friendsMap), // initial
                     true,
-                    Optional::empty,
+                    Optional::empty, //  tool tip
                     list -> FHConfig.getInstance().friendsMap = playerListToMap(list),
                     () -> mapToFriendsList(FHConfig.getInstance().friendsMap),
                     entryBuilder.getResetButtonKey(),
@@ -50,9 +55,11 @@ public class ModMenuIntegration implements ModMenuApi
                                                 .build(),
                                         entryBuilder.startBooleanToggle(Text.literal("Only Players"), friend.onlyPlayers)
                                                 .setSaveConsumer(onlyPlayers -> friend.onlyPlayers = onlyPlayers)
+                                                .setTooltip(Text.literal("Whether only player's with this name will get highlighted"))
                                                 .build(),
                                         entryBuilder.startBooleanToggle(Text.literal("Outline Friend"), friend.outlineFriend)
                                                 .setSaveConsumer(outlineFriend -> friend.outlineFriend = outlineFriend)
+                                                .setTooltipSupplier(() -> Optional.of(new Text[]{Text.literal("Whether " + (friend.onlyPlayers ? "players" : "entities") + " with this name will be highlighted in addition their name tag always showing and being coloured")}))
                                                 .build()),
                                 friend.name.equals(""));
                     }
@@ -66,17 +73,29 @@ public class ModMenuIntegration implements ModMenuApi
         };
     }
 
+    /**
+     * Converts the given list of {@link HighlightedFriend}s to a map with the friend's name as the key, and the {@link HighlightedFriend} object as the value.
+     * @param list the friends list to convert.
+     * @return the map with the friend's name as the key, and the {@link HighlightedFriend} object as the value.
+     */
     private static Map<String, HighlightedFriend> playerListToMap(List<HighlightedFriend> list)
     {
-        Map map = new LinkedHashMap();
+        Map<String, HighlightedFriend> map = new LinkedHashMap<>();
+        //  reverses as the list needs to have the newest entries at the top because of ClothConfig, and the map needs newest at the bottom because of the list command.
         Collections.reverse(list);
         list.forEach(p -> map.put(p.name, p));
         return map;
     }
 
+    /**
+     * Converts the given map to a list of friends.
+     * @param map a map with the friend's name as the key, and the {@link HighlightedFriend} object as the value.
+     * @return the map,
+     */
     private static List<HighlightedFriend> mapToFriendsList(Map<String, HighlightedFriend> map)
     {
-        var list = map.values().stream().collect(Collectors.toList());
+        var list = new ArrayList<>(map.values());
+        //  reverses as the list needs to have the newest entries at the top because of ClothConfig, and the map needs newest at the bottom because of the list command.
         Collections.reverse(list);
         return list;
     }

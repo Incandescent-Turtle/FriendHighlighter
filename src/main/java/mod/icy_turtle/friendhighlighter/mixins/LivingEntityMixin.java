@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin
 {
+    //  to override whether the entity should have a glowing outline.
     @Inject(method = "isGlowing()Z", at = @At("HEAD"), cancellable = true)
     private void forceHighlight(CallbackInfoReturnable<Boolean> cir)
     {
