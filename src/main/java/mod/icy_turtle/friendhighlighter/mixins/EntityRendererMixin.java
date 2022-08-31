@@ -20,7 +20,7 @@ public class EntityRendererMixin
         if(FriendHighlighter.isHighlighterEnabled)
         {
             var friend = FHConfig.getInstance().getFriendFromEntity(entity);
-            if(friend != null && (entity instanceof PlayerEntity || (!friend.onlyPlayers && entity.hasCustomName())))
+            if(friend != null && friend.isEnabled() && (entity instanceof PlayerEntity || (!friend.onlyPlayers && entity.hasCustomName())))
                 return true;
         }
         return renderer.hasLabel(entity);
@@ -33,7 +33,7 @@ public class EntityRendererMixin
         if(FriendHighlighter.isHighlighterEnabled)
         {
             var friend = FHConfig.getInstance().getFriendFromEntity(entity);
-            if(friend != null && (entity instanceof PlayerEntity || !friend.onlyPlayers))
+            if(FHConfig.getInstance().shouldHighlightEntity(entity))
             {
                 return FHUtils.getBoldAndColored(entity.getDisplayName().getString(), friend.color);
             }

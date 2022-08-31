@@ -2,6 +2,7 @@ package mod.icy_turtle.friendhighlighter.commands;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import mod.icy_turtle.friendhighlighter.FriendHighlighter;
 import mod.icy_turtle.friendhighlighter.commands.arguments.BooleanWithWords;
@@ -16,10 +17,7 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHudLine;
 import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
+import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
 import java.util.List;
@@ -61,10 +59,21 @@ public class CommandHandler
                                             .executes(this::addFriend))
                                     .executes(this::addFriend))))
 
+                //  enables a friend
+                .then(literal("enable")
+                        .then(createExistingFriendArgument()
+                                .executes(ctx -> toggleFriend(ctx, true))))
+
+                //  disables a friend
+                .then(literal("disable")
+                        .then(createExistingFriendArgument()
+                                .executes(ctx -> toggleFriend(ctx, false))))
+
                 //  removes a friend from the list
                 .then(literal("remove")
-                        .then(argument("friendName", createExistingFriendArgumentType())
+                        .then(createExistingFriendArgument()
                                 .executes(this::removeFriend)))
+
                 //  removes all friends from the list
                 .then(literal("clear")
                         .executes(this::clearFriendsList))
@@ -85,12 +94,11 @@ public class CommandHandler
         String color = context.getArgument("color", String.class);
         boolean onlyPlayer = CommandUtils.getArgumentFromContext(context, "onlyPlayers", true);
         boolean outlineFriend = CommandUtils.getArgumentFromContext(context, "outlineFriend", true);
-        friendsMap.put(friendName, new HighlightedFriend(friendName, FHUtils.hexToRGB(color), onlyPlayer, outlineFriend));
 
         MutableText txt = Text.literal("");
-        //  if a list exists, update the list
-        if(friendsMap.containsKey(friendName))
+        if(!friendsMap.containsKey(friendName))
         {
+            friendsMap.put(friendName, new HighlightedFriend(friendName, FHUtils.hexToRGB(color), onlyPlayer, outlineFriend));
             txt.append(friendName).append(" ")
                     .append(FHUtils.getPositiveMessage("ADDED"))
                     .append(" ")
@@ -98,11 +106,26 @@ public class CommandHandler
                     .append(" ")
                     .append(FHUtils.colorText(color, FHUtils.hexToRGB(color)));
         } else {
-            txt = FHUtils.getPositiveMessage("Friend Updated");
+            friendsMap.put(friendName, new HighlightedFriend(friendName, FHUtils.hexToRGB(color), onlyPlayer, outlineFriend).setEnabled(friendsMap.get(friendName).isEnabled()));
+            txt = FHUtils.getPositiveMessage(friendName + " Updated");
         }
+        //  if a list exists, update the list
         updateList();
         MinecraftClient.getInstance().player.sendMessage(txt, true);
         FHConfig.saveConfig();
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int toggleFriend(CommandContext<FabricClientCommandSource> context, boolean enabled)
+    {
+        String friendName = context.getArgument("friendName", String.class);
+        var friend = FHConfig.getInstance().friendsMap.get(friendName);
+        if(friend != null)
+        {
+            friend.setEnabled(enabled);
+            updateList();
+            MinecraftClient.getInstance().player.sendMessage(Text.literal( friendName).append(" ").append(FHUtils.getMessageWithConnotation("ENABLED", "DISABLED", enabled)), true);
+        }
         return Command.SINGLE_SUCCESS;
     }
 
@@ -189,7 +212,7 @@ public class CommandHandler
         while(itr.hasNext())
         {
             var friend = itr.next().getValue();
-            txt.append(FHUtils.createCopyableText(FHUtils.colorText(friend.name, friend.color), true))
+            txt.append(getToggleableName(friend))
                     .append(itr.hasNext() ? ", " : ".");
         }
         return txt;
@@ -210,12 +233,21 @@ public class CommandHandler
             var friend = itr.next().getValue();
             txt.append(createDeleteButton(friend))
                     .append(" ")
-                    .append(FHUtils.createCopyableText(FHUtils.getBoldAndColored(friend.name, friend.color), true))
+                    .append(getToggleableName(friend))
                     .append("\n")
                     .append(createFriendBooleans(friend))
                     .append(itr.hasNext() ? "\n" : "");
         }
         return txt;
+    }
+
+    private static Text getToggleableName(HighlightedFriend friend)
+    {
+        return FHUtils.colorText(friend.name, friend.color)
+                .styled(style -> style
+                        .withStrikethrough(!friend.isEnabled())
+                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, FHUtils.getMessageWithConnotation("ENABLED", "DISABLED", friend.isEnabled()).append(" | Click to ").append(FHUtils.getMessageWithConnotation("ENABLE", "DISABLE", !friend.isEnabled()))))
+                        .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, (!friend.isEnabled() ? "/fh enable" : "/fh disable") + " \""+friend.name+"\"")));
     }
 
     /**
@@ -265,11 +297,14 @@ public class CommandHandler
      * Creates a @{link StringListArgumentType} using the friends list to populate the list.
      * @return an argument that will supply and restrict input to the friends list at time of usage.
      */
-    private StringListArgumentType createExistingFriendArgumentType()
+    private RequiredArgumentBuilder<FabricClientCommandSource, String> createExistingFriendArgument()
     {
-        return new StringListArgumentType(
-                () -> FHConfig.getInstance().friendsMap.keySet().stream().toList(),
-                name -> Text.of(name + " cannot be removed as they are not on your friends list."),
-                List.of("icy_turtle", "Player123", "Xx_Notch_xX")).setSuggestWithQuotes(true);
+        return argument("friendName",
+                new StringListArgumentType(
+                    () -> FHConfig.getInstance().friendsMap.keySet().stream().toList(),
+                    name -> Text.of(name + " cannot be removed as they are not on your friends list."),
+                    List.of("icy_turtle", "Player123", "Xx_Notch_xX")
+                ).setSuggestWithQuotes(true)
+        );
     }
 }

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
@@ -38,6 +39,17 @@ public class FHConfig
     public @Nullable HighlightedFriend getFriendFromEntity(Entity entity)
     {
         return friendsMap.get(entity.getName().getString());
+    }
+
+    /**
+     * Whether this entity should be affected by either outlining or name rendering.
+     * @param entity the entity to test.
+     * @return whether this entity should be highlighted.
+     */
+    public boolean shouldHighlightEntity(Entity entity)
+    {
+        var friend = getFriendFromEntity(entity);
+        return friend != null && friend.isEnabled() && (entity instanceof PlayerEntity || !friend.onlyPlayers);
     }
 
     public static FHConfig getInstance()

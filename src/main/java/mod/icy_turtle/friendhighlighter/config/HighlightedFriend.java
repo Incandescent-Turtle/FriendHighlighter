@@ -19,6 +19,11 @@ public class HighlightedFriend
     public boolean outlineFriend;
 
     /**
+     * Whether this friend should be affected by the highlighter.
+     */
+    private boolean enabled;
+
+    /**
      * Creates a default friend with initialized values.
      * @see #HighlightedFriend(String, int)
      * @see #HighlightedFriend(String, int, boolean, boolean)
@@ -29,6 +34,7 @@ public class HighlightedFriend
         color = 0xFFFFFF;
         onlyPlayers = true;
         outlineFriend = true;
+        enabled = true;
     }
 
     /**
@@ -59,5 +65,17 @@ public class HighlightedFriend
         this.color = color;
         this.onlyPlayers = onlyPlayers;
         this.outlineFriend = outlineFriend;
+        this.enabled = true;
+    }
+
+    public HighlightedFriend setEnabled(boolean enabled)
+    {
+        this.enabled = enabled;
+        return this;
+    }
+
+    public boolean isEnabled()
+    {
+        return enabled;
     }
 }

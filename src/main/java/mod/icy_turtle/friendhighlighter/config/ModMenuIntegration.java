@@ -8,6 +8,7 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.gui.entries.MultiElementListEntry;
 import me.shedaniel.clothconfig2.gui.entries.NestedListListEntry;
 import mod.icy_turtle.friendhighlighter.FriendHighlighter;
+import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.text.Text;
@@ -43,6 +44,7 @@ public class ModMenuIntegration implements ModMenuApi
                     true,
                     (friendIn, nestedListListEntry) -> {
                         final var friend = friendIn == null ? new HighlightedFriend() : friendIn;
+                        final int charsPerLine = 20;
                         return new MultiElementListEntry<>(
                                 Text.literal(friend.name.equals("") ? "Friend" : friend.name), friend,
                                 Arrays.asList(
@@ -55,12 +57,16 @@ public class ModMenuIntegration implements ModMenuApi
                                                 .build(),
                                         entryBuilder.startBooleanToggle(Text.literal("Only Players"), friend.onlyPlayers)
                                                 .setSaveConsumer(onlyPlayers -> friend.onlyPlayers = onlyPlayers)
-                                                .setTooltip(Text.literal("Whether only player's with this name will get highlighted"))
+                                                .setTooltipSupplier(() -> Optional.of(new Text[]{Text.literal(FHUtils.splitEveryNCharacters("Whether only player's with this name will get highlighted.", charsPerLine))}))
                                                 .build(),
                                         entryBuilder.startBooleanToggle(Text.literal("Outline Friend"), friend.outlineFriend)
                                                 .setSaveConsumer(outlineFriend -> friend.outlineFriend = outlineFriend)
-                                                .setTooltipSupplier(() -> Optional.of(new Text[]{Text.literal("Whether " + (friend.onlyPlayers ? "players" : "entities") + " with this name will be highlighted in addition their name tag always showing and being coloured")}))
-                                                .build()),
+                                                .setTooltipSupplier(() -> Optional.of(new Text[]{Text.literal(FHUtils.splitEveryNCharacters("Whether " + (friend.onlyPlayers ? "players" : "entities") + " with this name will be outlined in addition their name tag always showing and being colored.", charsPerLine))}))
+                                                .build(),
+                                        entryBuilder.startBooleanToggle(Text.literal("Enabled"), friend.isEnabled())
+                                            .setSaveConsumer(enabled -> friend.setEnabled(enabled))
+                                            .setTooltipSupplier(() -> Optional.of(new Text[]{Text.literal(FHUtils.splitEveryNCharacters("Toggles whether this friend will currently be highlighted and have its name colored.", charsPerLine))}))
+                                            .build()),
                                 friend.name.equals(""));
                     }
             ));

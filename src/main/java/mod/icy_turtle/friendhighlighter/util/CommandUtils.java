@@ -69,7 +69,7 @@ public class CommandUtils
 
 	/**
 	 * Reads a string that can be quoted, or unquoted if it contains no spaces. It can be enclosed in either " or ', and can contain other quotation marks. <br>
-	 * <font color=red>Do not use if following arguments may contain quotes.</font>
+	 * <p style="color:red;">Do not use if following arguments may contain quotes.</p>
 	 * @param reader the reader.
 	 * @return the string, not including the closing quotes if applicable.
 	 * @throws CommandSyntaxException throws if it is not a proper quoted string enclosed by " " or ' '.

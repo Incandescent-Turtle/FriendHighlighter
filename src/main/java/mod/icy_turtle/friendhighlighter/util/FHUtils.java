@@ -26,7 +26,7 @@ public class FHUtils
 	 */
 	public static MutableText getBoldAndColored(String msg, int color)
 	{
-		return Text.literal(msg).styled(style -> style.withBold(true).withColor(color));
+		return Text.literal("").append(Text.literal(msg).styled(style -> style.withBold(true).withColor(color)));
 	}
 
 	/**
@@ -177,5 +177,45 @@ public class FHUtils
 	public static boolean isValidHexCode(String input)
 	{
 		return input.matches("^#([0-9A-Fa-f]{1,6})$");
+	}
+
+	public static String splitEveryNCharacters(String input, int charsPerLine)
+	{
+		var words = input.split(" ");
+		var output = "";
+		var line = "";
+		for(int i = 0; i < words.length; i++)
+		{
+			var word = words[i];
+			//	first word
+			if(i == 0)
+			{
+				line = word;
+			//	if word fits
+			} else if((line.length()) <= charsPerLine) {
+				line += " " + word;
+			// word doesn't fit
+			} else {
+				//	first line
+				if(output.length() == 0)
+					output = line;
+				else
+					output += "\n" + line;
+				line = word;
+			}
+			//	if this is the last word
+			if(words.length == i+1)
+			{
+				//	if this is the only word
+				if(output.length() == 0)
+				{
+					return word;
+				} else {
+					output += "\n"+line;
+					break;
+				}
+			}
+		}
+		return output;
 	}
 }

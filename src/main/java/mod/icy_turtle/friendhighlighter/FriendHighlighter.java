@@ -17,18 +17,17 @@ import org.slf4j.LoggerFactory;
 
 /*
     TODO:
+    add a config for the mod to disable and enable tooltips, choose if the action bar is used, etc.
     make it so mod integration and cloth config arent necessary
-    enable/disable friends - /fh enable and /fh disable - strikethrough
-    rename highlightPlayers to outlinePlayers
 
-
+    broken:
+    add drop down menu in config menu to add friends
     allow using color names in the GUI
         - custom dropdown
         - custom parsing
         - custom storage (as string)
-
-    broken:
-    add drop down menu in config menu to add friends
+        - color widget
+        - color picker?
 */
 
 /**
