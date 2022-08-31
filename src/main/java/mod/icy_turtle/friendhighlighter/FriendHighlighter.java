@@ -72,6 +72,7 @@ public class FriendHighlighter implements ClientModInitializer
                         : FHUtils.getNegativeMessage("DISABLED")
         );
         MinecraftClient.getInstance().player.sendMessage(text, true);
+        COMMAND_HANDLER.updateList();
         return Command.SINGLE_SUCCESS;
     }
 }

@@ -204,7 +204,7 @@ public class CommandHandler
 
     private static Text getSimpleList()
     {
-        MutableText txt = Text.literal("Friend's List: ");
+        MutableText txt = Text.literal("Friends List: ");
         var map = FHConfig.getInstance().friendsMap;
         if(map.size() == 0)
             return txt.append(" Empty.");
@@ -212,7 +212,7 @@ public class CommandHandler
         while(itr.hasNext())
         {
             var friend = itr.next().getValue();
-            txt.append(getToggleableName(friend))
+            txt.append(createToggleableName(friend))
                     .append(itr.hasNext() ? ", " : ".");
         }
         return txt;
@@ -222,26 +222,30 @@ public class CommandHandler
     {
         var map = FHConfig.getInstance().friendsMap;
         MutableText txt = Text.literal("");
-        txt.append(Text.literal("Friend's List").styled(style -> style.withUnderline(true)));
+        txt.append(Text.literal("\nFriends List").styled(style -> style.withUnderline(true)));
         if(map.size() == 0)
-            return txt.append(" - Empty");
+            return txt.append(" - Empty\n");
         else
-            txt.append("\n\n");
+            txt.append(" | ").append(createToggleButton()).append("\n\n");
         var itr = map.entrySet().iterator();
         while(itr.hasNext())
         {
             var friend = itr.next().getValue();
             txt.append(createDeleteButton(friend))
                     .append(" ")
-                    .append(getToggleableName(friend))
+                    .append(createToggleableName(friend))
                     .append("\n")
                     .append(createFriendBooleans(friend))
-                    .append(itr.hasNext() ? "\n" : "");
+//                    .append(itr.hasNext() ? "\n" : "");
+                    .append("\n");
         }
+        txt.append("______\n")
+                .append(createClearButton())
+                .append("\n");
         return txt;
     }
 
-    private static Text getToggleableName(HighlightedFriend friend)
+    private static Text createToggleableName(HighlightedFriend friend)
     {
         return FHUtils.colorText(friend.name, friend.color)
                 .styled(style -> style
@@ -261,6 +265,30 @@ public class CommandHandler
                 .withColor(Formatting.RED)
                 .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of("Remove Friend")))
                 .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh remove \"" + friend.name + "\"")));
+    }
+
+    /**
+     * Creates a clickable {@link Text} that toggles the friend highlighter.
+     * @return the toggle button.
+     */
+    private static Text createToggleButton()
+    {
+        return FHUtils.getMessageWithConnotation("Enabled", "Disabled", FriendHighlighter.isHighlighterEnabled)
+                .styled(style -> style
+                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to toggle.")))
+                        .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh toggle")));
+    }
+
+    /**
+     * Creates a clickable {@link Text} that suggests the clear command
+     * @return the clear button.
+     */
+    private static Text createClearButton()
+    {
+        return FHUtils.getNegativeMessage("Clear")
+                .styled(style -> style
+                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of("Clear Friends List")))
+                        .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/fh clear")));
     }
 
     /**
