@@ -8,14 +8,29 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
+/**
+ *  Is used to register and define the functionality of custom keybindings.
+ */
 public class KeyInputHandler
 {
-    public static final String KEY_CATEGORY_ICY_UTILITIES = "key.category.friendhighlighter.utils";
+    /**
+     * The language key for the key category for FriendHighlighter's keybindings.
+     */
+    private static final String KEY_CATEGORY_ICY_UTILITIES = "key.category.friendhighlighter.utils";
 
-    public static final String KEY_HIGHLIGHT_FRIENDS = "key.friendhighlighter.highlight";
+    /**
+     * The language key for the key to toggle the highlighting feature.
+     */
+    private static final String KEY_HIGHLIGHT_FRIENDS = "key.friendhighlighter.highlight";
 
-    public static KeyBinding highlightKey;
+    /**
+     * The {@link KeyBinding} to toggle the highlighting feature.
+     */
+    private static KeyBinding highlightKey;
 
+    /**
+     * Registers the mod's {@link KeyBinding}s.
+     */
     public static void register()
     {
         highlightKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(KEY_HIGHLIGHT_FRIENDS,
@@ -23,7 +38,6 @@ public class KeyInputHandler
                 GLFW.GLFW_KEY_H,
                 KEY_CATEGORY_ICY_UTILITIES
         ));
-
         ClientTickEvents.END_CLIENT_TICK.register(KeyInputHandler::registerKeyInputs);
     }
 

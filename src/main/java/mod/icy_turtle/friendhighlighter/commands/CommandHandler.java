@@ -6,8 +6,8 @@ import com.mojang.brigadier.context.CommandContext;
 import mod.icy_turtle.friendhighlighter.FriendHighlighter;
 import mod.icy_turtle.friendhighlighter.commands.arguments.BooleanWithWords;
 import mod.icy_turtle.friendhighlighter.commands.arguments.ColorArgumentType;
-import mod.icy_turtle.friendhighlighter.commands.arguments.ExistingFriendArgumentType;
 import mod.icy_turtle.friendhighlighter.commands.arguments.PossibleFriendNameArgumentType;
+import mod.icy_turtle.friendhighlighter.commands.arguments.StringListArgumentType;
 import mod.icy_turtle.friendhighlighter.config.FHConfig;
 import mod.icy_turtle.friendhighlighter.config.HighlightedFriend;
 import mod.icy_turtle.friendhighlighter.util.CommandUtils;
@@ -22,24 +22,36 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-
+/**
+ * Registers all the commands for the mods and defines their functionalities.
+ */
 public class CommandHandler
 {
+    /**
+     * The last list that was sent in the chat.
+     */
     private ChatHudLine<Text> lastList;
+    /**
+     * Whether an updated list should be a simple or advanced list if not specified.
+     */
     private boolean usingAdvancedList = false;
 
     public void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess)
     {
         dispatcher.register(literal("fh")
-
+                //  turns the highlighter on and off
                 .then(literal("toggle")
                     .executes(ctx -> FriendHighlighter.toggleHighlight()))
 
+                //  adds a friend to the list.
+                // boolean arguments are optional and default to false
                 .then(literal("add")
                     .then(argument("friendName", new PossibleFriendNameArgumentType())
                             .then(argument("color", new ColorArgumentType())
@@ -49,11 +61,14 @@ public class CommandHandler
                                             .executes(this::addFriend))
                                     .executes(this::addFriend))))
 
+                //  removes a friend from the list
                 .then(literal("remove")
-                        .then(argument("friendName", new ExistingFriendArgumentType())
+                        .then(argument("friendName", createExistingFriendArgumentType())
                                 .executes(this::removeFriend)))
+                //  removes all friends from the list
                 .then(literal("clear")
                         .executes(this::clearFriendsList))
+                //  sends a list containing the names of friends and (if advanced) other info about them
                 .then(literal("list")
                         .then(literal("advanced")
                                 .executes(context -> updateList(true, true)))
@@ -120,14 +135,21 @@ public class CommandHandler
     }
 
     /**
-     * used to update the current list - whether that be simple or advanced
-     * @return
+     * Used to update the current list - whether that be simple or advanced.
+     * @return {@link Command#SINGLE_SUCCESS}
+     * @see #updateList()
      */
     public int updateList()
     {
         return updateList(false, usingAdvancedList);
     }
 
+    /**
+     *
+     * @param sendNow whether the list should be sent now, or just inserted in the position of {@link #lastList}.
+     * @param advanced whether the list should be advanced or simple
+     * @return {@link Command#SINGLE_SUCCESS}
+     */
     private int updateList(boolean sendNow, boolean advanced)
     {
         usingAdvancedList = advanced;
@@ -196,36 +218,58 @@ public class CommandHandler
         return txt;
     }
 
+    /**
+     * Creates a character that deletes the given friend when clicked.
+     * @param friend the friend to delete when clicked.
+     * @return the delete button.
+     */
     private static Text createDeleteButton(HighlightedFriend friend)
     {
-        Text button = Text.literal("✖").styled(style -> style
+        return Text.literal("✖").styled(style -> style
                 .withColor(Formatting.RED)
                 .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of("Remove Friend")))
                 .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh remove \"" + friend.name + "\"")));
-        return button;
     }
 
+    /**
+     * Creates the text that displays the values of the boolean values of a {@link HighlightedFriend} with toggle capabilities.
+     * @param friend the friend of which the boolean refer.
+     * @return the booleans to display
+     */
     private static Text createFriendBooleans(HighlightedFriend friend)
     {
-        Function<Boolean, HoverEvent> hoverEvent = bool -> {
+        //  hover event to display "true" or "false" - mostly for colorblind people
+        Function<Boolean, HoverEvent> hoverEvent = enabled -> {
             var txt = Text.literal("");
-            if(bool)
-            {
-                txt.append(FHUtils.getPositiveMessage("True"));
-            } else {
-                txt.append(FHUtils.getNegativeMessage("False"));
-            }
+            txt.append(FHUtils.getMessageWithConnotation("TRUE", "FALSE", enabled));
             txt.append(" | Click to toggle");
             return new HoverEvent(HoverEvent.Action.SHOW_TEXT, txt);
         };
+        //  click event to send a chat message to toggle the booleans
+        BiFunction<Boolean, Boolean, ClickEvent> clickEvent = (onlyPlayers, outlineFriend) -> new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh add " + String.join(" ", "\"" + friend.name + "\"", FHUtils.rgbToHex(friend.color), ""+onlyPlayers, ""+outlineFriend));
+
         MutableText onlyPlayers = FHUtils.colorText("onlyPlayers", friend.onlyPlayers ? Formatting.GREEN : Formatting.RED)
                 .styled(style -> style
-                .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh add " + String.join(" ", "\"" + friend.name + "\"", FHUtils.rgbToHex(friend.color), ""+!friend.onlyPlayers, ""+friend.outlineFriend)))
+                .withClickEvent(clickEvent.apply(!friend.onlyPlayers, friend.outlineFriend))
                 .withHoverEvent(hoverEvent.apply(friend.onlyPlayers)));
+
         MutableText outlineFriend = FHUtils.colorText("outlineFriend", friend.outlineFriend ? Formatting.GREEN : Formatting.RED)
                 .styled(style -> style
-                .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh add " + String.join(" ", "\"" + friend.name + "\"", String.format("#%06x", friend.color & 0xFFFFFF), ""+friend.onlyPlayers, ""+!friend.outlineFriend)))
+                .withClickEvent(clickEvent.apply(friend.onlyPlayers, !friend.outlineFriend))
                 .withHoverEvent(hoverEvent.apply(friend.outlineFriend)));
+
         return Text.literal(" ↳ ").append(onlyPlayers).append(" | ").append(outlineFriend);
+    }
+
+    /**
+     * Creates a @{link StringListArgumentType} using the friends list to populate the list.
+     * @return an argument that will supply and restrict input to the friends list at time of usage.
+     */
+    private StringListArgumentType createExistingFriendArgumentType()
+    {
+        return new StringListArgumentType(
+                () -> FHConfig.getInstance().friendsMap.keySet().stream().toList(),
+                name -> Text.of(name + " cannot be removed as they are not on your friends list."),
+                List.of("icy_turtle", "Player123", "Xx_Notch_xX")).setSuggestWithQuotes(true);
     }
 }

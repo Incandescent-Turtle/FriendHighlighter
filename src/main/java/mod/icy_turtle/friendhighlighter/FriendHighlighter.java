@@ -18,13 +18,22 @@ import org.slf4j.LoggerFactory;
 /*
     TODO:
     make it so mod integration and cloth config arent necessary
+    enable/disable friends - /fh enable and /fh disable - strikethrough
+    rename highlightPlayers to outlinePlayers
 
-    split cmds into separate classes, see vanilla
-    enable/disable friends - /fh enable and /fh disable
 
-    borked
+    allow using color names in the GUI
+        - custom dropdown
+        - custom parsing
+        - custom storage (as string)
+
+    broken:
     add drop down menu in config menu to add friends
 */
+
+/**
+ * The central class for the mod, that allows access to mod-wide values and objects.
+ */
 public class FriendHighlighter implements ClientModInitializer
 {
     public static final String MOD_ID = "friendhighlighter";
@@ -32,7 +41,7 @@ public class FriendHighlighter implements ClientModInitializer
     public static final CommandHandler COMMAND_HANDLER = new CommandHandler();
 
     /**
-     *  whether friends should be highlighted/have their names be colored
+     *  Whether friends should be highlighted/have their names be colored.
      */
     public static boolean isHighlighterEnabled = false;
 
@@ -46,8 +55,9 @@ public class FriendHighlighter implements ClientModInitializer
     }
 
     /**
-     * turns the highlighter on or off. displays the new highlighter state on the players action bar
-     * @return {@link Command#SINGLE_SUCCESS} to signify a success when used in commands
+     * Turns the highlighter on or off. displays the new highlighter state on the players action bar.
+     * @return {@link Command#SINGLE_SUCCESS} to signify a success when used in commands.
+     * @see FriendHighlighter#isHighlighterEnabled
      */
     public static int toggleHighlight()
     {

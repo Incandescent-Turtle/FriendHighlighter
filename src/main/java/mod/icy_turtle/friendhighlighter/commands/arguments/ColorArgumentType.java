@@ -9,6 +9,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import mod.icy_turtle.friendhighlighter.util.CommandUtils;
 import mod.icy_turtle.friendhighlighter.util.FHColor;
+import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
 
@@ -16,6 +17,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * A custom color argument that allows selection from a
+ */
 public class ColorArgumentType implements ArgumentType<String>
 {
     private static final Collection<String> examples = List.of(
@@ -30,13 +34,14 @@ public class ColorArgumentType implements ArgumentType<String>
     public String parse(StringReader reader) throws CommandSyntaxException
     {
         String color = CommandUtils.readSpacelessArgument(reader);
-        String hexFromName = FHColor.getHex(color);
-        if(hexFromName != null)
-            return hexFromName;
+
+        //  if the name of a color, return the hex for that color
+        if(FHColor.COLOR_MAP.containsKey(color.toLowerCase()))
+            return FHColor.getHexFromColorName(color);
 
         if(color.charAt(0) == '#')
         {
-            if(color.matches("^#([0-9A-Fa-f]{1,6})$"))
+            if(FHUtils.isValidHexCode(color))
                 return color;
             else
                 throw new SimpleCommandExceptionType(Text.literal("Invalid color. Valid hex codes are 1-6 digits comprising of 0-9 and A-F.")).createWithContext(reader);

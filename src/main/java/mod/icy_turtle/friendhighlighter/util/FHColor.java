@@ -1,8 +1,13 @@
 package mod.icy_turtle.friendhighlighter.util;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A custom Color enum for this mod with common colours.
+ */
 public enum FHColor
 {
     RED("#e6194B"),
@@ -25,25 +30,38 @@ public enum FHColor
     WHITE("#ffffff"),
     BLACK("#000000");
 
+    /**
+     *  A map holding all mod colors, with the lower case color name as the key and the 6 digit hex code as the value (#XXXXXX).
+     */
     public static final Map<String, String> COLOR_MAP = new HashMap<>();
 
     static
     {
+        //  putting all the enum colors into the map
         for (FHColor c : FHColor.values())
         {
             COLOR_MAP.put(c.name().toLowerCase(), c.code);
         }
     }
 
-    final String code;
+    /**
+     * The hex code for this color.
+     */
+    private final String code;
 
     FHColor(String code)
     {
         this.code = code;
     }
 
-    public static String getHex(String colorName)
+    /**
+     * Gets the hex string for the given plaintext color name
+     * @param colorName not case-sensitive,name of the color. "green", "yellow", etc.
+     * @return returns the hex code if the color is in the map, or null if it isn't.
+     */
+    public static @Nullable String getHexFromColorName(String colorName)
     {
         return COLOR_MAP.get(colorName.toLowerCase());
     }
+
 }

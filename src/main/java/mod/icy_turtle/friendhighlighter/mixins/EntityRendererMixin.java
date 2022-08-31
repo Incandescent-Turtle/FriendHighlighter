@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin
 {
+    //  to override whether the entities name tag should be rendered.
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRenderer;hasLabel(Lnet/minecraft/entity/Entity;)Z"))
     public boolean renderNameTag(EntityRenderer renderer, Entity entity) {
         if(FriendHighlighter.isHighlighterEnabled)
@@ -25,6 +26,7 @@ public class EntityRendererMixin
         return renderer.hasLabel(entity);
     }
 
+    //  to override the color the name tag should be rendered in, using its display name
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getDisplayName()Lnet/minecraft/text/Text;"))
     private Text forceNameColor(Entity entity)
     {
@@ -33,7 +35,7 @@ public class EntityRendererMixin
             var friend = FHConfig.getInstance().getFriendFromEntity(entity);
             if(friend != null && (entity instanceof PlayerEntity || !friend.onlyPlayers))
             {
-                return FHUtils.getBoldAndColored(entity.getDisplayName().getString(), FHConfig.getInstance().getColorOrDefault(entity));
+                return FHUtils.getBoldAndColored(entity.getDisplayName().getString(), friend.color);
             }
         }
         return entity.getDisplayName();

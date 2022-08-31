@@ -8,6 +8,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import mod.icy_turtle.friendhighlighter.config.FHConfig;
 import mod.icy_turtle.friendhighlighter.util.CommandUtils;
+import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandSource;
 
@@ -16,6 +17,9 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+/**
+ * An argument that represents the name of a possible entity/player, allowing for quotes, with suggestions of players, friends, and closeby entities.
+ */
 public class PossibleFriendNameArgumentType implements ArgumentType<String>
 {
     private static final Collection<String> examples = List.of(
@@ -27,27 +31,28 @@ public class PossibleFriendNameArgumentType implements ArgumentType<String>
     @Override
     public String parse(StringReader reader) throws CommandSyntaxException
     {
-        return CommandUtils.readQuotedString(reader);
+        return CommandUtils.readQuotedOrUnquotedString(reader);
     }
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder)
     {
-        List<String> nameList = MinecraftClient.getInstance().world.getPlayers().stream().map(p -> p.getDisplayName().getString()).collect(
+        //  adding player names
+        List<String> nameList = MinecraftClient.getInstance().world.getPlayers().stream().map(p -> p.getName().getString()).collect(
                 Collectors.toList());
+        //  removes the player from their own list
+        nameList.remove(MinecraftClient.getInstance().player.getName().getString());
 
+        //  adding close/loaded entities
         for (var entity : MinecraftClient.getInstance().world.getEntities())
         {
             if(entity.hasCustomName())
-                nameList.add(entity.getDisplayName().getString());
+                nameList.add(entity.getName().getString());
         }
+
         //  add already existing friends for editing
         nameList.addAll(FHConfig.getInstance().friendsMap.keySet());
-
-        //  removes the player from their own list
-        nameList.remove(MinecraftClient.getInstance().player.getDisplayName().getString());
-
-        nameList = nameList.stream().map(name -> "\""+name+"\"").collect(Collectors.toList());
+        nameList = FHUtils.surroundListItemsWithQuotes(nameList);
         return CommandSource.suggestMatching(nameList, builder);
     }
 
