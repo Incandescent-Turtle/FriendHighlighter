@@ -1,7 +1,9 @@
 package mod.icy_turtle.friendhighlighter;
 
 import com.mojang.brigadier.Command;
+import com.sun.jna.platform.win32.Variant;
 import mod.icy_turtle.friendhighlighter.commands.CommandHandler;
+import mod.icy_turtle.friendhighlighter.config.FHSettings;
 import mod.icy_turtle.friendhighlighter.event.KeyInputHandler;
 import mod.icy_turtle.friendhighlighter.event.PlayerTickHandler;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
@@ -9,6 +11,8 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.gui.screen.SleepingChatScreen;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.slf4j.Logger;
@@ -17,17 +21,19 @@ import org.slf4j.LoggerFactory;
 
 /*
     TODO:
-    add a config for the mod to disable and enable tooltips, choose if the action bar is used, etc.
-    make it so mod integration and cloth config arent necessary
+        chat message wont be sent when sleeping, need to add hook for that.
+        add option to disable tooltips
+        make tooltips smaller
+        make it so mod integration and cloth config arent necessary
 
-    broken:
-    add drop down menu in config menu to add friends
-    allow using color names in the GUI
-        - custom dropdown
-        - custom parsing
-        - custom storage (as string)
-        - color widget
-        - color picker?
+        broken:
+        add drop down menu in config menu to add friends
+        allow using color names in the GUI
+            - custom dropdown
+            - custom parsing
+            - custom storage (as string)
+            - color widget
+            - color picker?
 */
 
 /**
@@ -44,6 +50,10 @@ public class FriendHighlighter implements ClientModInitializer
      */
     public static boolean isHighlighterEnabled = false;
 
+    /**
+     * The time stamp of when a chat message was sent with enter (closing the chat window, not while sleeping).
+     */
+    public static long enterHitAt = 0;
 
     @Override
     public void onInitializeClient()
@@ -51,6 +61,38 @@ public class FriendHighlighter implements ClientModInitializer
         KeyInputHandler.register();
         ClientTickEvents.START_CLIENT_TICK.register(new PlayerTickHandler());
         ClientCommandRegistrationCallback.EVENT.register(COMMAND_HANDLER::registerCommands);
+    }
+
+    /**
+     * Sends a message via either chat or the action bar, depending on {@link FHSettings#messageDisplayMethod}.
+     * @param message the message to send
+     */
+    public static void sendMessage(Text message)
+    {
+        var player = MinecraftClient.getInstance().player;
+        var screen = MinecraftClient.getInstance().currentScreen;
+        /*
+                    TODO:
+                            wont send chat messages when sleeping at all
+                            needs enter hook added there too
+         */
+        final boolean shouldSendChatMessage = !(screen instanceof SleepingChatScreen)
+                && (!(screen instanceof ChatScreen) || (System.currentTimeMillis()-enterHitAt)<1000);
+
+        switch(FHSettings.getSettings().messageDisplayMethod)
+        {
+            case ACTION_BAR -> player.sendMessage(message, true);
+            case CHAT -> {
+                if(shouldSendChatMessage)
+                    player.sendMessage(message, false);
+            }
+
+            case BOTH -> {
+                player.sendMessage(message, true);
+                if(shouldSendChatMessage)
+                    player.sendMessage(message, false);
+            }
+        }
     }
 
     /**
@@ -71,7 +113,7 @@ public class FriendHighlighter implements ClientModInitializer
                         ? FHUtils.getPositiveMessage("ENABLED")
                         : FHUtils.getNegativeMessage("DISABLED")
         );
-        MinecraftClient.getInstance().player.sendMessage(text, true);
+        FriendHighlighter.sendMessage(text);
         COMMAND_HANDLER.updateList();
         return Command.SINGLE_SUCCESS;
     }

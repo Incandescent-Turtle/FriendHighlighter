@@ -10,12 +10,14 @@ import mod.icy_turtle.friendhighlighter.commands.arguments.ColorArgumentType;
 import mod.icy_turtle.friendhighlighter.commands.arguments.PossibleFriendNameArgumentType;
 import mod.icy_turtle.friendhighlighter.commands.arguments.StringListArgumentType;
 import mod.icy_turtle.friendhighlighter.config.FHConfig;
+import mod.icy_turtle.friendhighlighter.config.FriendsListHandler;
 import mod.icy_turtle.friendhighlighter.config.HighlightedFriend;
 import mod.icy_turtle.friendhighlighter.util.CommandUtils;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHudLine;
+import net.minecraft.client.gui.hud.MessageIndicator;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
@@ -35,7 +37,7 @@ public class CommandHandler
     /**
      * The last list that was sent in the chat.
      */
-    private ChatHudLine<Text> lastList;
+    private ChatHudLine lastList;
     /**
      * Whether an updated list should be a simple or advanced list if not specified.
      */
@@ -88,7 +90,7 @@ public class CommandHandler
 
     private int addFriend(CommandContext<FabricClientCommandSource> context)
     {
-        var friendsMap = FHConfig.getInstance().friendsMap;
+        var friendsMap = FriendsListHandler.getFriendsMap();
 
         String friendName = context.getArgument("friendName", String.class);
         String color = context.getArgument("color", String.class);
@@ -111,7 +113,7 @@ public class CommandHandler
         }
         //  if a list exists, update the list
         updateList();
-        MinecraftClient.getInstance().player.sendMessage(txt, true);
+        FriendHighlighter.sendMessage(txt);
         FHConfig.saveConfig();
         return Command.SINGLE_SUCCESS;
     }
@@ -119,19 +121,22 @@ public class CommandHandler
     private int toggleFriend(CommandContext<FabricClientCommandSource> context, boolean enabled)
     {
         String friendName = context.getArgument("friendName", String.class);
-        var friend = FHConfig.getInstance().friendsMap.get(friendName);
+        var friend = FriendsListHandler.getFriendsMap().get(friendName);
         if(friend != null)
         {
             friend.setEnabled(enabled);
             updateList();
-            MinecraftClient.getInstance().player.sendMessage(Text.literal( friendName).append(" ").append(FHUtils.getMessageWithConnotation("ENABLED", "DISABLED", enabled)), true);
+            FriendHighlighter.sendMessage(Text.literal(friendName)
+                            .append(" ")
+                            .append(FHUtils.getMessageWithConnotation("ENABLED", "DISABLED", enabled))
+            );
         }
         return Command.SINGLE_SUCCESS;
     }
 
     private int removeFriend(CommandContext<FabricClientCommandSource> context)
     {
-        var friendsMap = FHConfig.getInstance().friendsMap;
+        var friendsMap = FriendsListHandler.getFriendsMap();
         String friendName = context.getArgument("friendName", String.class);
         friendsMap.remove(friendName);
 
@@ -142,16 +147,16 @@ public class CommandHandler
             .append(" ")
             .append(Text.of("from friends list"));
         updateList();
-        MinecraftClient.getInstance().player.sendMessage(txt, true);
+        FriendHighlighter.sendMessage(txt);
         FHConfig.saveConfig();
         return Command.SINGLE_SUCCESS;
     }
 
     private int clearFriendsList(CommandContext<FabricClientCommandSource> context)
     {
-        var friendsMap = FHConfig.getInstance().friendsMap;
+        var friendsMap = FriendsListHandler.getFriendsMap();
         friendsMap.clear();
-        MinecraftClient.getInstance().player.sendMessage(FHUtils.getNegativeMessage("Cleared Friends List"), true);
+        FriendHighlighter.sendMessage(FHUtils.getNegativeMessage("Cleared Friends List"));
         updateList();
         FHConfig.saveConfig();
         return Command.SINGLE_SUCCESS;
@@ -180,7 +185,6 @@ public class CommandHandler
         var hud = MinecraftClient.getInstance().inGameHud;
         var chatHud = hud.getChatHud();
         var messages = chatHud.messages;
-
         if(!sendNow && (lastList == null || !messages.contains(lastList)))
             return 1;
 
@@ -191,8 +195,8 @@ public class CommandHandler
 
         messages.remove(lastList);
 
-        int creationTicks = (sendNow) ? hud.getTicks() : lastList.getCreationTick();
-        lastList = new ChatHudLine<>(creationTicks, advanced ? getAdvancedList() : getSimpleList(), 0);
+        int creationTicks = (sendNow) ? hud.getTicks() : lastList.creationTick();
+        lastList = new ChatHudLine(creationTicks, advanced ? getAdvancedList() : getSimpleList(), null, MessageIndicator.system());
         messages.add(index, lastList);
 
         // reloading chat and keeping scroll place in chat
@@ -205,7 +209,7 @@ public class CommandHandler
     private static Text getSimpleList()
     {
         MutableText txt = Text.literal("Friends List: ");
-        var map = FHConfig.getInstance().friendsMap;
+        var map = FriendsListHandler.getFriendsMap();
         if(map.size() == 0)
             return txt.append(" Empty.");
         var itr = map.entrySet().iterator();
@@ -220,7 +224,7 @@ public class CommandHandler
 
     private static Text getAdvancedList()
     {
-        var map = FHConfig.getInstance().friendsMap;
+        var map = FriendsListHandler.getFriendsMap();
         MutableText txt = Text.literal("");
         txt.append(Text.literal("\nFriends List").styled(style -> style.withUnderline(true)));
         if(map.size() == 0)
@@ -307,7 +311,6 @@ public class CommandHandler
         };
         //  click event to send a chat message to toggle the booleans
         BiFunction<Boolean, Boolean, ClickEvent> clickEvent = (onlyPlayers, outlineFriend) -> new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh add " + String.join(" ", "\"" + friend.name + "\"", FHUtils.rgbToHex(friend.color), ""+onlyPlayers, ""+outlineFriend));
-
         MutableText onlyPlayers = FHUtils.colorText("onlyPlayers", friend.onlyPlayers ? Formatting.GREEN : Formatting.RED)
                 .styled(style -> style
                 .withClickEvent(clickEvent.apply(!friend.onlyPlayers, friend.outlineFriend))
@@ -329,7 +332,7 @@ public class CommandHandler
     {
         return argument("friendName",
                 new StringListArgumentType(
-                    () -> FHConfig.getInstance().friendsMap.keySet().stream().toList(),
+                    () -> FriendsListHandler.getFriendsMap().keySet().stream().toList(),
                     name -> Text.of(name + " cannot be removed as they are not on your friends list."),
                     List.of("icy_turtle", "Player123", "Xx_Notch_xX")
                 ).setSuggestWithQuotes(true)

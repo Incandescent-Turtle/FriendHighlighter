@@ -2,6 +2,7 @@ package mod.icy_turtle.friendhighlighter.mixins;
 
 import mod.icy_turtle.friendhighlighter.FriendHighlighter;
 import mod.icy_turtle.friendhighlighter.config.FHConfig;
+import mod.icy_turtle.friendhighlighter.config.FriendsListHandler;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
@@ -19,7 +20,7 @@ public class EntityRendererMixin
     public boolean renderNameTag(EntityRenderer renderer, Entity entity) {
         if(FriendHighlighter.isHighlighterEnabled)
         {
-            var friend = FHConfig.getInstance().getFriendFromEntity(entity);
+            var friend = FriendsListHandler.getFriendFromEntity(entity);
             if(friend != null && friend.isEnabled() && (entity instanceof PlayerEntity || (!friend.onlyPlayers && entity.hasCustomName())))
                 return true;
         }
@@ -32,8 +33,8 @@ public class EntityRendererMixin
     {
         if(FriendHighlighter.isHighlighterEnabled)
         {
-            var friend = FHConfig.getInstance().getFriendFromEntity(entity);
-            if(FHConfig.getInstance().shouldHighlightEntity(entity))
+            var friend = FriendsListHandler.getFriendFromEntity(entity);
+            if(FriendsListHandler.shouldHighlightEntity(entity))
             {
                 return FHUtils.getBoldAndColored(entity.getDisplayName().getString(), friend.color);
             }

@@ -1,7 +1,7 @@
 package mod.icy_turtle.friendhighlighter.mixins;
 
 import mod.icy_turtle.friendhighlighter.FriendHighlighter;
-import mod.icy_turtle.friendhighlighter.config.FHConfig;
+import mod.icy_turtle.friendhighlighter.config.FriendsListHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,8 +19,8 @@ public abstract class LivingEntityMixin
         if(FriendHighlighter.isHighlighterEnabled)
         {
             Entity entity = (Entity)(Object)this;
-            var friend = FHConfig.getInstance().getFriendFromEntity(entity);
-            if(FHConfig.getInstance().shouldHighlightEntity(entity) && friend.outlineFriend)
+            var friend = FriendsListHandler.getFriendFromEntity(entity);
+            if(FriendsListHandler.shouldHighlightEntity(entity) && friend.outlineFriend)
             {
                 cir.setReturnValue(true);
             }

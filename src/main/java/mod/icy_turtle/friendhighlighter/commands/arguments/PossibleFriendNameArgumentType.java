@@ -6,7 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import mod.icy_turtle.friendhighlighter.config.FHConfig;
+import mod.icy_turtle.friendhighlighter.config.FriendsListHandler;
 import mod.icy_turtle.friendhighlighter.util.CommandUtils;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.minecraft.client.MinecraftClient;
@@ -51,7 +51,7 @@ public class PossibleFriendNameArgumentType implements ArgumentType<String>
         }
 
         //  add already existing friends for editing
-        nameList.addAll(FHConfig.getInstance().friendsMap.keySet());
+        nameList.addAll(FriendsListHandler.getFriendsMap().keySet());
         nameList = FHUtils.surroundListItemsWithQuotes(nameList);
         return CommandSource.suggestMatching(nameList, builder);
     }

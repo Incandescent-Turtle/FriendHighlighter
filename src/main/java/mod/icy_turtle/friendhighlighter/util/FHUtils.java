@@ -5,6 +5,8 @@ import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -217,5 +219,20 @@ public class FHUtils
 			}
 		}
 		return output;
+	}
+
+	/**
+	 * Capitalizes the first character of each word passed in. All other chars are lowercase.
+	 * @param input the string input, words separated by spaces.
+	 * @return the string all lowercase except for the first chars.
+	 */
+	public static String capitalizeAll(String input)
+	{
+		var words = input.split("\\s");
+		for(int i = 0; i < words.length; i++)
+		{
+			words[i] = StringUtils.capitalize(words[i].toLowerCase());
+		}
+		return String.join(" ", words);
 	}
 }

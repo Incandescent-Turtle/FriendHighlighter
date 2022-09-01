@@ -2,6 +2,7 @@ package mod.icy_turtle.friendhighlighter.config;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
+import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -18,7 +19,6 @@ import java.util.*;
 /**
  * Integration for the ModMenu mod.
  */
-
 @Environment(EnvType.CLIENT)
 public class ModMenuIntegration implements ModMenuApi
 {
@@ -29,47 +29,12 @@ public class ModMenuIntegration implements ModMenuApi
             ConfigBuilder builder = ConfigBuilder.create().setTitle(Text.translatable("config.friendHighlighter.title"));
 
             ConfigEntryBuilder entryBuilder = builder.entryBuilder();
-            ConfigCategory friendsList = builder.getOrCreateCategory(Text.translatable("config.friendHighlighter.category.friendsList"));
 
-            //  adding the friends list
-            friendsList.addEntry(new NestedListListEntry<HighlightedFriend, MultiElementListEntry<HighlightedFriend>>(
-                    Text.literal("Friend's List"),
-                    mapToFriendsList(FHConfig.getInstance().friendsMap), // initial
-                    true,
-                    Optional::empty, //  tool tip
-                    list -> FHConfig.getInstance().friendsMap = playerListToMap(list),
-                    () -> mapToFriendsList(FHConfig.getInstance().friendsMap),
-                    entryBuilder.getResetButtonKey(),
-                    true,
-                    true,
-                    (friendIn, nestedListListEntry) -> {
-                        final var friend = friendIn == null ? new HighlightedFriend() : friendIn;
-                        final int charsPerLine = 20;
-                        return new MultiElementListEntry<>(
-                                Text.literal(friend.name.equals("") ? "Friend" : friend.name), friend,
-                                Arrays.asList(
-                                        entryBuilder.startTextField(Text.literal("Name"), friend.name)
-                                                .setSaveConsumer(str -> friend.name = str)
-                                                .setErrorSupplier(str -> str.equals("") ? Optional.of(Text.of("Friend Name cannot be blank.")) : Optional.empty())
-                                                .build(),
-                                        entryBuilder.startColorField(Text.literal("Color"), friend.color)
-                                                .setSaveConsumer(color -> friend.color = color)
-                                                .build(),
-                                        entryBuilder.startBooleanToggle(Text.literal("Only Players"), friend.onlyPlayers)
-                                                .setSaveConsumer(onlyPlayers -> friend.onlyPlayers = onlyPlayers)
-                                                .setTooltipSupplier(() -> Optional.of(new Text[]{Text.literal(FHUtils.splitEveryNCharacters("Whether only player's with this name will get highlighted.", charsPerLine))}))
-                                                .build(),
-                                        entryBuilder.startBooleanToggle(Text.literal("Outline Friend"), friend.outlineFriend)
-                                                .setSaveConsumer(outlineFriend -> friend.outlineFriend = outlineFriend)
-                                                .setTooltipSupplier(() -> Optional.of(new Text[]{Text.literal(FHUtils.splitEveryNCharacters("Whether " + (friend.onlyPlayers ? "players" : "entities") + " with this name will be outlined in addition their name tag always showing and being colored.", charsPerLine))}))
-                                                .build(),
-                                        entryBuilder.startBooleanToggle(Text.literal("Enabled"), friend.isEnabled())
-                                            .setSaveConsumer(enabled -> friend.setEnabled(enabled))
-                                            .setTooltipSupplier(() -> Optional.of(new Text[]{Text.literal(FHUtils.splitEveryNCharacters("Toggles whether this friend will currently be highlighted and have its name colored.", charsPerLine))}))
-                                            .build()),
-                                friend.name.equals(""));
-                    }
-            ));
+            ConfigCategory friendsList = builder.getOrCreateCategory(Text.translatable("config.friendHighlighter.category.friendsList"));
+            friendsList.addEntry(createFriendsList(entryBuilder));
+
+            ConfigCategory modConfig = builder.getOrCreateCategory(Text.literal("Mod Settings"));
+            createModConfig(modConfig, entryBuilder);
             builder.setSavingRunnable(()->{
                 FHConfig.saveConfig();
                 FHConfig.loadConfig();
@@ -80,13 +45,76 @@ public class ModMenuIntegration implements ModMenuApi
     }
 
     /**
+     * Create the list entry for configuring the friends list.
+     * @param entryBuilder the entry builder.
+     * @return returns the {@link NestedListListEntry}.
+     */
+    private AbstractConfigListEntry createFriendsList(ConfigEntryBuilder entryBuilder)
+    {
+        return new NestedListListEntry<HighlightedFriend, MultiElementListEntry<HighlightedFriend>>(
+                Text.literal("Friend's List"),
+                mapToFriendsList(FriendsListHandler.getFriendsMap()), // initial
+                true,
+                Optional::empty, //  tool tip
+                list -> FriendsListHandler.setFriendsMap(playerListToMap(list)),
+                () -> mapToFriendsList(FriendsListHandler.getFriendsMap()),
+                entryBuilder.getResetButtonKey(),
+                true,
+                true,
+                (friendIn, nestedListListEntry) -> {
+                    final var friend = friendIn == null ? new HighlightedFriend() : friendIn;
+                    final int charsPerLine = 20;
+                    return new MultiElementListEntry<>(
+                            Text.literal(friend.name.equals("") ? "Friend" : friend.name), friend,
+                            Arrays.asList(
+                                    entryBuilder.startTextField(Text.literal("Name"), friend.name)
+                                            .setSaveConsumer(str -> friend.name = str)
+                                            .setErrorSupplier(str -> str.equals("") ? Optional.of(Text.of("Friend Name cannot be blank.")) : Optional.empty())
+                                            .build(),
+                                    entryBuilder.startColorField(Text.literal("Color"), friend.color)
+                                            .setSaveConsumer(color -> friend.color = color)
+                                            .build(),
+                                    entryBuilder.startBooleanToggle(Text.literal("Only Players"), friend.onlyPlayers)
+                                            .setSaveConsumer(onlyPlayers -> friend.onlyPlayers = onlyPlayers)
+                                            .setTooltipSupplier(() -> Optional.of(new Text[]{Text.literal(FHUtils.splitEveryNCharacters("Whether only player's with this name will get highlighted.", charsPerLine))}))
+                                            .build(),
+                                    entryBuilder.startBooleanToggle(Text.literal("Outline Friend"), friend.outlineFriend)
+                                            .setSaveConsumer(outlineFriend -> friend.outlineFriend = outlineFriend)
+                                            .setTooltipSupplier(() -> Optional.of(new Text[]{Text.literal(FHUtils.splitEveryNCharacters("Whether " + (friend.onlyPlayers ? "players" : "entities") + " with this name will be outlined in addition their name tag always showing and being colored.", charsPerLine))}))
+                                            .build(),
+                                    entryBuilder.startBooleanToggle(Text.literal("Enabled"), friend.isEnabled())
+                                            .setSaveConsumer(friend::setEnabled)
+                                            .setTooltipSupplier(() -> Optional.of(new Text[]{Text.literal(FHUtils.splitEveryNCharacters("Toggles whether this friend will currently be highlighted and have its name colored.", charsPerLine))}))
+                                            .build()),
+                            friend.name.equals(""));
+                }
+        );
+    }
+
+    /**
+     * Populates the modConfig category to hold config settings for the mod.
+     * @param modConfig the config category.
+     * @param entryBuilder the entry builder.
+     */
+    private void createModConfig(ConfigCategory modConfig, ConfigEntryBuilder entryBuilder)
+    {
+        var settings = FHSettings.getSettings();
+        modConfig.addEntry(
+                entryBuilder.startEnumSelector(Text.literal("Message Display Method"), FHSettings.MessageDisplayMethod.class, FHSettings.getSettings().messageDisplayMethod)
+                        .setSaveConsumer(displayMethod -> settings.messageDisplayMethod = displayMethod)
+                        .setEnumNameProvider(displayMethod ->  Text.literal(FHUtils.capitalizeAll(displayMethod.name().replaceAll("_", " "))))
+                        .build()
+        );
+    }
+
+    /**
      * Converts the given list of {@link HighlightedFriend}s to a map with the friend's name as the key, and the {@link HighlightedFriend} object as the value.
      * @param list the friends list to convert.
      * @return the map with the friend's name as the key, and the {@link HighlightedFriend} object as the value.
      */
-    private static Map<String, HighlightedFriend> playerListToMap(List<HighlightedFriend> list)
+    private static LinkedHashMap<String, HighlightedFriend> playerListToMap(List<HighlightedFriend> list)
     {
-        Map<String, HighlightedFriend> map = new LinkedHashMap<>();
+        LinkedHashMap<String, HighlightedFriend> map = new LinkedHashMap<>();
         //  reverses as the list needs to have the newest entries at the top because of ClothConfig, and the map needs newest at the bottom because of the list command.
         Collections.reverse(list);
         list.forEach(p -> map.put(p.name, p));
@@ -98,7 +126,7 @@ public class ModMenuIntegration implements ModMenuApi
      * @param map a map with the friend's name as the key, and the {@link HighlightedFriend} object as the value.
      * @return the map,
      */
-    private static List<HighlightedFriend> mapToFriendsList(Map<String, HighlightedFriend> map)
+    private static List<HighlightedFriend> mapToFriendsList(LinkedHashMap<String, HighlightedFriend> map)
     {
         var list = new ArrayList<>(map.values());
         //  reverses as the list needs to have the newest entries at the top because of ClothConfig, and the map needs newest at the bottom because of the list command.

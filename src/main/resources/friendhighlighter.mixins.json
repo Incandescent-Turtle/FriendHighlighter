@@ -6,7 +6,8 @@
   "client": [
     "LivingEntityMixin",
     "EntityRendererMixin",
-    "WorldRendererMixin"
+    "WorldRendererMixin",
+    "ChatScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -3,17 +3,12 @@ package mod.icy_turtle.friendhighlighter.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import static mod.icy_turtle.friendhighlighter.FriendHighlighter.LOGGER;
 
@@ -22,64 +17,46 @@ import static mod.icy_turtle.friendhighlighter.FriendHighlighter.LOGGER;
  */
 public class FHConfig
 {
-    private static final Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("FriendHighlighter.json");
+    private static final Path SETTINGS_FILE = FabricLoader.getInstance().getConfigDir().resolve("FriendHighlighterSettings.json");
+    private static final Path FRIENDS_LIST_FILE = FabricLoader.getInstance().getConfigDir().resolve("FriendHighlighterFriendList.json");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static FHConfig INSTANCE;
 
     /**
-     * The map to be used throughout the mod to check which names are on the friends list.
+     *  Used to access the friends map.
      */
-    public Map<String, HighlightedFriend> friendsMap = new LinkedHashMap<>();
-
+    private static FriendsListHandler friendsListHandler;
     /**
-     * Returns the instance of {@link HighlightedFriend} associated to this entity via {@link Entity#getName()}.
-     * @param entity the entity to use to get the friend.
-     * @return the associated {@link HighlightedFriend} instance, or null if there isn't one.
+     *  Allows access to mod settings.
      */
-    public @Nullable HighlightedFriend getFriendFromEntity(Entity entity)
-    {
-        return friendsMap.get(entity.getName().getString());
-    }
+    private static FHSettings settings;
 
     /**
-     * Whether this entity should be affected by either outlining or name rendering.
-     * @param entity the entity to test.
-     * @return whether this entity should be highlighted.
-     */
-    public boolean shouldHighlightEntity(Entity entity)
-    {
-        var friend = getFriendFromEntity(entity);
-        return friend != null && friend.isEnabled() && (entity instanceof PlayerEntity || !friend.onlyPlayers);
-    }
-
-    public static FHConfig getInstance()
-    {
-        if (INSTANCE == null)
-            loadConfig();
-        return INSTANCE;
-    }
-
-    /**
-     * Loads the config from {@link #CONFIG_FILE} into {@link #INSTANCE}.
-     * @see #readFile()
+     * Loads the config from {@link #SETTINGS_FILE} and {@link #FRIENDS_LIST_FILE} into {@link #settings} and {@link #friendsListHandler}.
+     * @see #readFile(Class, Path, Object)
      */
     public static void loadConfig()
     {
-        LOGGER.info(INSTANCE == null ? "Loading config..." : "Reloading config...");
-        INSTANCE = readFile();
-        if (INSTANCE == null)
-            INSTANCE = new FHConfig();
+        LOGGER.info("Loading config...");
+        friendsListHandler = readFile(FriendsListHandler.class, FRIENDS_LIST_FILE, new FriendsListHandler());
+        settings = readFile(FHSettings.class, SETTINGS_FILE, new FHSettings());
         saveConfig();
     }
 
     /**
-     * Reads {@link #CONFIG_FILE} and deserializes it into a {@link FHConfig} instance.
+     * Reads {@link #SETTINGS_FILE} and deserializes it into a {@link FHConfig} instance.
+     * @param clazz the class to deserialize.
+     * @param file the target
+     * @param defaultValue
      * @return the deserialized config.
+     * @param <T> the type of object to deserialize.
      */
-    private static FHConfig readFile()
+    private static <T> T readFile(Class<T> clazz, Path file, T defaultValue)
     {
-        try (BufferedReader reader = Files.newBufferedReader(CONFIG_FILE)) {
-            return GSON.fromJson(reader, FHConfig.class);
+        try (BufferedReader reader = Files.newBufferedReader(file)) {
+            var deserialized = GSON.fromJson(reader, clazz);
+            if(deserialized == null)
+                return defaultValue;
+            return deserialized;
         } catch (IOException ex) {
             ex.printStackTrace();
             return null;
@@ -87,21 +64,32 @@ public class FHConfig
     }
 
     /**
-     * Serializes the config and puts it in {@link #CONFIG_FILE}.
+     * Serializes the config and puts it in {@link #SETTINGS_FILE}.
      */
     public static void saveConfig()
     {
         LOGGER.info("Attempting to save config...");
-        if(INSTANCE != null)
+        try(BufferedWriter settingsWriter = Files.newBufferedWriter(SETTINGS_FILE); BufferedWriter friendsListWriter = Files.newBufferedWriter(FRIENDS_LIST_FILE))
         {
-            try(BufferedWriter writer = Files.newBufferedWriter(CONFIG_FILE)) {
-                GSON.toJson(INSTANCE, writer);
-                LOGGER.info("Saved config.");
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        } else {
-            LOGGER.error("Can't save config as config instance is null.");
+            GSON.toJson(settings, settingsWriter);
+            GSON.toJson(friendsListHandler, friendsListWriter);
+            LOGGER.info("Saved config.");
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
+    }
+
+    protected static FriendsListHandler getFriendsListHandler()
+    {
+        if(friendsListHandler == null)
+            loadConfig();
+        return friendsListHandler;
+    }
+
+    protected static FHSettings getSettings()
+    {
+        if(settings == null)
+            loadConfig();
+        return settings;
     }
 }
