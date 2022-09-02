@@ -1,7 +1,6 @@
 package mod.icy_turtle.friendhighlighter;
 
 import com.mojang.brigadier.Command;
-import com.sun.jna.platform.win32.Variant;
 import mod.icy_turtle.friendhighlighter.commands.CommandHandler;
 import mod.icy_turtle.friendhighlighter.config.FHSettings;
 import mod.icy_turtle.friendhighlighter.event.KeyInputHandler;
@@ -54,6 +53,8 @@ public class FriendHighlighter implements ClientModInitializer
      * The time stamp of when a chat message was sent with enter (closing the chat window, not while sleeping).
      */
     public static long enterHitAt = 0;
+
+    public static boolean logChatMessages = true;
 
     @Override
     public void onInitializeClient()

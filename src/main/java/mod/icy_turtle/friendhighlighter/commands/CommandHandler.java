@@ -48,7 +48,10 @@ public class CommandHandler
         dispatcher.register(literal("fh")
                 //  turns the highlighter on and off
                 .then(literal("toggle")
-                    .executes(ctx -> FriendHighlighter.toggleHighlight()))
+                        //  toggles a friend
+                        .then(createExistingFriendArgument()
+                                .executes(ctx -> toggleFriend(ctx)))
+                        .executes(ctx -> FriendHighlighter.toggleHighlight()))
 
                 //  adds a friend to the list.
                 // boolean arguments are optional and default to false
@@ -60,16 +63,6 @@ public class CommandHandler
                                                     .executes(this::addFriend))
                                             .executes(this::addFriend))
                                     .executes(this::addFriend))))
-
-                //  enables a friend
-                .then(literal("enable")
-                        .then(createExistingFriendArgument()
-                                .executes(ctx -> toggleFriend(ctx, true))))
-
-                //  disables a friend
-                .then(literal("disable")
-                        .then(createExistingFriendArgument()
-                                .executes(ctx -> toggleFriend(ctx, false))))
 
                 //  removes a friend from the list
                 .then(literal("remove")
@@ -118,17 +111,17 @@ public class CommandHandler
         return Command.SINGLE_SUCCESS;
     }
 
-    private int toggleFriend(CommandContext<FabricClientCommandSource> context, boolean enabled)
+    private int toggleFriend(CommandContext<FabricClientCommandSource> context)
     {
         String friendName = context.getArgument("friendName", String.class);
         var friend = FriendsListHandler.getFriendsMap().get(friendName);
         if(friend != null)
         {
-            friend.setEnabled(enabled);
+            friend.setEnabled(!friend.isEnabled());
             updateList();
             FriendHighlighter.sendMessage(Text.literal(friendName)
                             .append(" ")
-                            .append(FHUtils.getMessageWithConnotation("ENABLED", "DISABLED", enabled))
+                            .append(FHUtils.getMessageWithConnotation("ENABLED", "DISABLED", friend.isEnabled()))
             );
         }
         return Command.SINGLE_SUCCESS;
@@ -201,7 +194,9 @@ public class CommandHandler
 
         // reloading chat and keeping scroll place in chat
         var lines = chatHud.scrolledLines;
+        FriendHighlighter.logChatMessages = false;
         chatHud.reset();
+        FriendHighlighter.logChatMessages = true;
         chatHud.scroll(lines);
         return 1;
     }
@@ -255,7 +250,7 @@ public class CommandHandler
                 .styled(style -> style
                         .withStrikethrough(!friend.isEnabled())
                         .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, FHUtils.getMessageWithConnotation("ENABLED", "DISABLED", friend.isEnabled()).append(" | Click to ").append(FHUtils.getMessageWithConnotation("ENABLE", "DISABLE", !friend.isEnabled()))))
-                        .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, (!friend.isEnabled() ? "/fh enable" : "/fh disable") + " \""+friend.name+"\"")));
+                        .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh toggle \""+friend.name+"\"")));
     }
 
     /**

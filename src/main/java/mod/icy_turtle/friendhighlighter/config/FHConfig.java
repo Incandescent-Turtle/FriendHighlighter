@@ -43,7 +43,7 @@ public class FHConfig
     }
 
     /**
-     * Reads {@link #SETTINGS_FILE} and deserializes it into a {@link FHConfig} instance.
+     * Reads the file and deserializes it into the specified instance.
      * @param clazz the class to deserialize.
      * @param file the target
      * @param defaultValue
@@ -64,11 +64,10 @@ public class FHConfig
     }
 
     /**
-     * Serializes the config and puts it in {@link #SETTINGS_FILE}.
+     * Serializes the config and puts it into {@link #SETTINGS_FILE} and {@link #FRIENDS_LIST_FILE}.
      */
     public static void saveConfig()
     {
-        LOGGER.info("Attempting to save config...");
         try(BufferedWriter settingsWriter = Files.newBufferedWriter(SETTINGS_FILE); BufferedWriter friendsListWriter = Files.newBufferedWriter(FRIENDS_LIST_FILE))
         {
             GSON.toJson(settings, settingsWriter);
