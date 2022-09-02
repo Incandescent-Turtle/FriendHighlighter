@@ -1,7 +1,8 @@
 package mod.icy_turtle.friendhighlighter.config;
 
-import mod.icy_turtle.friendhighlighter.util.FHUtils;
-
+/**
+ * 	Holds all the settings for the mod; a typical config.
+ */
 public class FHSettings
 {
 	public static FHSettings getSettings()

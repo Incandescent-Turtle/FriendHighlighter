@@ -10,8 +10,6 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ChatScreen;
-import net.minecraft.client.gui.screen.SleepingChatScreen;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.slf4j.Logger;
@@ -20,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 /*
     TODO:
-        chat message wont be sent when sleeping, need to add hook for that.
         add option to disable tooltips
         make tooltips smaller
         make it so mod integration and cloth config arent necessary
@@ -54,6 +51,9 @@ public class FriendHighlighter implements ClientModInitializer
      */
     public static long enterHitAt = 0;
 
+    /**
+     * Whether chat messages should be logged, or if they're fro updated the list.
+     */
     public static boolean logChatMessages = true;
 
     @Override
@@ -71,14 +71,8 @@ public class FriendHighlighter implements ClientModInitializer
     public static void sendMessage(Text message)
     {
         var player = MinecraftClient.getInstance().player;
-        var screen = MinecraftClient.getInstance().currentScreen;
-        /*
-                    TODO:
-                            wont send chat messages when sleeping at all
-                            needs enter hook added there too
-         */
-        final boolean shouldSendChatMessage = !(screen instanceof SleepingChatScreen)
-                && (!(screen instanceof ChatScreen) || (System.currentTimeMillis()-enterHitAt)<1000);
+        //  if just sent a chat message to prevent messages from the list
+        final boolean shouldSendChatMessage = (System.currentTimeMillis()-enterHitAt)<1000;
 
         switch(FHSettings.getSettings().messageDisplayMethod)
         {

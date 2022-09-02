@@ -13,7 +13,7 @@ import java.nio.file.Path;
 import static mod.icy_turtle.friendhighlighter.FriendHighlighter.LOGGER;
 
 /**
- * Handles the config values and loading/unloading.
+ * Handles the saving, loading, and editing of the friend list and settings of the mod.
  */
 public class FHConfig
 {

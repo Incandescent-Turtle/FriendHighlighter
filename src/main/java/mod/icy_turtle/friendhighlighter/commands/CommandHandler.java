@@ -46,7 +46,7 @@ public class CommandHandler
     public void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess)
     {
         dispatcher.register(literal("fh")
-                //  turns the highlighter on and off
+                //  toggles either the highlighter or an individual friend
                 .then(literal("toggle")
                         //  toggles a friend
                         .then(createExistingFriendArgument()
@@ -91,9 +91,9 @@ public class CommandHandler
         boolean outlineFriend = CommandUtils.getArgumentFromContext(context, "outlineFriend", true);
 
         MutableText txt = Text.literal("");
+        friendsMap.put(friendName, new HighlightedFriend(friendName, FHUtils.hexToRGB(color), onlyPlayer, outlineFriend).setEnabled(friendsMap.getOrDefault(friendName,new HighlightedFriend()).isEnabled()));
         if(!friendsMap.containsKey(friendName))
         {
-            friendsMap.put(friendName, new HighlightedFriend(friendName, FHUtils.hexToRGB(color), onlyPlayer, outlineFriend));
             txt.append(friendName).append(" ")
                     .append(FHUtils.getPositiveMessage("ADDED"))
                     .append(" ")

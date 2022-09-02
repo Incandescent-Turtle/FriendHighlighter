@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
 
+
 public class FriendsListHandler
 {
 	/**
