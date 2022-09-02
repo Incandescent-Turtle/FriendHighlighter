@@ -11,7 +11,7 @@ public class FHSettings
 	}
 
 	public MessageDisplayMethod messageDisplayMethod = MessageDisplayMethod.ACTION_BAR;
-
+	public boolean toolTipsEnabled = true;
 	public enum MessageDisplayMethod
 	{
 		ACTION_BAR, CHAT, BOTH;

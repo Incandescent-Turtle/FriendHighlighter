@@ -15,6 +15,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.text.Text;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Integration for the ModMenu mod.
@@ -34,7 +35,7 @@ public class ModMenuIntegration implements ModMenuApi
             friendsList.addEntry(createFriendsList(entryBuilder));
 
             ConfigCategory modConfig = builder.getOrCreateCategory(Text.literal("Mod Settings"));
-            createModConfig(modConfig, entryBuilder);
+            createModSettings(modConfig, entryBuilder);
             builder.setSavingRunnable(()->{
                 FHConfig.saveConfig();
                 FHConfig.loadConfig();
@@ -63,7 +64,6 @@ public class ModMenuIntegration implements ModMenuApi
                 true,
                 (friendIn, nestedListListEntry) -> {
                     final var friend = friendIn == null ? new HighlightedFriend() : friendIn;
-                    final int charsPerLine = 20;
                     return new MultiElementListEntry<>(
                             Text.literal(friend.name.equals("") ? "Friend" : friend.name), friend,
                             Arrays.asList(
@@ -76,15 +76,15 @@ public class ModMenuIntegration implements ModMenuApi
                                             .build(),
                                     entryBuilder.startBooleanToggle(Text.literal("Only Players"), friend.onlyPlayers)
                                             .setSaveConsumer(onlyPlayers -> friend.onlyPlayers = onlyPlayers)
-                                            .setTooltipSupplier(() -> Optional.of(new Text[]{Text.literal(FHUtils.splitEveryNCharacters("Whether only player's with this name will get highlighted.", charsPerLine))}))
+                                            .setTooltipSupplier(createToolTip("Whether only player's with this name will get highlighted."))
                                             .build(),
                                     entryBuilder.startBooleanToggle(Text.literal("Outline Friend"), friend.outlineFriend)
                                             .setSaveConsumer(outlineFriend -> friend.outlineFriend = outlineFriend)
-                                            .setTooltipSupplier(() -> Optional.of(new Text[]{Text.literal(FHUtils.splitEveryNCharacters("Whether " + (friend.onlyPlayers ? "players" : "entities") + " with this name will be outlined in addition their name tag always showing and being colored.", charsPerLine))}))
+                                            .setTooltipSupplier(createToolTip("Whether " + (friend.onlyPlayers ? "players" : "entities") + " with this name will be outlined in addition their name tag always showing and being colored."))
                                             .build(),
                                     entryBuilder.startBooleanToggle(Text.literal("Enabled"), friend.isEnabled())
                                             .setSaveConsumer(friend::setEnabled)
-                                            .setTooltipSupplier(() -> Optional.of(new Text[]{Text.literal(FHUtils.splitEveryNCharacters("Toggles whether this friend will currently be highlighted and have its name colored.", charsPerLine))}))
+                                            .setTooltipSupplier(createToolTip("Toggles whether this friend will currently be highlighted and have its name colored."))
                                             .build()),
                             friend.name.equals(""));
                 }
@@ -93,16 +93,23 @@ public class ModMenuIntegration implements ModMenuApi
 
     /**
      * Populates the modConfig category to hold config settings for the mod.
-     * @param modConfig the config category.
+     * @param settingsCategory the config category.
      * @param entryBuilder the entry builder.
      */
-    private void createModConfig(ConfigCategory modConfig, ConfigEntryBuilder entryBuilder)
+    private void createModSettings(ConfigCategory settingsCategory, ConfigEntryBuilder entryBuilder)
     {
         var settings = FHSettings.getSettings();
-        modConfig.addEntry(
+        settingsCategory.addEntry(
                 entryBuilder.startEnumSelector(Text.literal("Message Display Method"), FHSettings.MessageDisplayMethod.class, FHSettings.getSettings().messageDisplayMethod)
                         .setSaveConsumer(displayMethod -> settings.messageDisplayMethod = displayMethod)
                         .setEnumNameProvider(displayMethod ->  Text.literal(FHUtils.capitalizeAll(displayMethod.name().replaceAll("_", " "))))
+                        .setTooltipSupplier(createToolTip("How a message informing you of a change to your friends list is displayed. As a chat message, above the hotbar, or both."))
+                        .build()
+        );
+        settingsCategory.addEntry(
+                entryBuilder.startBooleanToggle(Text.literal("Show Tooltips"), FHSettings.getSettings().toolTipsEnabled)
+                        .setSaveConsumer(show -> FHSettings.getSettings().toolTipsEnabled = show)
+                        .setTooltipSupplier(createToolTip("Whether tooltips (like this) should be displayed in the chat interface and this GUI."))
                         .build()
         );
     }
@@ -133,4 +140,11 @@ public class ModMenuIntegration implements ModMenuApi
         Collections.reverse(list);
         return list;
     }
+
+    private Supplier<Optional<Text[]>> createToolTip(String str)
+    {
+        if(FHSettings.getSettings().toolTipsEnabled)
+            return () -> Optional.of(new Text[]{Text.literal(FHUtils.splitEveryNCharacters(str, 20))});
+        return () -> Optional.empty();
+    };
 }
