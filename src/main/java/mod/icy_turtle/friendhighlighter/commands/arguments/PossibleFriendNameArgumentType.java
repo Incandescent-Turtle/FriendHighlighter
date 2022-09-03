@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
- * An argument that represents the name of a possible entity/player, allowing for quotes, with suggestions of players, friends, and closeby entities.
+ * An argument that represents the name of a possible entity/player, allowing for quotes, with suggestions of players, friends, and close by entities.
  */
 public class PossibleFriendNameArgumentType implements ArgumentType<String>
 {

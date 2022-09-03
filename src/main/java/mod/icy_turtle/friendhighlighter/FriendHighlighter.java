@@ -18,8 +18,6 @@ import org.slf4j.LoggerFactory;
 
 /*
     TODO:
-        add option to disable tooltips
-        make tooltips smaller
         make it so mod integration and cloth config arent necessary
 
         broken:
@@ -52,7 +50,7 @@ public class FriendHighlighter implements ClientModInitializer
     public static long enterHitAt = 0;
 
     /**
-     * Whether chat messages should be logged, or if they're fro updated the list.
+     * Whether chat messages should be logged, or if they're from updated the list.
      */
     public static boolean logChatMessages = true;
 

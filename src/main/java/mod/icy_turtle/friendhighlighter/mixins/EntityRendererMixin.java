@@ -1,7 +1,6 @@
 package mod.icy_turtle.friendhighlighter.mixins;
 
 import mod.icy_turtle.friendhighlighter.FriendHighlighter;
-import mod.icy_turtle.friendhighlighter.config.FHConfig;
 import mod.icy_turtle.friendhighlighter.config.FriendsListHandler;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.minecraft.client.render.entity.EntityRenderer;

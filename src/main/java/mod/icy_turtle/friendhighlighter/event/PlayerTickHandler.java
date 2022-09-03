@@ -13,6 +13,5 @@ public class PlayerTickHandler implements ClientTickEvents.StartTick
     public void onStartTick(MinecraftClient client)
     {
         if(client.player == null) return;
-
     }
 }

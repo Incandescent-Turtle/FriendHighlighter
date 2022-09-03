@@ -6,7 +6,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.WordUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -184,7 +183,7 @@ public class FHUtils
 	public static String splitEveryNCharacters(String input, int charsPerLine)
 	{
 		var words = input.split(" ");
-		var output = "";
+		StringBuilder output = new StringBuilder();
 		var line = "";
 		for(int i = 0; i < words.length; i++)
 		{
@@ -200,9 +199,9 @@ public class FHUtils
 			} else {
 				//	first line
 				if(output.length() == 0)
-					output = line;
+					output = new StringBuilder(line);
 				else
-					output += "\n" + line;
+					output.append("\n").append(line);
 				line = word;
 			}
 			//	if this is the last word
@@ -213,12 +212,12 @@ public class FHUtils
 				{
 					return word;
 				} else {
-					output += "\n"+line;
+					output.append("\n").append(line);
 					break;
 				}
 			}
 		}
-		return output;
+		return output.toString();
 	}
 
 	/**

@@ -45,6 +45,8 @@ public class KeyInputHandler
     {
         if (highlightKey.wasPressed())
         {
+            //  hacky solution, makes sure to send chat notification is selected
+            FriendHighlighter.enterHitAt = System.currentTimeMillis();
             FriendHighlighter.toggleHighlight();
         }
     }

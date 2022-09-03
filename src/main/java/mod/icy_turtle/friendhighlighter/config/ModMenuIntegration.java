@@ -145,6 +145,6 @@ public class ModMenuIntegration implements ModMenuApi
     {
         if(FHSettings.getSettings().toolTipsEnabled)
             return () -> Optional.of(new Text[]{Text.literal(FHUtils.splitEveryNCharacters(str, 20))});
-        return () -> Optional.empty();
-    };
+        return Optional::empty;
+    }
 }

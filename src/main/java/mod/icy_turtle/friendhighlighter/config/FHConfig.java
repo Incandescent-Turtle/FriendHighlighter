@@ -46,7 +46,7 @@ public class FHConfig
      * Reads the file and deserializes it into the specified instance.
      * @param clazz the class to deserialize.
      * @param file the target
-     * @param defaultValue
+     * @param defaultValue the default value, if the object can't be deserialized.
      * @return the deserialized config.
      * @param <T> the type of object to deserialize.
      */

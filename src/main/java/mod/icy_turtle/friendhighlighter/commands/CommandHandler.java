@@ -180,8 +180,6 @@ public class CommandHandler
 
         var hud = MinecraftClient.getInstance().inGameHud;
         var chatHud = hud.getChatHud();
-        if(!sendNow && chatListText == null)
-            return 1;
 
         if(sendNow)
         {
@@ -297,7 +295,7 @@ public class CommandHandler
     {
         //  click event to send a chat message to toggle the booleans
         BiFunction<Boolean, Boolean, ClickEvent> clickEvent = (onlyPlayers, outlineFriend) -> new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh add " + String.join(" ", "\"" + friend.name + "\"", FHUtils.rgbToHex(friend.color), ""+onlyPlayers, ""+outlineFriend));
-        MutableText onlyPlayers = FHUtils.colorText(friend.onlyPlayers ? "Only Players" : "All Entities", 0xFF5F1F)
+        MutableText onlyPlayers = FHUtils.colorText(friend.onlyPlayers ? "Only Players" : "All Entities", friend.onlyPlayers ? 0xA7C7E7 : 0xFF5F1F)
                 .styled(style -> style
                 .withClickEvent(clickEvent.apply(!friend.onlyPlayers, friend.outlineFriend))
                 .withHoverEvent(createToolTip("Click to change to " + (!friend.onlyPlayers ? "only players" : "all entities"))));
