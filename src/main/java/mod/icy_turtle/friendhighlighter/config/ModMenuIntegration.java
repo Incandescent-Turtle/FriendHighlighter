@@ -100,8 +100,8 @@ public class ModMenuIntegration implements ModMenuApi
     {
         var settings = FHSettings.getSettings();
         settingsCategory.addEntry(
-                entryBuilder.startEnumSelector(Text.literal("Message Display Method"), FHSettings.MessageDisplayMethod.class, FHSettings.getSettings().messageDisplayMethod)
-                        .setSaveConsumer(displayMethod -> settings.messageDisplayMethod = displayMethod)
+                entryBuilder.startEnumSelector(Text.literal("Message Display Method"), FHSettings.NotificationMethod.class, FHSettings.getSettings().notificationMethod)
+                        .setSaveConsumer(displayMethod -> settings.notificationMethod = displayMethod)
                         .setEnumNameProvider(displayMethod ->  Text.literal(FHUtils.capitalizeAll(displayMethod.name().replaceAll("_", " "))))
                         .setTooltipSupplier(createToolTip("How a message informing you of a change to your friends list is displayed. As a chat message, above the hotbar, or both."))
                         .build()

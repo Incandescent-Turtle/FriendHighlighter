@@ -10,9 +10,12 @@ public class FHSettings
 		return FHConfig.getSettings();
 	}
 
-	public MessageDisplayMethod messageDisplayMethod = MessageDisplayMethod.ACTION_BAR;
+	/**
+	 * How messages like "player added" or "player removed" are displayed to the user.
+	 */
+	public NotificationMethod notificationMethod = NotificationMethod.ACTION_BAR;
 	public boolean toolTipsEnabled = true;
-	public enum MessageDisplayMethod
+	public enum NotificationMethod
 	{
 		ACTION_BAR, CHAT, BOTH;
 	}

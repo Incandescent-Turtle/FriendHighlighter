@@ -13,17 +13,18 @@ import mod.icy_turtle.friendhighlighter.config.FHConfig;
 import mod.icy_turtle.friendhighlighter.config.FHSettings;
 import mod.icy_turtle.friendhighlighter.config.FriendsListHandler;
 import mod.icy_turtle.friendhighlighter.config.HighlightedFriend;
+import mod.icy_turtle.friendhighlighter.util.ChatUtils;
 import mod.icy_turtle.friendhighlighter.util.CommandUtils;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 
@@ -43,8 +44,8 @@ public class CommandHandler
     /**
      * The {@link MutableText} that represents the list that is displayed in chat.
      */
-    public final MutableText chatListText = Text.literal("");
-
+    private final MutableText chatListText = Text.literal("");
+    private final MutableText settingsText = Text.literal("");
     public void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess)
     {
         dispatcher.register(literal("fh")
@@ -80,7 +81,43 @@ public class CommandHandler
                                 .executes(context -> updateList(true, true)))
                         .executes(context -> updateList(true,false))
                 )
+
+                .then(literal("settings")
+                        .executes(ctx -> updateSettings(true)))
         );
+    }
+
+    private int updateSettings(boolean sendNow)
+    {
+        if(sendNow)
+        {
+            FHUtils.copyTextContentTo(settingsText, createSettings());
+            MinecraftClient.getInstance().player.sendMessage(settingsText);
+        } else {
+            FHUtils.copyTextContentTo(settingsText, createSettings());
+        }
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private MutableText createSettings()
+    {
+        var txt = Text.literal("Settings\n\n");
+        txt.append("Notifications\n ↳ ")
+                .append(createNotificationMethodSelector());
+        return txt;
+    }
+
+    private MutableText createNotificationMethodSelector()
+    {
+        var method = FHSettings.getSettings().notificationMethod;
+        var values = Arrays.stream(FHSettings.NotificationMethod.values()).toList();
+        var index = values.indexOf(method);
+
+        var txt =
+                FHUtils.colorText(method.toString(), Formatting.RED)
+                        .styled(style -> style
+                                .withHoverEvent(CommandUtils.createToolTip("Click to change")));
+        return txt;
     }
 
     private int addFriend(CommandContext<FabricClientCommandSource> context)
@@ -178,30 +215,21 @@ public class CommandHandler
     {
         usingAdvancedList = advanced;
 
-        var hud = MinecraftClient.getInstance().inGameHud;
-        var chatHud = hud.getChatHud();
-        if(!sendNow && chatListText == null)
-            return 1;
-
         if(sendNow)
         {
-            chatHud.messages.removeIf(line -> line.content().equals(chatListText));
+            ChatUtils.removeAllFromChat(chatListText);
             //  has to happen after old one is removed ^
-            setChatListText(advanced ? getAdvancedList() : getSimpleList());
+            FHUtils.copyTextContentTo(chatListText, advanced ? createAdvancedList() : createSimpleList());
             MinecraftClient.getInstance().player.sendMessage(chatListText);
         } else {
-            setChatListText(advanced ? getAdvancedList() : getSimpleList());
+            //  mutates the current list
+            FHUtils.copyTextContentTo(chatListText, advanced ? createAdvancedList() : createSimpleList());
         }
-        // reloading chat and keeping scroll place in chat
-        var lines = chatHud.scrolledLines;
-        FriendHighlighter.logChatMessages = false;
-        MinecraftClient.getInstance().inGameHud.getChatHud().reset();
-        FriendHighlighter.logChatMessages = true;
-        chatHud.scroll(lines);
+        ChatUtils.refreshChat();
         return 1;
     }
 
-    private MutableText getSimpleList()
+    private MutableText createSimpleList()
     {
         MutableText txt = Text.literal("Friends List: ");
         var map = FriendsListHandler.getFriendsMap();
@@ -217,7 +245,7 @@ public class CommandHandler
         return txt;
     }
 
-    public static MutableText getAdvancedList()
+    public static MutableText createAdvancedList()
     {
         var map = FriendsListHandler.getFriendsMap();
         MutableText txt = Text.literal("");
@@ -247,7 +275,7 @@ public class CommandHandler
         return FHUtils.colorText(friend.name, friend.color)
                 .styled(style -> style
                         .withStrikethrough(!friend.isEnabled())
-                        .withHoverEvent(createToolTip(Text.literal(friend.name + " is ").append(FHUtils.getMessageWithConnotation("ENABLED", "DISABLED", friend.isEnabled()).append(" | Click to " + (friend.isEnabled() ? "disable" : "enable")))))
+                        .withHoverEvent(CommandUtils.createToolTip(Text.literal(friend.name + " is ").append(FHUtils.getMessageWithConnotation("ENABLED", "DISABLED", friend.isEnabled()).append(" | Click to " + (friend.isEnabled() ? "disable" : "enable")))))
                         .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh toggle \""+friend.name+"\"")));
     }
 
@@ -260,7 +288,7 @@ public class CommandHandler
     {
         return Text.literal("✖").styled(style -> style
                 .withColor(Formatting.RED)
-                .withHoverEvent(createToolTip("Remove " + friend.name + " from friends list"))
+                .withHoverEvent(CommandUtils.createToolTip("Remove " + friend.name + " from friends list"))
                 .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh remove \"" + friend.name + "\"")));
     }
 
@@ -272,7 +300,7 @@ public class CommandHandler
     {
         return FHUtils.getMessageWithConnotation("Enabled", "Disabled", FriendHighlighter.isHighlighterEnabled)
                 .styled(style -> style
-                        .withHoverEvent(createToolTip("Click to toggle Friend Highlighter"))
+                        .withHoverEvent(CommandUtils.createToolTip("Click to toggle Friend Highlighter"))
                         .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh toggle")));
     }
 
@@ -284,7 +312,7 @@ public class CommandHandler
     {
         return FHUtils.getNegativeMessage("Clear")
                 .styled(style -> style
-                        .withHoverEvent(createToolTip("Clear Friends List"))
+                        .withHoverEvent(CommandUtils.createToolTip("Clear Friends List"))
                         .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/fh clear")));
     }
 
@@ -296,17 +324,18 @@ public class CommandHandler
     private static Text createFriendBooleans(HighlightedFriend friend)
     {
         //  click event to send a chat message to toggle the booleans
+
         BiFunction<Boolean, Boolean, ClickEvent> clickEvent = (onlyPlayers, outlineFriend) -> new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh add " + String.join(" ", "\"" + friend.name + "\"", FHUtils.rgbToHex(friend.color), ""+onlyPlayers, ""+outlineFriend));
         MutableText onlyPlayers = FHUtils.colorText(friend.onlyPlayers ? "Only Players" : "All Entities", 0xFF5F1F)
                 .styled(style -> style
                 .withClickEvent(clickEvent.apply(!friend.onlyPlayers, friend.outlineFriend))
-                .withHoverEvent(createToolTip("Click to change to " + (!friend.onlyPlayers ? "only players" : "all entities"))));
+                .withHoverEvent(CommandUtils.createToolTip("Click to change to " + (!friend.onlyPlayers ? "only players" : "all entities"))));
 
         MutableText outlineFriend = FHUtils.colorText("Outline Friend", friend.outlineFriend ? Formatting.GREEN : Formatting.RED)
                 .styled(style -> style
                 .withClickEvent(clickEvent.apply(friend.onlyPlayers, !friend.outlineFriend))
                 .withHoverEvent(
-                        createToolTip(FHUtils.getMessageWithConnotation("TRUE", "FALSE", friend.outlineFriend)
+                        CommandUtils.createToolTip(FHUtils.getMessageWithConnotation("TRUE", "FALSE", friend.outlineFriend)
                         .append(" | Click to toggle"))
                 ));
 
@@ -326,37 +355,5 @@ public class CommandHandler
                     List.of("icy_turtle", "Player123", "Xx_Notch_xX")
                 ).setSuggestWithQuotes(true)
         );
-    }
-
-    /**
-     * Replaces the current list in the chat with the text passed in.
-     * @param text the text to represent the new list.
-     */
-    public void setChatListText(MutableText text)
-    {
-        chatListText.getSiblings().clear();
-        chatListText.getSiblings().addAll(text.getSiblings());
-    }
-
-    /**
-     * Creates a {@link HoverEvent} tooltip for chat messages.
-     * @param txt the tooltip to be displayed.
-     * @return the event to be used to create the desired tooltip.
-     * @see #createToolTip(String)
-     */
-    private static HoverEvent createToolTip(MutableText txt)
-    {
-        return new HoverEvent(HoverEvent.Action.SHOW_TEXT, FHSettings.getSettings().toolTipsEnabled ? txt : null);
-    }
-
-    /**
-     * Creates a {@link HoverEvent} tooltip for chat messages.
-     * @param str the tooltip to be displayed.
-     * @return the event to be used to create the desired tooltip.
-     * @see #createToolTip(MutableText)
-     */
-    private static HoverEvent createToolTip(String str)
-    {
-        return createToolTip(Text.literal(str));
     }
 }

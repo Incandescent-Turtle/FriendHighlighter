@@ -3,7 +3,11 @@ package mod.icy_turtle.friendhighlighter.util;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import mod.icy_turtle.friendhighlighter.config.FHSettings;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 
 /**
  * 	A utility class for this mod providing helpful methods for commands.
@@ -107,5 +111,27 @@ public class CommandUtils
 		} else {
 			return CommandUtils.readSpacelessArgument(reader);
 		}
+	}
+
+	/**
+	 * Creates a {@link HoverEvent} tooltip for chat messages.
+	 * @param txt the tooltip to be displayed.
+	 * @return the event to be used to create the desired tooltip.
+	 * @see #createToolTip(String)
+	 */
+	public static HoverEvent createToolTip(MutableText txt)
+	{
+		return new HoverEvent(HoverEvent.Action.SHOW_TEXT, FHSettings.getSettings().toolTipsEnabled ? txt : null);
+	}
+
+	/**
+	 * Creates a {@link HoverEvent} tooltip for chat messages.
+	 * @param str the tooltip to be displayed.
+	 * @return the event to be used to create the desired tooltip.
+	 * @see #createToolTip(MutableText)
+	 */
+	public static HoverEvent createToolTip(String str)
+	{
+		return createToolTip(Text.literal(str));
 	}
 }

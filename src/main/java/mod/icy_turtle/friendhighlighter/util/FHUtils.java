@@ -6,7 +6,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.WordUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -234,5 +233,16 @@ public class FHUtils
 			words[i] = StringUtils.capitalize(words[i].toLowerCase());
 		}
 		return String.join(" ", words);
+	}
+
+	/**
+	 * Copies the content of one text to the other one, mutating the resulting text.
+	 * @param to the {@link MutableText} to copy the content to.
+	 * @param from the {@link MutableText} to copy the content from.
+	 */
+	public static void copyTextContentTo(MutableText to, MutableText from)
+	{
+		to.getSiblings().clear();
+		to.getSiblings().addAll(from.getSiblings());
 	}
 }

@@ -18,10 +18,8 @@ import org.slf4j.LoggerFactory;
 
 /*
     TODO:
-        add option to disable tooltips
-        make tooltips smaller
-        make it so mod integration and cloth config arent necessary
 
+        add chat interface for settings
         broken:
         add drop down menu in config menu to add friends
         allow using color names in the GUI
@@ -65,7 +63,7 @@ public class FriendHighlighter implements ClientModInitializer
     }
 
     /**
-     * Sends a message via either chat or the action bar, depending on {@link FHSettings#messageDisplayMethod}.
+     * Sends a message via either chat or the action bar, depending on {@link FHSettings#notificationMethod}.
      * @param message the message to send
      */
     public static void sendMessage(Text message)
@@ -74,7 +72,7 @@ public class FriendHighlighter implements ClientModInitializer
         //  if just sent a chat message to prevent messages from the list
         final boolean shouldSendChatMessage = (System.currentTimeMillis()-enterHitAt)<1000;
 
-        switch(FHSettings.getSettings().messageDisplayMethod)
+        switch(FHSettings.getSettings().notificationMethod)
         {
             case ACTION_BAR -> player.sendMessage(message, true);
             case CHAT -> {
