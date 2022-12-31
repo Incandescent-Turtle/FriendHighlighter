@@ -14,7 +14,6 @@ public class ChatScreenMixin
 	@Inject(method = "keyPressed", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ChatScreen;sendMessage(Ljava/lang/String;Z)Z", shift = At.Shift.BEFORE))
 	private void markChatSentTime(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir)
 	{
-		System.out.println("ssss");
 		FriendHighlighter.enterHitAt = System.currentTimeMillis();
 	}
 }

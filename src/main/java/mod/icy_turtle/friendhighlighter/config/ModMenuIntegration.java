@@ -112,6 +112,12 @@ public class ModMenuIntegration implements ModMenuApi
                         .setTooltipSupplier(createToolTip("Whether tooltips (like this) should be displayed in the chat interface and this GUI."))
                         .build()
         );
+        settingsCategory.addEntry(
+                entryBuilder.startBooleanToggle(Text.literal("Highlight when invisible"), FHSettings.getSettings().highlightWhenInvisible)
+                        .setSaveConsumer(highlight -> FHSettings.getSettings().highlightWhenInvisible = highlight)
+                        .setTooltipSupplier(createToolTip("Whether friends get highlighted when they are invisible. Also applies to nametag rendering/colouring when invisible."))
+                        .build()
+        );
     }
 
     /**

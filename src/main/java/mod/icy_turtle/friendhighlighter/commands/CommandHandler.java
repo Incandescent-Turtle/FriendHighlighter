@@ -201,7 +201,7 @@ public class CommandHandler
 
     private MutableText getSimpleList()
     {
-        MutableText txt = Text.literal("Friends List: ");
+        MutableText txt = Text.literal("").append("Friends List: ");
         var map = FriendsListHandler.getFriendsMap();
         if(map.size() == 0)
             return txt.append(" Empty.");

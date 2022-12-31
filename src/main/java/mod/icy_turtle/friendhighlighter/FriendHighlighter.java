@@ -18,7 +18,9 @@ import org.slf4j.LoggerFactory;
 
 /*
     TODO:
-        make it so mod integration and cloth config arent necessary
+       make it so mod integration and cloth config arent necessar
+
+       add chat option to toggle that (invis)
 
         broken:
         add drop down menu in config menu to add friends
