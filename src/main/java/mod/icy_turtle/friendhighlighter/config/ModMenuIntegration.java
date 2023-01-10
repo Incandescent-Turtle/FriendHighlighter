@@ -34,8 +34,8 @@ public class ModMenuIntegration implements ModMenuApi
             ConfigCategory friendsList = builder.getOrCreateCategory(Text.translatable("config.friendHighlighter.category.friendsList"));
             friendsList.addEntry(createFriendsList(entryBuilder));
 
-            ConfigCategory modConfig = builder.getOrCreateCategory(Text.literal("Mod Settings"));
-            createModSettings(modConfig, entryBuilder);
+            ConfigCategory modSettings = builder.getOrCreateCategory(Text.literal("Mod Settings"));
+            createModSettings(modSettings, entryBuilder);
             builder.setSavingRunnable(()->{
                 FHConfig.saveConfig();
                 FHConfig.loadConfig();
@@ -65,7 +65,7 @@ public class ModMenuIntegration implements ModMenuApi
                 (friendIn, nestedListListEntry) -> {
                     final var friend = friendIn == null ? new HighlightedFriend() : friendIn;
                     return new MultiElementListEntry<>(
-                            Text.literal(friend.name.equals("") ? "Friend" : friend.name), friend,
+                            FHUtils.getMessageWithConnotation(friend.name.equals("") ? "Friend" : friend.name, friend.isEnabled()), friend,
                             Arrays.asList(
                                     entryBuilder.startTextField(Text.literal("Name"), friend.name)
                                             .setSaveConsumer(str -> friend.name = str)
@@ -102,19 +102,19 @@ public class ModMenuIntegration implements ModMenuApi
         settingsCategory.addEntry(
                 entryBuilder.startEnumSelector(Text.literal("Message Display Method"), FHSettings.MessageDisplayMethod.class, FHSettings.getSettings().messageDisplayMethod)
                         .setSaveConsumer(displayMethod -> settings.messageDisplayMethod = displayMethod)
-                        .setEnumNameProvider(displayMethod ->  Text.literal(FHUtils.capitalizeAll(displayMethod.name().replaceAll("_", " "))))
+                        .setEnumNameProvider(displayMethod ->  Text.literal(FHUtils.capitalizeAllFirstLetters(displayMethod.name().replaceAll("_", " "))))
                         .setTooltipSupplier(createToolTip("How a message informing you of a change to your friends list is displayed. As a chat message, above the hotbar, or both."))
                         .build()
         );
         settingsCategory.addEntry(
-                entryBuilder.startBooleanToggle(Text.literal("Show Tooltips"), FHSettings.getSettings().toolTipsEnabled)
-                        .setSaveConsumer(show -> FHSettings.getSettings().toolTipsEnabled = show)
+                entryBuilder.startBooleanToggle(Text.literal("Show Tooltips"), FHSettings.getSettings().tooltipsEnabled)
+                        .setSaveConsumer(show -> FHSettings.getSettings().tooltipsEnabled = show)
                         .setTooltipSupplier(createToolTip("Whether tooltips (like this) should be displayed in the chat interface and this GUI."))
                         .build()
         );
         settingsCategory.addEntry(
-                entryBuilder.startBooleanToggle(Text.literal("Highlight when invisible"), FHSettings.getSettings().highlightWhenInvisible)
-                        .setSaveConsumer(highlight -> FHSettings.getSettings().highlightWhenInvisible = highlight)
+                entryBuilder.startBooleanToggle(Text.literal("Highlight when invisible"), FHSettings.getSettings().highlightInvisibleFriends)
+                        .setSaveConsumer(highlight -> FHSettings.getSettings().highlightInvisibleFriends = highlight)
                         .setTooltipSupplier(createToolTip("Whether friends get highlighted when they are invisible. Also applies to nametag rendering/colouring when invisible."))
                         .build()
         );
@@ -149,7 +149,7 @@ public class ModMenuIntegration implements ModMenuApi
 
     private Supplier<Optional<Text[]>> createToolTip(String str)
     {
-        if(FHSettings.getSettings().toolTipsEnabled)
+        if(FHSettings.getSettings().tooltipsEnabled)
             return () -> Optional.of(new Text[]{Text.literal(FHUtils.splitEveryNCharacters(str, 20))});
         return Optional::empty;
     }

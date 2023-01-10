@@ -19,8 +19,10 @@ import org.slf4j.LoggerFactory;
 /*
     TODO:
        make it so mod integration and cloth config arent necessar
-
+        add lang file
        add chat option to toggle that (invis)
+        split commands into separate files
+        bro make api cmon
 
         broken:
         add drop down menu in config menu to add friends
@@ -30,6 +32,13 @@ import org.slf4j.LoggerFactory;
             - custom storage (as string)
             - color widget
             - color picker?
+
+
+            done:
+            bolded advacned list title
+            added color in modmenu window to indicate friends being enabled/disabled
+            renamed some things for clarity
+            created a chat interface with settings
 */
 
 /**

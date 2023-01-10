@@ -61,6 +61,11 @@ public class StringListArgumentType implements ArgumentType<String>
         this(listSupplier, str -> Text.of("\"" + str + "\" is not one of " + listSupplier.toString()), examples);
     }
 
+    public StringListArgumentType(Supplier<List<String>> listSupplier)
+    {
+        this(listSupplier, str -> Text.of("\"" + str + "\" is not one of " + listSupplier.toString()), listSupplier.get());
+    }
+
     @Override
     public String parse(StringReader reader) throws CommandSyntaxException
     {

@@ -18,7 +18,7 @@ public class EntityRendererMixin
     //  to override whether the entities name tag should be rendered.
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRenderer;hasLabel(Lnet/minecraft/entity/Entity;)Z"))
     public boolean renderNameTag(EntityRenderer renderer, Entity entity) {
-        if(FriendHighlighter.isHighlighterEnabled && FHSettings.getSettings().highlightWhenInvisible)
+        if(FriendHighlighter.isHighlighterEnabled && FHSettings.getSettings().highlightInvisibleFriends)
         {
             var friend = FriendsListHandler.getFriendFromEntity(entity);
             if(friend != null && friend.isEnabled() && (entity instanceof PlayerEntity || (!friend.onlyPlayers && entity.hasCustomName())))
@@ -31,7 +31,7 @@ public class EntityRendererMixin
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getDisplayName()Lnet/minecraft/text/Text;"))
     private Text forceNameColor(Entity entity)
     {
-        if(FriendHighlighter.isHighlighterEnabled && FHSettings.getSettings().highlightWhenInvisible)
+        if(FriendHighlighter.isHighlighterEnabled && FHSettings.getSettings().highlightInvisibleFriends)
         {
             var friend = FriendsListHandler.getFriendFromEntity(entity);
             if(FriendsListHandler.shouldHighlightEntity(entity))

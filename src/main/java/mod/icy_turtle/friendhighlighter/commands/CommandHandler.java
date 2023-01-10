@@ -24,8 +24,11 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.awt.Color;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
@@ -44,6 +47,8 @@ public class CommandHandler
      * The {@link MutableText} that represents the list that is displayed in chat.
      */
     public final MutableText chatListText = Text.literal("");
+    public final MutableText chatSettingsText = Text.literal("");
+
 
     public void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess)
     {
@@ -80,7 +85,119 @@ public class CommandHandler
                                 .executes(context -> updateList(true, true)))
                         .executes(context -> updateList(true,false))
                 )
+
+                .then(literal("settings")
+                        .then(literal("setMessageDisplayMethod")
+                                .then(argument("displayMethod", new StringListArgumentType(() -> Arrays.stream(FHSettings.MessageDisplayMethod.values()).map(dm -> dm.name().toLowerCase()).collect(Collectors.toList())))
+                                        .executes(this::setDisplayMethod)))
+                        .then(literal("toggleTooltips")
+                                .executes(this::toggleTooltips))
+                        .then(literal("toggleHighlightInvisibleFriends")
+                                .executes(this::toggleHighlightInvisibleFriends))
+                        .executes(context -> updateSettings(true)))
         );
+    }
+
+    private MutableText createSettings()
+    {
+        MutableText txt = Text.literal("");
+        var title = Text.literal("Friend Highlighter Settings").styled(style -> style.withBold(true).withUnderline(true));
+        var settings = FHSettings.getSettings();
+
+        var dm = Text.literal("");
+        dm.append(Text.literal("Message Display Method").styled(style -> style.withColor(Color.ORANGE.getRGB())));
+        dm.append("\n ↳ ");
+        var values = FHSettings.MessageDisplayMethod.values();
+        for(int i = 0; i < values.length; i++)
+        {
+            var methodName = values[i].name().toLowerCase();
+            var methodText = Text.literal(methodName);
+            var selected = settings.messageDisplayMethod.name().toLowerCase().equals(methodName);
+            methodText.styled(style ->
+                    style.withBold(selected)
+                            .withColor(selected ? Formatting.GREEN : Formatting.RED)
+                            .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh settings setMessageDisplayMethod " + methodName)));
+            dm.append(methodText);
+            if(i < values.length-1)
+            {
+                dm.append(" | ");
+            }
+        }
+        dm.styled(style ->
+                style.withHoverEvent(createToolTip("PLACEHOLDER - LINK VIA LANG"))
+        );
+
+        var tt = FHUtils.getMessageWithConnotation("Showing Tooltips", "Hiding Tooltips", settings.tooltipsEnabled);
+        tt.styled(style ->
+                style.withHoverEvent(createToolTip("PLACEHOLDER - LINK VIA LANG"))
+                .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh settings toggleTooltips")));
+
+        var hif = FHUtils.getMessageWithConnotation("Highlight Invisible Friends", "Not Highlighting Invisible Friends", settings.highlightInvisibleFriends);
+        hif.styled(style ->
+               style.withHoverEvent(createToolTip("PLACEHP:DER - LINK VIA LANG"))
+                       .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh settings toggleHighlightInvisibleFriends")));
+        txt.append(title);
+        txt.append("\n\n");
+        txt.append(dm);
+        txt.append("\n\n");
+        txt.append(tt);
+        txt.append("\n");
+        txt.append(hif);
+        return txt;
+    }
+
+    private int setDisplayMethod(CommandContext<FabricClientCommandSource> context)
+    {
+        var arg = context.getArgument("displayMethod", String.class);
+        var settings = FHSettings.getSettings();
+        settings.messageDisplayMethod = FHSettings.MessageDisplayMethod.valueOf(arg.toUpperCase());
+        updateSettings(false);
+        return Command.SINGLE_SUCCESS;
+    }
+
+
+    private int toggleTooltips(CommandContext<FabricClientCommandSource> context)
+    {
+        FHSettings.getSettings().tooltipsEnabled = !FHSettings.getSettings().tooltipsEnabled;
+        updateSettings(false);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int toggleHighlightInvisibleFriends(CommandContext<FabricClientCommandSource> context)
+    {
+        FHSettings.getSettings().highlightInvisibleFriends = !FHSettings.getSettings().highlightInvisibleFriends;
+        updateSettings(false);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int updateSettings(boolean sendNow)
+    {
+        var hud = MinecraftClient.getInstance().inGameHud;
+        var chatHud = hud.getChatHud();
+
+        if(sendNow)
+        {
+            chatHud.messages.removeIf(line -> line.content().equals(chatSettingsText));
+            //  has to happen after old one is removed ^
+            setChatSettingsText(createSettings());
+            MinecraftClient.getInstance().player.sendMessage(chatSettingsText);
+        } else {
+            setChatSettingsText(createSettings());
+        }
+        // reloading chat and keeping scroll place in chat
+        var lines = chatHud.scrolledLines;
+        // TODO dont think that this is needed anymore, but maybe keep for porting? - the logging that is
+        FriendHighlighter.logChatMessages = false;
+        MinecraftClient.getInstance().inGameHud.getChatHud().reset();
+        FriendHighlighter.logChatMessages = true;
+        chatHud.scroll(lines);
+        return 1;
+    }
+
+    private void setChatSettingsText(MutableText txt)
+    {
+        chatSettingsText.getSiblings().clear();
+        chatSettingsText.getSiblings().addAll(txt.getSiblings());
     }
 
     private int addFriend(CommandContext<FabricClientCommandSource> context)
@@ -219,7 +336,7 @@ public class CommandHandler
     {
         var map = FriendsListHandler.getFriendsMap();
         MutableText txt = Text.literal("");
-        txt.append(Text.literal("\nFriends List").styled(style -> style.withUnderline(true)));
+        txt.append(Text.literal("\nFriends List").styled(style -> style.withUnderline(true).withBold(true)));
         if(map.size() == 0)
             return txt.append(" - Empty\n");
         else
@@ -344,7 +461,7 @@ public class CommandHandler
      */
     private static HoverEvent createToolTip(MutableText txt)
     {
-        return new HoverEvent(HoverEvent.Action.SHOW_TEXT, FHSettings.getSettings().toolTipsEnabled ? txt : null);
+        return new HoverEvent(HoverEvent.Action.SHOW_TEXT, FHSettings.getSettings().tooltipsEnabled ? txt : null);
     }
 
     /**

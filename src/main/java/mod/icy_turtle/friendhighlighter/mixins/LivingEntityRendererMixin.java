@@ -16,7 +16,7 @@ public class LivingEntityRendererMixin
 	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;hasOutline(Lnet/minecraft/entity/Entity;)Z"))
 	public boolean forceHighlight(MinecraftClient client, Entity entity)
 	{
-		if(FriendHighlighter.isHighlighterEnabled && FHSettings.getSettings().highlightWhenInvisible)
+		if(FriendHighlighter.isHighlighterEnabled && FHSettings.getSettings().highlightInvisibleFriends)
 		{
 			var friend = FriendsListHandler.getFriendFromEntity(entity);
 			if(FriendsListHandler.shouldHighlightEntity(entity) && friend.outlineFriend)

@@ -111,6 +111,11 @@ public class FHUtils
 		}
 	}
 
+	public static MutableText getMessageWithConnotation(String msg, boolean positiveConnotation)
+	{
+		return getMessageWithConnotation(msg, msg, positiveConnotation);
+	}
+
 	/**
 	 * Converts a hex string to an rgb int.
 	 * @param hex the hex string starting with # and 1-6 hex digits.
@@ -225,7 +230,7 @@ public class FHUtils
 	 * @param input the string input, words separated by spaces.
 	 * @return the string all lowercase except for the first chars.
 	 */
-	public static String capitalizeAll(String input)
+	public static String capitalizeAllFirstLetters(String input)
 	{
 		var words = input.split("\\s");
 		for(int i = 0; i < words.length; i++)

@@ -13,6 +13,7 @@ public class PlayerTickHandler implements ClientTickEvents.StartTick
     @Override
     public void onStartTick(MinecraftClient client)
     {
-
+//        System.out.println(Arrays.stream(FHSettings.MessageDisplayMethod.values()).map(dm -> dm.name().toLowerCase()).collect(
+//                Collectors.toList()));
     }
 }
