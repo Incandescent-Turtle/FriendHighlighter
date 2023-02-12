@@ -6,7 +6,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,26 +19,38 @@ public class FHUtils
 
 	/**
 	 * Bolds and colors text accordingly.
-	 * @param msg the message to be bolded and coloured.
+	 * @param txt the message to be bolded and coloured.
 	 * @param color the color the message will be in rgb form.
 	 * @return a {@link MutableText} that is bolded and colored accordingly.
-	 * @see #getBoldAndColored(String, Formatting)
+	 * @see #getBoldAndColored(String, int)
 	 */
-	public static MutableText getBoldAndColored(String msg, int color)
+	public static MutableText getBoldAndColored(MutableText txt, int color)
 	{
-		return Text.literal("").append(Text.literal(msg).styled(style -> style.withBold(true).withColor(color)));
+		return txt.styled(style -> style.withBold(true).withColor(color));
 	}
 
 	/**
 	 * Bolds and colors text accordingly.
 	 * @param msg the message to be bolded and coloured.
-	 * @param color the color the message will be.
+	 * @param color the color the message will be in rgb form.
 	 * @return a {@link MutableText} that is bolded and colored accordingly.
-	 * @see #getBoldAndColored(String, int)
+	 * @see #getBoldAndColored(MutableText, int)
 	 */
-	public static MutableText getBoldAndColored(String msg, @NotNull Formatting color)
+	public static MutableText getBoldAndColored(String msg, int color)
 	{
-		return getBoldAndColored(msg, color.getColorValue());
+		return getBoldAndColored(Text.literal(msg), color);
+	}
+
+	/**
+	 * Returns the input text colored.
+	 * @param text the text to be colored.
+	 * @param rgb the color as an rgb int to color with.
+	 * @return the string as {@link MutableText}, colored.
+	 * @see #colorText(String, int)
+	 */
+	public static MutableText colorText(MutableText text, int rgb)
+	{
+		return text.styled(style -> style.withColor(rgb));
 	}
 
 	/**
@@ -47,36 +58,25 @@ public class FHUtils
 	 * @param str the string to be colored.
 	 * @param rgb the color as an rgb int to color with.
 	 * @return the string as {@link MutableText}, colored.
-	 * @see #colorText(String, Formatting)
+	 * @see #colorText(MutableText, int)
 	 */
 	public static MutableText colorText(String str, int rgb)
 	{
-		return Text.literal(str).styled(style -> style.withColor(rgb));
+		return colorText(Text.literal(str), rgb);
 	}
 
-	/**
-	 * Returns the input text colored.
-	 * @param str the string to be colored.
-	 * @param color the color to use.
-	 * @return the string as {@link MutableText}, colored.
-	 * @see #colorText(String, int)
-	 */
-	public static MutableText colorText(String str, @NotNull Formatting color)
-	{
-		return colorText(str, color.getColorValue());
-	}
 
 	/**
 	 * Bolds the message and colors it green.
 	 * @param msg the message to be returned.
 	 * @return returns the message bolded and green.
 	 * @see #getMessageWithConnotation(String, String, boolean)
-	 * @see #getBoldAndColored(String, Formatting)
 	 * @see #getBoldAndColored(String, int)
+	 * @see #getBoldAndColored(MutableText, int)
 	 */
 	public static MutableText getPositiveMessage(String msg)
 	{
-		return FHUtils.getBoldAndColored(msg, Formatting.GREEN);
+		return FHUtils.getBoldAndColored(msg, Formatting.GREEN.getColorValue());
 	}
 
 	/**
@@ -84,12 +84,12 @@ public class FHUtils
 	 * @param msg the message to be returned.
 	 * @return returns the message bolded and red.
 	 * @see #getMessageWithConnotation(String, String, boolean)
-	 * @see #getBoldAndColored(String, Formatting)
 	 * @see #getBoldAndColored(String, int)
+	 * @see #getBoldAndColored(MutableText, int)
 	 */
 	public static MutableText getNegativeMessage(String msg)
 	{
-		return FHUtils.getBoldAndColored(msg, Formatting.RED);
+		return FHUtils.getBoldAndColored(msg, Formatting.RED.getColorValue());
 	}
 
 	/**
@@ -100,6 +100,7 @@ public class FHUtils
 	 * @return the positive or negative message with {@link #getPositiveMessage(String)} or {@link #getNegativeMessage(String)} applied respectively.
 	 * @see #getPositiveMessage(String)
 	 * @see #getNegativeMessage(String)
+	 * @see #getMessageWithConnotation(String, boolean)
 	 */
 	public static MutableText getMessageWithConnotation(String positiveMessage, String negativeMessage, boolean positiveConnotation)
 	{
@@ -111,6 +112,15 @@ public class FHUtils
 		}
 	}
 
+	/**
+	 * Returns either the positive text or negative text depending on the boolean.
+	 * @param msg the message to display .
+	 * @param positiveConnotation whether the positive or negative message should be used.
+	 * @return the positive or negative message with {@link #getPositiveMessage(String)} or {@link #getNegativeMessage(String)} applied respectively.
+	 * @see #getPositiveMessage(String)
+	 * @see #getNegativeMessage(String)
+	 * @see #getMessageWithConnotation(String, String, boolean)
+	 */
 	public static MutableText getMessageWithConnotation(String msg, boolean positiveConnotation)
 	{
 		return getMessageWithConnotation(msg, msg, positiveConnotation);
