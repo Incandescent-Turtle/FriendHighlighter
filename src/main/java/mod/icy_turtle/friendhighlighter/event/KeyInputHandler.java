@@ -48,6 +48,8 @@ public class KeyInputHandler
             //  hacky solution, makes sure to send chat notification is selected
             FriendHighlighter.enterHitAt = System.currentTimeMillis();
             FriendHighlighter.toggleHighlight();
+//            MinecraftClient.getInstance().setScreen(new ModMenuIntegration().getModConfigScreenFactory().create(null));
+
         }
     }
 }

@@ -1,7 +1,7 @@
 package mod.icy_turtle.friendhighlighter;
 
 import com.mojang.brigadier.Command;
-import mod.icy_turtle.friendhighlighter.commands.CommandHandler;
+import mod.icy_turtle.friendhighlighter.command.CommandHandler;
 import mod.icy_turtle.friendhighlighter.config.FHSettings;
 import mod.icy_turtle.friendhighlighter.event.KeyInputHandler;
 import mod.icy_turtle.friendhighlighter.event.PlayerTickHandler;
@@ -18,10 +18,14 @@ import org.slf4j.LoggerFactory;
 
 /*
     TODO:
-       make it so mod integration and cloth config arent necessar
+        add button to open UI screen
         add lang file
-       add chat option to toggle that (invis)
-        split commands into separate files
+        cloth config/mod menu required?
+
+        change the other options to match the first one
+
+        allow you to switch between two options
+
         bro make api cmon
 
         broken:
@@ -32,13 +36,6 @@ import org.slf4j.LoggerFactory;
             - custom storage (as string)
             - color widget
             - color picker?
-
-
-            done:
-            bolded advacned list title
-            added color in modmenu window to indicate friends being enabled/disabled
-            renamed some things for clarity
-            created a chat interface with settings
 */
 
 /**
@@ -118,7 +115,7 @@ public class FriendHighlighter implements ClientModInitializer
                         : FHUtils.getNegativeMessage("DISABLED")
         );
         FriendHighlighter.sendMessage(text);
-        COMMAND_HANDLER.updateList();
+        COMMAND_HANDLER.updateLists();
         return Command.SINGLE_SUCCESS;
     }
 }

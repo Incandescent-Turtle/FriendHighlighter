@@ -39,7 +39,7 @@ public class ModMenuIntegration implements ModMenuApi
             builder.setSavingRunnable(()->{
                 FHConfig.saveConfig();
                 FHConfig.loadConfig();
-                FriendHighlighter.COMMAND_HANDLER.updateList();
+                FriendHighlighter.COMMAND_HANDLER.updateLists();
             });
             return builder.setParentScreen(screen).build();
         };

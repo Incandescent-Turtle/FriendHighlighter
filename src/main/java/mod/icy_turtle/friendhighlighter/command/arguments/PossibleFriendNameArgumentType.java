@@ -1,4 +1,4 @@
-package mod.icy_turtle.friendhighlighter.commands.arguments;
+package mod.icy_turtle.friendhighlighter.command.arguments;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -7,7 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import mod.icy_turtle.friendhighlighter.config.FriendsListHandler;
-import mod.icy_turtle.friendhighlighter.util.CommandUtils;
+import mod.icy_turtle.friendhighlighter.command.CommandUtils;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandSource;
