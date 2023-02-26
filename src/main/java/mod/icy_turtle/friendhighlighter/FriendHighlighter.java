@@ -18,24 +18,13 @@ import org.slf4j.LoggerFactory;
 
 /*
     TODO:
-        add button to open UI screen
+        ctrl + H for opening mod config, H for enabling/disabling highlight
         add lang file
         cloth config/mod menu required?
-
-        change the other options to match the first one
-
-        allow you to switch between two options
-
-        bro make api cmon
-
-        broken:
-        add drop down menu in config menu to add friends
-        allow using color names in the GUI
-            - custom dropdown
-            - custom parsing
-            - custom storage (as string)
-            - color widget
-            - color picker?
+        custom dropdown to allow using color names in the GUI
+        custom dropdown for
+        color widget
+        color picker?
 */
 
 /**

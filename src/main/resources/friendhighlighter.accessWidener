@@ -1,5 +1,6 @@
 accessWidener	v1 named
 
+accessible field net/minecraft/item/SpawnEggItem SPAWN_EGGS Ljava/util/Map;
 accessible field net/minecraft/client/gui/hud/ChatHud scrolledLines I
 accessible field net/minecraft/client/gui/hud/ChatHud messages Ljava/util/List;
 accessible method net/minecraft/client/gui/hud/ChatHud logChatMessage (Lnet/minecraft/text/Text;Lnet/minecraft/client/gui/hud/MessageIndicator;)V
