@@ -18,9 +18,7 @@ import org.slf4j.LoggerFactory;
 
 /*
     TODO:
-        ctrl + H for opening mod config, H for enabling/disabling highlight
         add lang file
-        cloth config/mod menu required?
         custom dropdown to allow using color names in the GUI
         custom dropdown for
         color widget

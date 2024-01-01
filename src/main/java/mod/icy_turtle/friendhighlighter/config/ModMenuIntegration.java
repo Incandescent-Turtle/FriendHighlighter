@@ -48,8 +48,8 @@ public class ModMenuIntegration implements ModMenuApi
             ConfigCategory modSettings = builder.getOrCreateCategory(Text.literal("Mod Settings"));
             createModSettings(modSettings, entryBuilder);
 
-            ConfigCategory thing = builder.getOrCreateCategory(Text.literal("thing"));
-            createThing(thing, entryBuilder);
+//            ConfigCategory thing = builder.getOrCreateCategory(Text.literal("thing"));
+//            createThing(thing, entryBuilder);
 
             builder.setSavingRunnable(()->{
                 FHConfig.saveConfig();
@@ -198,10 +198,21 @@ public class ModMenuIntegration implements ModMenuApi
     {
         var settings = FHSettings.getSettings();
         settingsCategory.addEntry(
-                entryBuilder.startEnumSelector(Text.literal("Message Display Method"), FHSettings.MessageDisplayMethod.class, FHSettings.getSettings().messageDisplayMethod)
+                entryBuilder.startEnumSelector(Text.literal("Message Display Method"), FHSettings.MessageDisplayMethod.class, settings.messageDisplayMethod)
                         .setSaveConsumer(displayMethod -> settings.messageDisplayMethod = displayMethod)
                         .setEnumNameProvider(displayMethod ->  Text.literal(FHUtils.capitalizeAllFirstLetters(displayMethod.name().replaceAll("_", " "))))
                         .setTooltipSupplier(createToolTip("How a message informing you of a change to your friends list is displayed. As a chat message, above the hotbar, or both."))
+                        .build()
+        );
+        settingsCategory.addEntry(
+                entryBuilder.startColorField(Text.literal("Default Color"), settings.defaultColor)
+                        .setSaveConsumer(color -> settings.defaultColor = color)
+                        .build()
+        );
+        settingsCategory.addEntry(
+                entryBuilder.startBooleanToggle(Text.literal("Highlight Only Players by Default"), settings.defaultPlayersOnly)
+                        .setSaveConsumer(onlyPlayers -> FHSettings.getSettings().defaultPlayersOnly = onlyPlayers)
+                        .setTooltipSupplier(createToolTip("When using commands to add a friend, you can select whether you want to highlight only players of that name or all mobs. If you don't specify, this default value will be given to that friend."))
                         .build()
         );
         settingsCategory.addEntry(

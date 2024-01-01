@@ -13,6 +13,16 @@ public class FHSettings
 	}
 
 	public MessageDisplayMethod messageDisplayMethod = MessageDisplayMethod.ACTION_BAR;
+	public boolean tooltipsEnabled = true;
+	public boolean highlightInvisibleFriends = true;
+	public Integer defaultColor = 0xFFFFFF;
+	public boolean defaultPlayersOnly = true;
+
+	public enum MessageDisplayMethod
+	{
+		ACTION_BAR, CHAT, BOTH
+	}
+
 	public MessageDisplayMethod getNextDisplayMethod()
 	{
 		var vals = List.of(FHSettings.MessageDisplayMethod.values());
@@ -20,12 +30,5 @@ public class FHSettings
 		pos += 1;
 		pos %= vals.size();
 		return vals.get(pos);
-	}
-
-	public boolean tooltipsEnabled = true;
-	public boolean highlightInvisibleFriends = true;
-	public enum MessageDisplayMethod
-	{
-		ACTION_BAR, CHAT, BOTH
 	}
 }

@@ -10,9 +10,9 @@ import mod.icy_turtle.friendhighlighter.command.arguments.BooleanWithWords;
 import mod.icy_turtle.friendhighlighter.command.arguments.ColorArgumentType;
 import mod.icy_turtle.friendhighlighter.command.arguments.PossibleFriendNameArgumentType;
 import mod.icy_turtle.friendhighlighter.config.FHConfig;
+import mod.icy_turtle.friendhighlighter.config.FHSettings;
 import mod.icy_turtle.friendhighlighter.config.FriendsListHandler;
 import mod.icy_turtle.friendhighlighter.config.HighlightedFriend;
-import mod.icy_turtle.friendhighlighter.util.FHColor;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.text.MutableText;
@@ -51,8 +51,8 @@ public class AddFriendCommand extends Command
 		var friendsMap = FriendsListHandler.getFriendsMap();
 
 		String friendName = context.getArgument(FRIEND_NAME, String.class);
-		String color = CommandUtils.getArgumentFromContext(context, COLOR, FHColor.WHITE.code);
-		boolean onlyPlayer = CommandUtils.getArgumentFromContext(context, ONLY_PLAYERS, true);
+		String color = CommandUtils.getArgumentFromContext(context, COLOR, "#" + Integer.toHexString(FHSettings.getSettings().defaultColor));
+		boolean onlyPlayer = CommandUtils.getArgumentFromContext(context, ONLY_PLAYERS, FHSettings.getSettings().defaultPlayersOnly);
 		boolean outlineFriend = CommandUtils.getArgumentFromContext(context, OUTLINE_FRIEND, true);
 
 		MutableText txt = Text.literal("");
