@@ -12,7 +12,7 @@ group = project.maven_group
 
 repositories {
 	mavenCentral()
-	maven { 	url "https://maven.shedaniel.me/" }
+	maven { url "https://maven.shedaniel.me/" }
 	maven { url "https://maven.terraformersmc.com/" }
 
 	// Add repositories to retrieve artifacts from in here.
@@ -30,10 +30,10 @@ dependencies {
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modImplementation("me.shedaniel.cloth:cloth-config-fabric:9.0.94") {
+	modImplementation("me.shedaniel.cloth:cloth-config-fabric:10.1.117") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
-	modCompileOnly modRuntimeOnly("com.terraformersmc:modmenu:5.0.2") {
+	modCompileOnly modRuntimeOnly("com.terraformersmc:modmenu:6.3.1") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 }
