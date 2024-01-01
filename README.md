@@ -1,7 +1,4 @@
 This mod is officially released for fabric 1.19.4. More information about the mod will be released soon.
-![outlined cow](https://github.com/Incandescent-Turtle/FriendHighlighter/assets/59327500/5f08d2f4-2b9d-4e40-8b01-46757aa35f3e)
-![outline of cow showing through blocks](https://github.com/Incandescent-Turtle/FriendHighlighter/assets/59327500/e3f33b34-d3d6-4587-9436-b856b76369c5)
-
 
 # Download
 To download this mod, visit the [releases](https://github.com/Incandescent-Turtle/FriendHighlighter/releases) page for this repo and download the latest release.
@@ -22,3 +19,11 @@ And is compatible with Mod Menu and Cloth Config (recommended):
 [Download Cloth Config](https://www.curseforge.com/minecraft/mc-mods/cloth-config/files?page=1&pageSize=20&version=1.19.4&gameVersionTypeId=4)
 
 [Download Mod Menu](https://modrinth.com/mod/modmenu/versions?g=1.19.4&l=fabric)
+
+## Screenshot
+![outlined cow](https://github.com/Incandescent-Turtle/FriendHighlighter/assets/59327500/5f08d2f4-2b9d-4e40-8b01-46757aa35f3e)
+![outline of cow showing through blocks](https://github.com/Incandescent-Turtle/FriendHighlighter/assets/59327500/e3f33b34-d3d6-4587-9436-b856b76369c5)
+<img width="384" alt="chat interface" src="https://github.com/Incandescent-Turtle/FriendHighlighter/assets/59327500/c35cdde2-2e5f-4a8f-8ff8-02608edea2a6">
+<img width="959" alt="GUI interface" src="https://github.com/Incandescent-Turtle/FriendHighlighter/assets/59327500/5c5ac65c-8751-4363-a8a3-387c31d96cc9">
+
+
