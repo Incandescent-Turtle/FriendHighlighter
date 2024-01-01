@@ -1,6 +1,7 @@
 package mod.icy_turtle.friendhighlighter.event;
 
 import mod.icy_turtle.friendhighlighter.FriendHighlighter;
+import mod.icy_turtle.friendhighlighter.config.ModMenuIntegration;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
@@ -22,11 +23,12 @@ public class KeyInputHandler
      * The language key for the key to toggle the highlighting feature.
      */
     private static final String KEY_HIGHLIGHT_FRIENDS = "key.friendhighlighter.highlight";
+    private static final String KEY_OPEN_GUI = "key.friendhighlighter.opengui";
 
     /**
      * The {@link KeyBinding} to toggle the highlighting feature.
      */
-    private static KeyBinding highlightKey;
+    private static KeyBinding highlightKey, openGUIKey;
 
     /**
      * Registers the mod's {@link KeyBinding}s.
@@ -36,6 +38,12 @@ public class KeyInputHandler
         highlightKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(KEY_HIGHLIGHT_FRIENDS,
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_H,
+                KEY_CATEGORY_ICY_UTILITIES
+        ));
+
+        openGUIKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(KEY_OPEN_GUI,
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_O,
                 KEY_CATEGORY_ICY_UTILITIES
         ));
         ClientTickEvents.END_CLIENT_TICK.register(KeyInputHandler::registerKeyInputs);
@@ -48,8 +56,9 @@ public class KeyInputHandler
             //  hacky solution, makes sure to send chat notification is selected
             FriendHighlighter.enterHitAt = System.currentTimeMillis();
             FriendHighlighter.toggleHighlight();
-//            MinecraftClient.getInstance().setScreen(new ModMenuIntegration().getModConfigScreenFactory().create(null));
-
+        }
+        if(openGUIKey.wasPressed()) {
+            MinecraftClient.getInstance().setScreen(new ModMenuIntegration().getModConfigScreenFactory().create(null));
         }
     }
 }

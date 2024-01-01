@@ -47,7 +47,7 @@ public enum FHColor
     /**
      * The hex code for this color.
      */
-    private final String code;
+    public final String code;
 
     FHColor(String code)
     {
@@ -63,5 +63,4 @@ public enum FHColor
     {
         return COLOR_MAP.get(colorName.toLowerCase());
     }
-
 }
