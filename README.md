@@ -1,4 +1,7 @@
 This mod is officially released for fabric 1.19.4. More information about the mod will be released soon.
+![outlined cow](https://github.com/Incandescent-Turtle/FriendHighlighter/assets/59327500/5f08d2f4-2b9d-4e40-8b01-46757aa35f3e)
+![outline of cow showing through blocks](https://github.com/Incandescent-Turtle/FriendHighlighter/assets/59327500/e3f33b34-d3d6-4587-9436-b856b76369c5)
+
 
 # Download
 To download this mod, visit the [releases](https://github.com/Incandescent-Turtle/FriendHighlighter/releases) page for this repo and download the latest release.
