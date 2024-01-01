@@ -12,6 +12,7 @@ import mod.icy_turtle.friendhighlighter.command.arguments.PossibleFriendNameArgu
 import mod.icy_turtle.friendhighlighter.config.FHConfig;
 import mod.icy_turtle.friendhighlighter.config.FriendsListHandler;
 import mod.icy_turtle.friendhighlighter.config.HighlightedFriend;
+import mod.icy_turtle.friendhighlighter.util.FHColor;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.text.MutableText;
@@ -22,30 +23,27 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class AddFriendCommand extends Command
 {
-	private static final String
-			FRIEND_NAME = "friendName",
-			COLOR = "color",
-			ONLY_PLAYERS = "onlyPlayers",
-			OUTLINE_FRIEND = "outlineFriend";
-
+	private static final String FRIEND_NAME = "friendName", COLOR = "color", ONLY_PLAYERS = "onlyPlayers", OUTLINE_FRIEND = "outlineFriend";
 
 	public AddFriendCommand(CommandHandler cmdHandler)
 	{
 		super(cmdHandler);
 	}
+
 	@Override
 	public LiteralArgumentBuilder<FabricClientCommandSource> createCommand()
 	{
 		// boolean arguments are optional and default to false
-		return
-				literal("add")
+		return literal("add")
 				.then(argument(FRIEND_NAME, new PossibleFriendNameArgumentType())
+						.executes(this::addFriend)
 						.then(argument(COLOR, new ColorArgumentType())
+								.executes(this::addFriend)
 								.then(argument(ONLY_PLAYERS, new BooleanWithWords("onlyPlayers", "allEntities"))
+										.executes(this::addFriend)
 										.then(argument(OUTLINE_FRIEND, new BooleanWithWords("outlineFriend", "dontOutlineFriend"))
-												.executes(this::addFriend))
-										.executes(this::addFriend))
-								.executes(this::addFriend)));
+												.executes(this::addFriend))))
+				.executes(this::addFriend));
 	}
 
 	private int addFriend(CommandContext<FabricClientCommandSource> context)
@@ -53,23 +51,19 @@ public class AddFriendCommand extends Command
 		var friendsMap = FriendsListHandler.getFriendsMap();
 
 		String friendName = context.getArgument(FRIEND_NAME, String.class);
-		String color = context.getArgument(COLOR, String.class);
+		String color = CommandUtils.getArgumentFromContext(context, COLOR, FHColor.WHITE.code);
 		boolean onlyPlayer = CommandUtils.getArgumentFromContext(context, ONLY_PLAYERS, true);
 		boolean outlineFriend = CommandUtils.getArgumentFromContext(context, OUTLINE_FRIEND, true);
 
 		MutableText txt = Text.literal("");
 		if(!friendsMap.containsKey(friendName))
 		{
-			txt.append(friendName).append(" ")
-					.append(FHUtils.getPositiveMessage("ADDED"))
-					.append(" ")
-					.append("with color of")
-					.append(" ")
-					.append(FHUtils.colorText(color, FHUtils.hexToRGB(color)));
-		} else {
+			txt.append(friendName).append(" ").append(FHUtils.getPositiveMessage("ADDED")).append(" ").append("with color of").append(" ").append(FHUtils.colorText(color, FHUtils.hexToRGB(color)));
+		} else
+		{
 			txt = FHUtils.getPositiveMessage(friendName + " Updated");
 		}
-		friendsMap.put(friendName, new HighlightedFriend(friendName, FHUtils.hexToRGB(color), onlyPlayer, outlineFriend).setEnabled(friendsMap.getOrDefault(friendName,new HighlightedFriend()).isEnabled()));
+		friendsMap.put(friendName, new HighlightedFriend(friendName, FHUtils.hexToRGB(color), onlyPlayer, outlineFriend).setEnabled(friendsMap.getOrDefault(friendName, new HighlightedFriend()).isEnabled()));
 		cmdHandler.updateLists();
 		FriendHighlighter.sendMessage(txt);
 		FHConfig.saveConfig();
