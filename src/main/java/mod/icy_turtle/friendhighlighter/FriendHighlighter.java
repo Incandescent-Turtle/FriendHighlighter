@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 /*
     TODO:
         add lang file
+
         custom dropdown to allow using color names in the GUI
         custom dropdown for
         color widget
