@@ -16,7 +16,7 @@ public class FHSettings
 	public boolean tooltipsEnabled = true;
 	public boolean highlightInvisibleFriends = true;
 	public Integer defaultColor = 0xFFFFFF;
-	public boolean defaultPlayersOnly = true;
+	public boolean defaultPlayersOnly = false;
 
 	public enum MessageDisplayMethod
 	{

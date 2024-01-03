@@ -5,7 +5,9 @@ import com.mojang.brigadier.context.CommandContext;
 import mod.icy_turtle.friendhighlighter.FriendHighlighter;
 import mod.icy_turtle.friendhighlighter.command.Command;
 import mod.icy_turtle.friendhighlighter.command.CommandHandler;
+import mod.icy_turtle.friendhighlighter.command.CommandUtils;
 import mod.icy_turtle.friendhighlighter.command.arguments.BooleanWithWords;
+import mod.icy_turtle.friendhighlighter.command.arguments.ColorArgumentType;
 import mod.icy_turtle.friendhighlighter.command.arguments.StringListArgumentType;
 import mod.icy_turtle.friendhighlighter.config.FHSettings;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
@@ -39,7 +41,13 @@ public class SettingsSetCommand extends Command
 								.executes(this::setTooltipVisibility)))
 				.then(literal("highlightInvisibleFriends")
 						.then(argument(VALUE, new BooleanWithWords("enabled", "disabled"))
-								.executes(this::setHighlightInvisibleFriends)));
+								.executes(this::setHighlightInvisibleFriends)))
+				.then(literal("defaultColor")
+						.then(argument(VALUE, new ColorArgumentType())
+								.executes(this::setDefaultColor)))
+				.then(literal("defaultPlayersOnly")
+						.then(argument(VALUE, new BooleanWithWords("onlyPlayers", "allEntities"))
+								.executes(this::setDefaultPlayersOnly)));
 	}
 
 	private int setDisplayMethod(CommandContext<FabricClientCommandSource> context)
@@ -64,6 +72,24 @@ public class SettingsSetCommand extends Command
 	{
 		FHSettings.getSettings().highlightInvisibleFriends = context.getArgument(VALUE, Boolean.class);
 		FriendHighlighter.sendMessage(Text.literal("Highlighting invisible friends is ").append(FHUtils.getMessageWithConnotation("enabled", "disabled", FHSettings.getSettings().highlightInvisibleFriends)));
+		cmdHandler.settingsChatMsg.updateContent();
+		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
+	}
+
+	private int setDefaultColor(CommandContext<FabricClientCommandSource> context)
+	{
+		String color = CommandUtils.getArgumentFromContext(context, VALUE, "#FFFFFF");
+		FHSettings.getSettings().defaultColor = FHUtils.hexToRGB(color);
+		FriendHighlighter.sendMessage(Text.literal("Default highlight color set to ").append(FHUtils.colorText(color, FHUtils.hexToRGB(color))));
+		cmdHandler.settingsChatMsg.updateContent();
+		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
+	}
+
+	private int setDefaultPlayersOnly(CommandContext<FabricClientCommandSource> context)
+	{
+		boolean playersOnly = CommandUtils.getArgumentFromContext(context, VALUE, true);
+		FHSettings.getSettings().defaultPlayersOnly = playersOnly;
+		FriendHighlighter.sendMessage(Text.literal("When not specified, a friend added by commands will now " + (playersOnly ? "only highlight players." : "highlight any entity with that name.")));
 		cmdHandler.settingsChatMsg.updateContent();
 		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
 	}

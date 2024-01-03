@@ -43,6 +43,8 @@ public class SettingsDisplayCommand extends Command
 		txt.append(createTooltipText(settings));
 		txt.append("\n\n");
 		txt.append(createHighlightInvisibleFriendsText(settings));
+		txt.append("\n\n");
+		txt.append(createDefaultPlayersOnlyText(settings));
 		return txt;
 	}
 
@@ -129,5 +131,31 @@ public class SettingsDisplayCommand extends Command
 		text.append(" | ");
 		text.append(hidden);
 		return text;
+	}
+
+	private static MutableText createDefaultPlayersOnlyText(FHSettings settings) {
+		var title = FHUtils.colorText("Highlight Players Only by Default", Color.ORANGE.getRGB());
+		CommandUtils.addToolTip(title, "Whether new friend entries will highlight just players by default or all entities");
+
+		var onlyPlayers = settings.defaultPlayersOnly;
+		var players = CommandUtils.addHoverAndClickEvent(
+				Text.literal("Only Players").styled(style -> style.withColor(onlyPlayers ? Formatting.GREEN : Formatting.RED).withBold(onlyPlayers)),
+				"PLACEHOLDER - LINK VIA LANG",
+				"/fh settings set defaultPlayersOnly onlyPlayers"
+		);
+
+		var entities = CommandUtils.addHoverAndClickEvent(
+				Text.literal("All Entities").styled(style -> style.withColor(onlyPlayers ? Formatting.RED : Formatting.GREEN).withBold(!onlyPlayers)),
+				"PLACEHOLDER - LINK VIA LANG",
+				"/fh settings set defaultPlayersOnly allEntities"
+		);
+
+		var tooltipText = Text.literal("");
+		tooltipText.append(title);
+		tooltipText.append("\n ↳ ");
+		tooltipText.append(players);
+		tooltipText.append(" | ");
+		tooltipText.append(entities);
+		return tooltipText;
 	}
 }
