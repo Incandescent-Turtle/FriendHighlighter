@@ -30,7 +30,7 @@ public class SimpleListCommand extends Command
 	public static MutableText createSimpleList()
 	{
 		MutableText txt = Text.literal("").append(CommandUtils.addHoverAndClickEvent(
-				FHUtils.getMessageWithConnotation("Friends List", FriendHighlighter.isHighlighterEnabled),
+				FHUtils.getMessageWithConnotation("Friends List: ", FriendHighlighter.isHighlighterEnabled),
 				"Click to toggle Friend Highlighter",
 				"/fh toggle"));
 		var map = FriendsListHandler.getFriendsMap();
