@@ -1,5 +1,9 @@
 This mod is officially released for fabric 1.19.4. More information about the mod will be released soon.
 
+# Discord
+Join my discord server to connect, ask questions, pose suggestions, etc!
+[https://discord.gg/9PahmgsGBd](https://discord.gg/9PahmgsGBd)
+
 # Download
 To download this mod, visit the [releases](https://github.com/Incandescent-Turtle/FriendHighlighter/releases) page for this repo and download the latest release.
 
