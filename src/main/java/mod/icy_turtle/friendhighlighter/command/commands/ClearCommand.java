@@ -22,8 +22,8 @@ public class ClearCommand extends Command
 	@Override
 	public LiteralArgumentBuilder<FabricClientCommandSource> createCommand()
 	{
-		return literal("clear")
-				.executes(this::clearFriendsList);
+		return literal("clear").then(literal("confirm")
+				.executes(this::clearFriendsList));
 	}
 
 	private int clearFriendsList(CommandContext<FabricClientCommandSource> context)
