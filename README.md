@@ -4,6 +4,9 @@ This mod is officially released for fabric 1.19.4 1.20.4.
 Join my discord server to connect, ask questions, post suggestions, etc!
 [https://discord.gg/9PahmgsGBd](https://discord.gg/9PahmgsGBd)
 
+# Donate
+If you like the mod consider supporting me [through paypal](https://www.paypal.com/cgi-bin/webscr?return=https://legacy.curseforge.com/projects/956756&cn=Add+special+instructions+to+the+addon+author()&business=rorsmacd%40gmail.com&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted&cancel_return=https://legacy.curseforge.com/projects/956756&lc=US&item_name=Friend+Highlighter+(from+curseforge.com)&cmd=_donations&rm=1&no_shipping=1&currency_code=CAD)
+
 # Download
 To download this mod, visit the [releases](https://github.com/Incandescent-Turtle/FriendHighlighter/releases) page for this repo and download the latest release. You can also find the latest versions on curseforge: [https://legacy.curseforge.com/minecraft/mc-mods/friend-highlighter](https://legacy.curseforge.com/minecraft/mc-mods/friend-highlighter)
 
