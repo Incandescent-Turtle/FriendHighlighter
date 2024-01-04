@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "friendhighlighter",
-  "version": "1.0.2",
+  "version": "1.0.3",
 
   "name": "Friend Highlighter",
   "description": "This is a mod that uses the vanilla glowing mechanic to highlight your friends",
