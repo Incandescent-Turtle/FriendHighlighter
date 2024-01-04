@@ -34,7 +34,7 @@ public abstract class WorldRendererMixin
 		if(FriendHighlighter.isHighlighterEnabled)
 		{
 			var friend = FriendsListHandler.getFriendFromEntity(entity);
-			if(FriendsListHandler.shouldHighlightEntity(entity) && friend.outlineFriend)
+			if(FriendsListHandler.shouldHighlightEntity(entity) && !friend.justNameTag)
 			{
 				return true;
 			}

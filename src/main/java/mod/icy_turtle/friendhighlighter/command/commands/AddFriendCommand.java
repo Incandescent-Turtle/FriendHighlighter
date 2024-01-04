@@ -23,7 +23,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class AddFriendCommand extends Command
 {
-	private static final String FRIEND_NAME = "friendName", COLOR = "color", ONLY_PLAYERS = "onlyPlayers", OUTLINE_FRIEND = "outlineFriend";
+	private static final String FRIEND_NAME = "friendName", COLOR = "color", ONLY_PLAYERS = "onlyPlayers", JUST_NAME_TAG = "justNameTag";
 
 	public AddFriendCommand(CommandHandler cmdHandler)
 	{
@@ -41,7 +41,7 @@ public class AddFriendCommand extends Command
 								.executes(this::addFriend)
 								.then(argument(ONLY_PLAYERS, new BooleanWithWords("onlyPlayers", "allEntities"))
 										.executes(this::addFriend)
-										.then(argument(OUTLINE_FRIEND, new BooleanWithWords("outlineFriend", "dontOutlineFriend"))
+										.then(argument(JUST_NAME_TAG, new BooleanWithWords("justNameTag", "nameTagAndOutline"))
 												.executes(this::addFriend))))
 				.executes(this::addFriend));
 	}
@@ -53,7 +53,7 @@ public class AddFriendCommand extends Command
 		String friendName = context.getArgument(FRIEND_NAME, String.class);
 		String color = CommandUtils.getArgumentFromContext(context, COLOR, "#" + Integer.toHexString(FHSettings.getSettings().defaultColor));
 		boolean onlyPlayer = CommandUtils.getArgumentFromContext(context, ONLY_PLAYERS, FHSettings.getSettings().defaultPlayersOnly);
-		boolean outlineFriend = CommandUtils.getArgumentFromContext(context, OUTLINE_FRIEND, true);
+		boolean justNameTag = CommandUtils.getArgumentFromContext(context, JUST_NAME_TAG, false);
 
 		MutableText txt = Text.literal("");
 		if(!friendsMap.containsKey(friendName))
@@ -63,7 +63,7 @@ public class AddFriendCommand extends Command
 		{
 			txt = FHUtils.getPositiveMessage(friendName + " Updated");
 		}
-		friendsMap.put(friendName, new HighlightedFriend(friendName, FHUtils.hexToRGB(color), onlyPlayer, outlineFriend).setEnabled(friendsMap.getOrDefault(friendName, new HighlightedFriend()).isEnabled()));
+		friendsMap.put(friendName, new HighlightedFriend(friendName, FHUtils.hexToRGB(color), onlyPlayer, justNameTag).setEnabled(friendsMap.getOrDefault(friendName, new HighlightedFriend()).isEnabled()));
 		cmdHandler.updateLists();
 		FriendHighlighter.sendMessage(txt);
 		FHConfig.saveConfig();

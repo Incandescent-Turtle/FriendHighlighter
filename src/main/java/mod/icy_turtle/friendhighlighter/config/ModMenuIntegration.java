@@ -176,8 +176,8 @@ public class ModMenuIntegration implements ModMenuApi
                                             .setSaveConsumer(onlyPlayers -> friend.onlyPlayers = onlyPlayers)
                                             .setTooltipSupplier(createToolTip("Whether only player's with this name will get highlighted."))
                                             .build(),
-                                    entryBuilder.startBooleanToggle(Text.literal("Outline Friend"), friend.outlineFriend)
-                                            .setSaveConsumer(outlineFriend -> friend.outlineFriend = outlineFriend)
+                                    entryBuilder.startBooleanToggle(Text.literal("Just Nametag"), friend.justNameTag)
+                                            .setSaveConsumer(justNametag -> friend.justNameTag = justNametag)
                                             .setTooltipSupplier(createToolTip("Whether " + (friend.onlyPlayers ? "players" : "entities") + " with this name will be outlined in addition their name tag always showing and being colored."))
                                             .build(),
                                     entryBuilder.startBooleanToggle(Text.literal("Enabled"), friend.isEnabled())

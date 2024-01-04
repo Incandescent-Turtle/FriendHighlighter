@@ -106,13 +106,13 @@ public class AdvancedListCommand extends Command
 		MutableText onlyPlayers = CommandUtils.addHoverAndClickEvent(
 				friend.onlyPlayers ? FHUtils.colorText("Only Player", 0xA7C7E7) : FHUtils.colorText("All entities", 0xFF5F1F),
 				"Click to change to " + (!friend.onlyPlayers ? "only players" : "all entities"),
-				clickEvent.apply(!friend.onlyPlayers, friend.outlineFriend));
+				clickEvent.apply(!friend.onlyPlayers, friend.justNameTag));
 
 
 		MutableText outlineFriend = CommandUtils.addHoverAndClickEvent(
-				FHUtils.colorText("Outline Friend", (friend.outlineFriend ? Formatting.GREEN : Formatting.RED).getColorValue()),
-				FHUtils.getMessageWithConnotation("TRUE", "FALSE", friend.outlineFriend).append(" | Click to toggle"),
-				clickEvent.apply(friend.onlyPlayers, !friend.outlineFriend));
+				friend.justNameTag ? FHUtils.colorText("Nametag Only", 0xFFFFFF) : FHUtils.colorText("Nametag & Outline", 0x008800),
+				"Click to change to " + (friend.justNameTag ? "nametag & outline" : "nametag only"),
+				clickEvent.apply(friend.onlyPlayers, !friend.justNameTag));
 
 		return Text.literal(" ↳ ").append(onlyPlayers).append(" | ").append(outlineFriend);
 	}

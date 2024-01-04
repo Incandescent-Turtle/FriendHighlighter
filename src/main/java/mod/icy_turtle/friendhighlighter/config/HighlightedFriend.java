@@ -16,7 +16,7 @@ public class HighlightedFriend
     /**
      * Whether this friend should be highlighted, or just have their name tag show and be colored.
      */
-    public boolean outlineFriend;
+    public boolean justNameTag;
 
     /**
      * Whether this friend should be affected by the highlighter.
@@ -33,7 +33,7 @@ public class HighlightedFriend
         name = "";
         color = 0xFFFFFF;
         onlyPlayers = true;
-        outlineFriend = true;
+        justNameTag = true;
         enabled = true;
     }
 
@@ -47,7 +47,7 @@ public class HighlightedFriend
         this.name = name;
         this.color = color;
         this.onlyPlayers = true;
-        this.outlineFriend = true;
+        this.justNameTag = true;
     }
 
     /**
@@ -55,16 +55,16 @@ public class HighlightedFriend
      * @param name the name of the friend.
      * @param color the highlight/name color for the friend.
      * @param onlyPlayers whether this friend only includes players, as opposed to all entities.
-     * @param outlineFriend whether this friend should get highlighted, or just have its name show and be colored.
+     * @param justNameTag whether this friend should get highlighted, or just have its name show and be colored.
      * @see #HighlightedFriend()
      * @see #HighlightedFriend(String, int)
      */
-    public HighlightedFriend(String name, int color, boolean onlyPlayers, boolean outlineFriend)
+    public HighlightedFriend(String name, int color, boolean onlyPlayers, boolean justNameTag)
     {
         this.name = name;
         this.color = color;
         this.onlyPlayers = onlyPlayers;
-        this.outlineFriend = outlineFriend;
+        this.justNameTag = justNameTag;
         this.enabled = true;
     }
 
