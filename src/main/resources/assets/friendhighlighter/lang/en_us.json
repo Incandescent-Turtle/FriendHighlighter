@@ -1,6 +1,7 @@
 {
-  "key.category.friendHighlighter.utils": "Friend Highlighter",
-  "key.friendHighlighter.opengui": "Open Mod Settings",
+  "key.category.friendhighlighter.utils": "Friend Highlighter",
+  "key.friendhighlighter.opengui": "Open Mod Settings",
+  "key.friendhighlighter.highlight": "Toggle Highlighter",
 
   "config.friendHighlighter.title": "Friend Highlighter Config",
   "config.friendHighlighter.category.friendsList": "Friends List"
