@@ -114,7 +114,7 @@ public class AdvancedListCommand extends Command
 				"Click to change to " + (friend.justNameTag ? "nametag & outline" : "nametag only"),
 				clickEvent.apply(friend.onlyPlayers, !friend.justNameTag));
 
-		return Text.literal(" ↳ ").append(onlyPlayers).append(" | ").append(outlineFriend);
+		return Text.literal("   ↳ ").append(onlyPlayers).append(" | ").append(outlineFriend);
 	}
 
 	/**
@@ -126,7 +126,7 @@ public class AdvancedListCommand extends Command
 		return CommandUtils.addHoverAndClickEvent(
 				FHUtils.getNegativeMessage("Clear"),
 				Text.literal("Clear Friends List"),
-				"/fh clear"
+				"/fh clear confirm"
 		);
 	}
 }
