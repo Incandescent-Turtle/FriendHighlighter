@@ -2,8 +2,10 @@ package mod.icy_turtle.friendhighlighter.event;
 
 import mod.icy_turtle.friendhighlighter.FriendHighlighter;
 import mod.icy_turtle.friendhighlighter.config.ModMenuIntegration;
+import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -58,7 +60,11 @@ public class KeyInputHandler
             FriendHighlighter.toggleHighlight();
         }
         if(openGUIKey.wasPressed()) {
-            MinecraftClient.getInstance().setScreen(new ModMenuIntegration().getModConfigScreenFactory().create(null));
+            if(FabricLoader.getInstance().isModLoaded("modmenu")) {
+                MinecraftClient.getInstance().setScreen(new ModMenuIntegration().getModConfigScreenFactory().create(null));
+            } else {
+                FriendHighlighter.sendMessage(FHUtils.getNegativeMessage("To use the GUI download Mod Menu and Cloth Config"));
+            }
         }
     }
 }
