@@ -58,8 +58,8 @@ public class FHConfig
                 return defaultValue;
             return deserialized;
         } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
+            LOGGER.warn("Problem loading " + file.getFileName() + " creating blank config");
+            return defaultValue;
         }
     }
 
