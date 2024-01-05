@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "id": "friendhighlighter",
-  "version": "1.0.3",
+  "version": "1.0.4",
 
   "name": "Friend Highlighter",
-  "description": "This is a mod that uses the vanilla glowing mechanic to highlight your friends",
+  "description": "This is a mod that lets you highlight entities through blocks",
   "authors": [
     "icy_turtle aka IncandescentTurtle"
   ],
