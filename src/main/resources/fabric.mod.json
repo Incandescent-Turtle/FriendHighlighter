@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "friendhighlighter",
-  "version": "1.0.4",
+  "version": "1.0.5",
 
   "name": "Friend Highlighter",
   "description": "This is a mod that uses the vanilla glowing mechanic to highlight your friends",
@@ -37,7 +37,7 @@
     "fabricloader": ">=0.15.3",
     "fabric": "*",
     "fabric-api": "*",
-    "minecraft": "1.20.1",
+    "minecraft": "1.20.2",
     "java": ">=17"
   },
   "suggests": {

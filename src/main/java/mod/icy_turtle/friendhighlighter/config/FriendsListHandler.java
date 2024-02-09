@@ -31,6 +31,14 @@ public class FriendsListHandler
 	 */
 	public static @Nullable HighlightedFriend getFriendFromEntity(Entity entity)
 	{
+		final var map = getFriendsMap();
+		for(final var friendName : map.keySet())
+		{
+			if(entity.getName().getString().toLowerCase().contains(friendName.toLowerCase()))
+			{
+				return map.get(friendName);
+			}
+		}
 		return getFriendsMap().get(entity.getName().getString());
 	}
 
