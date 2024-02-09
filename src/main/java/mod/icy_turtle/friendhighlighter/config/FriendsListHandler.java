@@ -31,10 +31,18 @@ public class FriendsListHandler
 	 */
 	public static @Nullable HighlightedFriend getFriendFromEntity(Entity entity)
 	{
+		System.out.println(entity.getDisplayName());
 		final var map = getFriendsMap();
 		for(final var friendName : map.keySet())
 		{
-			if(entity.getName().getString().toLowerCase().contains(friendName.toLowerCase()))
+			var displayName = entity.getDisplayName().getString().toLowerCase();
+			var name = entity.getName().getString().toLowerCase();
+			var customName = entity.getCustomName().getString().toLowerCase();
+			var entityName = entity.getEntityName().toLowerCase();
+
+			var lowerName = friendName.toLowerCase();
+
+			if(displayName.contains(lowerName) || name.contains(lowerName) || customName.contains(lowerName) || entityName.contains(lowerName))
 			{
 				return map.get(friendName);
 			}
