@@ -37,12 +37,17 @@ public class FriendsListHandler
 		{
 			var displayName = entity.getDisplayName().getString().toLowerCase();
 			var name = entity.getName().getString().toLowerCase();
-			var customName = entity.getCustomName().getString().toLowerCase();
 			var entityName = entity.getEntityName().toLowerCase();
+
+			String customName = null;
+			if(entity.getCustomName() != null && entity.getCustomName().getString() != null)
+			{
+				customName = entity.getCustomName().getString().toLowerCase();
+			}
 
 			var lowerName = friendName.toLowerCase();
 
-			if(displayName.contains(lowerName) || name.contains(lowerName) || customName.contains(lowerName) || entityName.contains(lowerName))
+			if(displayName.contains(lowerName) || name.contains(lowerName) || (customName != null && customName.contains(lowerName)) || entityName.contains(lowerName))
 			{
 				return map.get(friendName);
 			}
