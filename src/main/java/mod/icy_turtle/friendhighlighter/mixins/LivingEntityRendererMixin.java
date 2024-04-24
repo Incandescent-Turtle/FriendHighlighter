@@ -19,7 +19,7 @@ public class LivingEntityRendererMixin
 		if(FriendHighlighter.isHighlighterEnabled && FHSettings.getSettings().highlightInvisibleFriends)
 		{
 			var friend = FriendsListHandler.getFriendFromEntity(entity);
-			if(FriendsListHandler.shouldHighlightEntity(entity) && !friend.justNameTag)
+			if(FriendsListHandler.shouldHighlightEntity(entity) && (friend != null && !friend.justNameTag || friend == null))
 			{
 				return true;
 			}

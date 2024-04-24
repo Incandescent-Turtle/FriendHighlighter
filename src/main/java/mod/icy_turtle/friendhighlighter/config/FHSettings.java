@@ -18,6 +18,8 @@ public class FHSettings
 	public Integer defaultColor = 0xFFFFFF;
 	public boolean defaultPlayersOnly = false;
 
+	public boolean highlightAllPlayers = true;
+
 	public enum MessageDisplayMethod
 	{
 		ACTION_BAR, CHAT, BOTH

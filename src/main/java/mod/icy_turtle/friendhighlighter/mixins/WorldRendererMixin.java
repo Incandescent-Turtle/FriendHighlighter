@@ -21,6 +21,8 @@ public abstract class WorldRendererMixin
 			var friend = FriendsListHandler.getFriendFromEntity(entity);
 			if(FriendsListHandler.shouldHighlightEntity(entity))
 			{
+				if(friend == null)
+					return 0xFFFFFF;
 				return friend.color;
 			}
 		}
@@ -34,7 +36,7 @@ public abstract class WorldRendererMixin
 		if(FriendHighlighter.isHighlighterEnabled)
 		{
 			var friend = FriendsListHandler.getFriendFromEntity(entity);
-			if(FriendsListHandler.shouldHighlightEntity(entity) && !friend.justNameTag)
+			if(FriendsListHandler.shouldHighlightEntity(entity) && (friend != null && !friend.justNameTag || friend == null))
 			{
 				return true;
 			}

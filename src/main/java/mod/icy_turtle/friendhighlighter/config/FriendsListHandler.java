@@ -41,6 +41,8 @@ public class FriendsListHandler
 	 */
 	public static boolean shouldHighlightEntity(Entity entity)
 	{
+		if(FHSettings.getSettings().highlightAllPlayers && entity instanceof PlayerEntity)
+			return true;
 		var friend = getFriendFromEntity(entity);
 		return friend != null && friend.isEnabled() && (entity instanceof PlayerEntity || !friend.onlyPlayers);
 	}

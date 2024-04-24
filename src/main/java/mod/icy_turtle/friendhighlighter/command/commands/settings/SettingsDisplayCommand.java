@@ -25,8 +25,7 @@ public class SettingsDisplayCommand extends Command
 	@Override
 	public LiteralArgumentBuilder<FabricClientCommandSource> createCommand()
 	{
-		return literal("display")
-				.executes(context -> cmdHandler.settingsChatMsg.sendInChat());
+		return literal("display").executes(context -> cmdHandler.settingsChatMsg.sendInChat());
 	}
 
 	public static MutableText createSettings()
@@ -45,6 +44,8 @@ public class SettingsDisplayCommand extends Command
 		txt.append(createHighlightInvisibleFriendsText(settings));
 		txt.append("\n\n");
 		txt.append(createDefaultPlayersOnlyText(settings));
+		txt.append("\n\n");
+		txt.append(createHighlightAllPlayersText(settings));
 		return txt;
 	}
 
@@ -60,13 +61,9 @@ public class SettingsDisplayCommand extends Command
 			var methodName = methods[i].name();
 			var isSelected = methodName.equals(settings.messageDisplayMethod.name());
 			var methodText = Text.literal(methodName);
-			CommandUtils.addHoverAndClickEvent(
-					methodText.styled(style -> style.withBold(isSelected).withColor(isSelected ? Formatting.GREEN : Formatting.RED)),
-					"PLACE HOLDER",
-					"/fh settings set messageDisplayMethod " + methodName
-			);
+			CommandUtils.addHoverAndClickEvent(methodText.styled(style -> style.withBold(isSelected).withColor(isSelected ? Formatting.GREEN : Formatting.RED)), "PLACE HOLDER", "/fh settings set messageDisplayMethod " + methodName);
 			methodChoiceText.append(methodText);
-			if(i < methods.length-1)
+			if(i < methods.length - 1)
 			{
 				methodChoiceText.append(" | ");
 			}
@@ -85,17 +82,9 @@ public class SettingsDisplayCommand extends Command
 		CommandUtils.addToolTip(title, "Toggle visibility of tooltips in the chat and other menus");
 
 		var enabled = settings.tooltipsEnabled;
-		var ttVisible = CommandUtils.addHoverAndClickEvent(
-				Text.literal("Visible").styled(style -> style.withColor(enabled ? Formatting.GREEN : Formatting.RED).withBold(enabled)),
-				"PLACEHOLDER - LINK VIA LANG",
-				"/fh settings set tooltipVisibility visible"
-		);
+		var ttVisible = CommandUtils.addHoverAndClickEvent(Text.literal("Visible").styled(style -> style.withColor(enabled ? Formatting.GREEN : Formatting.RED).withBold(enabled)), "PLACEHOLDER - LINK VIA LANG", "/fh settings set tooltipVisibility visible");
 
-		var ttHidden = CommandUtils.addHoverAndClickEvent(
-				Text.literal("Hidden").styled(style -> style.withColor(enabled ? Formatting.RED : Formatting.GREEN).withBold(!enabled)),
-				"PLACEHOLDER - LINK VIA LANG",
-				"/fh settings set tooltipVisibility hidden"
-		);
+		var ttHidden = CommandUtils.addHoverAndClickEvent(Text.literal("Hidden").styled(style -> style.withColor(enabled ? Formatting.RED : Formatting.GREEN).withBold(!enabled)), "PLACEHOLDER - LINK VIA LANG", "/fh settings set tooltipVisibility hidden");
 
 		var tooltipText = Text.literal("");
 		tooltipText.append(title);
@@ -112,17 +101,9 @@ public class SettingsDisplayCommand extends Command
 		CommandUtils.addToolTip(title, "Toggle whether friends will be highlighted when they have the invisibility effect");
 
 		var enabled = settings.highlightInvisibleFriends;
-		var visible = CommandUtils.addHoverAndClickEvent(
-				Text.literal("Highlight").styled(style -> style.withColor(enabled ? Formatting.GREEN : Formatting.RED).withBold(enabled)),
-				"PLACEHOLDER - LINK VIA LANG",
-				"/fh settings set highlightInvisibleFriends enabled"
-		);
+		var visible = CommandUtils.addHoverAndClickEvent(Text.literal("Highlight").styled(style -> style.withColor(enabled ? Formatting.GREEN : Formatting.RED).withBold(enabled)), "PLACEHOLDER - LINK VIA LANG", "/fh settings set highlightInvisibleFriends enabled");
 
-		var hidden = CommandUtils.addHoverAndClickEvent(
-				Text.literal("Ignore").styled(style -> style.withColor(enabled ? Formatting.RED : Formatting.GREEN).withBold(!enabled)),
-				"PLACEHOLDER - LINK VIA LANG",
-				"/fh settings set highlightInvisibleFriends disabled"
-		);
+		var hidden = CommandUtils.addHoverAndClickEvent(Text.literal("Ignore").styled(style -> style.withColor(enabled ? Formatting.RED : Formatting.GREEN).withBold(!enabled)), "PLACEHOLDER - LINK VIA LANG", "/fh settings set highlightInvisibleFriends disabled");
 
 		var text = Text.literal("");
 		text.append(title);
@@ -133,22 +114,15 @@ public class SettingsDisplayCommand extends Command
 		return text;
 	}
 
-	private static MutableText createDefaultPlayersOnlyText(FHSettings settings) {
+	private static MutableText createDefaultPlayersOnlyText(FHSettings settings)
+	{
 		var title = FHUtils.colorText("Highlight Players Only by Default", Color.ORANGE.getRGB());
 		CommandUtils.addToolTip(title, "Whether new friend entries will highlight just players by default or all entities");
 
 		var onlyPlayers = settings.defaultPlayersOnly;
-		var players = CommandUtils.addHoverAndClickEvent(
-				Text.literal("Only Players").styled(style -> style.withColor(onlyPlayers ? Formatting.GREEN : Formatting.RED).withBold(onlyPlayers)),
-				"PLACEHOLDER - LINK VIA LANG",
-				"/fh settings set defaultPlayersOnly onlyPlayers"
-		);
+		var players = CommandUtils.addHoverAndClickEvent(Text.literal("Only Players").styled(style -> style.withColor(onlyPlayers ? Formatting.GREEN : Formatting.RED).withBold(onlyPlayers)), "PLACEHOLDER - LINK VIA LANG", "/fh settings set defaultPlayersOnly onlyPlayers");
 
-		var entities = CommandUtils.addHoverAndClickEvent(
-				Text.literal("All Entities").styled(style -> style.withColor(onlyPlayers ? Formatting.RED : Formatting.GREEN).withBold(!onlyPlayers)),
-				"PLACEHOLDER - LINK VIA LANG",
-				"/fh settings set defaultPlayersOnly allEntities"
-		);
+		var entities = CommandUtils.addHoverAndClickEvent(Text.literal("All Entities").styled(style -> style.withColor(onlyPlayers ? Formatting.RED : Formatting.GREEN).withBold(!onlyPlayers)), "PLACEHOLDER - LINK VIA LANG", "/fh settings set defaultPlayersOnly allEntities");
 
 		var tooltipText = Text.literal("");
 		tooltipText.append(title);
@@ -156,6 +130,26 @@ public class SettingsDisplayCommand extends Command
 		tooltipText.append(players);
 		tooltipText.append(" | ");
 		tooltipText.append(entities);
+		return tooltipText;
+	}
+
+	private static MutableText createHighlightAllPlayersText(FHSettings settings)
+	{
+		var enabled = settings.highlightAllPlayers;
+
+		var title = FHUtils.colorText("Highlight All Players", Color.ORANGE.getRGB());
+		CommandUtils.addToolTip(title, "Whether all players should be highlighted when the highlighter is enabled.");
+
+		var on = CommandUtils.addHoverAndClickEvent(Text.literal("Enabled").styled(style -> style.withColor(enabled ? Formatting.GREEN : Formatting.RED).withBold(enabled)), "Click to highlight all players", "/fh settings set highlightAllPlayers enabled");
+		var off = CommandUtils.addHoverAndClickEvent(Text.literal("Disabled").styled(style -> style.withColor(enabled ? Formatting.RED : Formatting.GREEN).withBold(!enabled)), "Click to disable", "/fh settings set highlightAllPlayers disabled");
+
+		var tooltipText = Text.literal("");
+		tooltipText.append(title);
+		tooltipText.append("\n ↳ ");
+		tooltipText.append(on);
+		tooltipText.append(" | ");
+		tooltipText.append(off);
+
 		return tooltipText;
 	}
 }
