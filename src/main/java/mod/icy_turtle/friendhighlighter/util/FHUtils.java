@@ -1,10 +1,15 @@
 package mod.icy_turtle.friendhighlighter.util;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RaycastContext;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -248,5 +253,26 @@ public class FHUtils
 			words[i] = StringUtils.capitalize(words[i].toLowerCase());
 		}
 		return String.join(" ", words);
+	}
+
+	public static boolean canSeeEntity(PlayerEntity player, Entity target) {
+		Vec3d playerEye = player.getEyePos();  // Get player's eye position
+		Vec3d targetEyePos = target.getEyePos();            // Get target's position
+		Vec3d targetBottomPos = new Vec3d(target.getX(), target.getBoundingBox().minY, target.getZ());
+
+		// Determine the max distance we want to check for visibility, can be adjusted
+		double distance = playerEye.distanceTo(targetEyePos);
+
+		// Setting up the clipping context for ray tracing
+		RaycastContext rayEyeContext = new RaycastContext(playerEye, targetEyePos, RaycastContext.ShapeType.VISUAL, RaycastContext.FluidHandling.NONE, player);
+		RaycastContext rayBottomContext = new RaycastContext(playerEye, targetBottomPos, RaycastContext.ShapeType.VISUAL, RaycastContext.FluidHandling.NONE, player);
+		// Perform the raycast
+		var resultEye = player.world.raycast(rayEyeContext);
+		var resultBottom = player.world.raycast(rayBottomContext);
+
+		// Check if the raycast hit a block before reaching the target
+		boolean isVisible = (resultEye.getType() == HitResult.Type.MISS || resultEye.getPos().distanceTo(playerEye) >= distance) || (resultBottom.getType() == HitResult.Type.MISS || resultBottom.getPos().distanceTo(playerEye) >= distance);
+
+		return isVisible;
 	}
 }

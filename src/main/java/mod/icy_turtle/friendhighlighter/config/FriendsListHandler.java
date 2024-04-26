@@ -1,5 +1,7 @@
 package mod.icy_turtle.friendhighlighter.config;
 
+import mod.icy_turtle.friendhighlighter.util.FHUtils;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.jetbrains.annotations.Nullable;
@@ -42,6 +44,17 @@ public class FriendsListHandler
 	public static boolean shouldHighlightEntity(Entity entity)
 	{
 		var friend = getFriendFromEntity(entity);
-		return friend != null && friend.isEnabled() && (entity instanceof PlayerEntity || !friend.onlyPlayers);
+
+		if(friend != null && friend.isEnabled())
+		{
+			if(entity instanceof PlayerEntity || !friend.onlyPlayers)
+			{
+				if(FHSettings.getSettings().highlightThroughWalls || FHUtils.canSeeEntity(MinecraftClient.getInstance().player, entity))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

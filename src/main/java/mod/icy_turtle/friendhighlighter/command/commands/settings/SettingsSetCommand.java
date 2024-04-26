@@ -51,7 +51,11 @@ public class SettingsSetCommand extends Command
 
 				.then(literal("enhancedNametags")
 						.then(argument(VALUE, new BooleanWithWords("enhanced", "normal"))
-								.executes(this::setEnhancedNametags)));
+								.executes(this::setEnhancedNametags)))
+
+				.then(literal("highlightThroughBlocks")
+						.then(argument(VALUE, new BooleanWithWords("highlight", "dontHighlight"))
+								.executes(this::setHighlightThroughBlocks)));
 	}
 
 	private int setDisplayMethod(CommandContext<FabricClientCommandSource> context)
@@ -103,6 +107,15 @@ public class SettingsSetCommand extends Command
 		boolean enhancedNametags = CommandUtils.getArgumentFromContext(context, VALUE, false);
 		FHSettings.getSettings().enhancedNametags = enhancedNametags;
 		FriendHighlighter.sendMessage(Text.literal("Enhanced nametags are now " + (enhancedNametags ? "enabled." : "disabled.")));
+		cmdHandler.settingsChatMsg.updateContent();
+		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
+	}
+
+	private int setHighlightThroughBlocks(CommandContext<FabricClientCommandSource> context)
+	{
+		boolean highlight = CommandUtils.getArgumentFromContext(context, VALUE, false);
+		FHSettings.getSettings().highlightThroughWalls = highlight;
+		FriendHighlighter.sendMessage(Text.literal("Friends will " + (highlight ? "be" : "not be") + " highlighted if blocks are in the way."));
 		cmdHandler.settingsChatMsg.updateContent();
 		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
 	}

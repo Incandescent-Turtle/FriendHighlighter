@@ -233,6 +233,12 @@ public class ModMenuIntegration implements ModMenuApi
                         .setTooltipSupplier(createToolTip("When enabled, nametags will render more clearly through blocks so you can read the name better."))
                         .build()
         );
+        settingsCategory.addEntry(
+                entryBuilder.startBooleanToggle(Text.literal("Highlight Through Walls"), FHSettings.getSettings().highlightThroughWalls)
+                        .setSaveConsumer(highlight -> FHSettings.getSettings().highlightThroughWalls = highlight)
+                        .setTooltipSupplier(createToolTip("When enabled, friends will be highlighted even when you cannot see them (aka when they are behind blocks)."))
+                        .build()
+        );
     }
 
     /**

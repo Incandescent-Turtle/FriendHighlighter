@@ -1,7 +1,9 @@
 package mod.icy_turtle.friendhighlighter.mixins;
 
 import mod.icy_turtle.friendhighlighter.FriendHighlighter;
+import mod.icy_turtle.friendhighlighter.config.FHSettings;
 import mod.icy_turtle.friendhighlighter.config.FriendsListHandler;
+import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.entity.Entity;
@@ -36,6 +38,10 @@ public abstract class WorldRendererMixin
 			var friend = FriendsListHandler.getFriendFromEntity(entity);
 			if(FriendsListHandler.shouldHighlightEntity(entity) && !friend.justNameTag)
 			{
+				if(!FHSettings.getSettings().highlightThroughWalls && !FHUtils.canSeeEntity(client.player, entity))
+				{
+					return false;
+				}
 				return true;
 			}
 		}

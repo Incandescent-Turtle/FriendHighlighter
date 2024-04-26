@@ -47,6 +47,8 @@ public class SettingsDisplayCommand extends Command
 		txt.append(createDefaultPlayersOnlyText(settings));
 		txt.append("\n\n");
 		txt.append(createEnhancedNametagsText(settings));
+		txt.append("\n\n");
+		txt.append(createHighlightThroughBlocksText(settings));
 		return txt;
 	}
 
@@ -184,6 +186,32 @@ public class SettingsDisplayCommand extends Command
 		tooltipText.append(enhanced);
 		tooltipText.append(" | ");
 		tooltipText.append(normal);
+		return tooltipText;
+	}
+
+	private static MutableText createHighlightThroughBlocksText(FHSettings settings) {
+		var title = FHUtils.colorText("Highlight Through Blocks", Color.ORANGE.getRGB());
+		CommandUtils.addToolTip(title, "Toggles highlighting friends through blocks");
+
+		var status = settings.highlightThroughWalls;
+		var highlight = CommandUtils.addHoverAndClickEvent(
+				Text.literal("Highlight").styled(style -> style.withColor(status ? Formatting.GREEN : Formatting.RED).withBold(status)),
+				"PLACEHOLDER - LINK VIA LANG",
+				"/fh settings set highlightThroughBlocks highlight"
+		);
+
+		var dontHighlight = CommandUtils.addHoverAndClickEvent(
+				Text.literal("Don't Highlight").styled(style -> style.withColor(status ? Formatting.RED : Formatting.GREEN).withBold(!status)),
+				"PLACEHOLDER - LINK VIA LANG",
+				"/fh settings set highlightThroughBlocks dontHighlight"
+		);
+
+		var tooltipText = Text.literal("");
+		tooltipText.append(title);
+		tooltipText.append("\n ↳ ");
+		tooltipText.append(highlight);
+		tooltipText.append(" | ");
+		tooltipText.append(dontHighlight);
 		return tooltipText;
 	}
 }

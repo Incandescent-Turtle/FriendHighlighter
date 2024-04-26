@@ -18,6 +18,7 @@ public class FHSettings
 	public Integer defaultColor = 0xFFFFFF;
 	public boolean defaultPlayersOnly = false;
 	public boolean enhancedNametags = false;
+	public boolean highlightThroughWalls = true;
 
 	public enum MessageDisplayMethod
 	{
