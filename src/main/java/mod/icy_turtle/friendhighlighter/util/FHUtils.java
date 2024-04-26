@@ -264,8 +264,8 @@ public class FHUtils
 		double distance = playerEye.distanceTo(targetEyePos);
 
 		// Setting up the clipping context for ray tracing
-		RaycastContext rayEyeContext = new RaycastContext(playerEye, targetEyePos, RaycastContext.ShapeType.VISUAL, RaycastContext.FluidHandling.NONE, player);
-		RaycastContext rayBottomContext = new RaycastContext(playerEye, targetBottomPos, RaycastContext.ShapeType.VISUAL, RaycastContext.FluidHandling.NONE, player);
+		RaycastContext rayEyeContext = new LavaBlockedRaycastContext(playerEye, targetEyePos, RaycastContext.ShapeType.VISUAL, player);
+		RaycastContext rayBottomContext = new LavaBlockedRaycastContext(playerEye, targetBottomPos, RaycastContext.ShapeType.VISUAL, player);
 		// Perform the raycast
 		var resultEye = player.world.raycast(rayEyeContext);
 		var resultBottom = player.world.raycast(rayBottomContext);
