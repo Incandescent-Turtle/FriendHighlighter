@@ -227,6 +227,12 @@ public class ModMenuIntegration implements ModMenuApi
                         .setTooltipSupplier(createToolTip("Whether friends get highlighted when they are invisible. Also applies to nametag rendering/colouring when invisible."))
                         .build()
         );
+        settingsCategory.addEntry(
+                entryBuilder.startBooleanToggle(Text.literal("Enhanced Nametags"), FHSettings.getSettings().enhancedNametags)
+                        .setSaveConsumer(enhanced -> FHSettings.getSettings().enhancedNametags = enhanced)
+                        .setTooltipSupplier(createToolTip("When enabled, nametags will render more clearly through blocks so you can read the name better."))
+                        .build()
+        );
     }
 
     /**

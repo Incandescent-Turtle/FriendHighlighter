@@ -47,7 +47,11 @@ public class SettingsSetCommand extends Command
 								.executes(this::setDefaultColor)))
 				.then(literal("defaultPlayersOnly")
 						.then(argument(VALUE, new BooleanWithWords("onlyPlayers", "allEntities"))
-								.executes(this::setDefaultPlayersOnly)));
+								.executes(this::setDefaultPlayersOnly)))
+
+				.then(literal("enhancedNametags")
+						.then(argument(VALUE, new BooleanWithWords("enhanced", "normal"))
+								.executes(this::setEnhancedNametags)));
 	}
 
 	private int setDisplayMethod(CommandContext<FabricClientCommandSource> context)
@@ -90,6 +94,15 @@ public class SettingsSetCommand extends Command
 		boolean playersOnly = CommandUtils.getArgumentFromContext(context, VALUE, true);
 		FHSettings.getSettings().defaultPlayersOnly = playersOnly;
 		FriendHighlighter.sendMessage(Text.literal("When not specified, a friend added by commands will now " + (playersOnly ? "only highlight players." : "highlight any entity with that name.")));
+		cmdHandler.settingsChatMsg.updateContent();
+		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
+	}
+
+	private int setEnhancedNametags(CommandContext<FabricClientCommandSource> context)
+	{
+		boolean enhancedNametags = CommandUtils.getArgumentFromContext(context, VALUE, false);
+		FHSettings.getSettings().enhancedNametags = enhancedNametags;
+		FriendHighlighter.sendMessage(Text.literal("Enhanced nametags are now " + (enhancedNametags ? "enabled." : "disabled.")));
 		cmdHandler.settingsChatMsg.updateContent();
 		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
 	}

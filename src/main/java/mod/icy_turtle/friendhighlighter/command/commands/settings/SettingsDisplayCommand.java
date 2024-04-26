@@ -45,6 +45,8 @@ public class SettingsDisplayCommand extends Command
 		txt.append(createHighlightInvisibleFriendsText(settings));
 		txt.append("\n\n");
 		txt.append(createDefaultPlayersOnlyText(settings));
+		txt.append("\n\n");
+		txt.append(createEnhancedNametagsText(settings));
 		return txt;
 	}
 
@@ -156,6 +158,32 @@ public class SettingsDisplayCommand extends Command
 		tooltipText.append(players);
 		tooltipText.append(" | ");
 		tooltipText.append(entities);
+		return tooltipText;
+	}
+
+	private static MutableText createEnhancedNametagsText(FHSettings settings) {
+		var title = FHUtils.colorText("Enhanced Nametags", Color.ORANGE.getRGB());
+		CommandUtils.addToolTip(title, "Allow nametags to appear through blocks clearer");
+
+		var status = settings.enhancedNametags;
+		var enhanced = CommandUtils.addHoverAndClickEvent(
+				Text.literal("Enhanced").styled(style -> style.withColor(status ? Formatting.GREEN : Formatting.RED).withBold(status)),
+				"PLACEHOLDER - LINK VIA LANG",
+				"/fh settings set enhancedNametags enhanced"
+		);
+
+		var normal = CommandUtils.addHoverAndClickEvent(
+				Text.literal("Normal").styled(style -> style.withColor(status ? Formatting.RED : Formatting.GREEN).withBold(!status)),
+				"PLACEHOLDER - LINK VIA LANG",
+				"/fh settings set enhancedNametags normal"
+		);
+
+		var tooltipText = Text.literal("");
+		tooltipText.append(title);
+		tooltipText.append("\n ↳ ");
+		tooltipText.append(enhanced);
+		tooltipText.append(" | ");
+		tooltipText.append(normal);
 		return tooltipText;
 	}
 }
