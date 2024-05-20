@@ -227,6 +227,12 @@ public class ModMenuIntegration implements ModMenuApi
                         .setTooltipSupplier(createToolTip("Whether friends get highlighted when they are invisible. Also applies to nametag rendering/colouring when invisible."))
                         .build()
         );
+        settingsCategory.addEntry(
+                entryBuilder.startBooleanToggle(Text.literal("Highlight all players"), FHSettings.getSettings().highlightAllPlayers)
+                        .setSaveConsumer(highlight -> FHSettings.getSettings().highlightAllPlayers = highlight)
+                        .setTooltipSupplier(createToolTip("Whether all players should be auto-highlighted."))
+                        .build()
+        );
     }
 
     /**
