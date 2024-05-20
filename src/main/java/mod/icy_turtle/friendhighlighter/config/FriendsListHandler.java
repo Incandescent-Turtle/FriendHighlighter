@@ -57,4 +57,21 @@ public class FriendsListHandler
 		}
 		return false;
 	}
+
+	public static boolean shouldRenderNametag(Entity entity)
+	{
+		var friend = getFriendFromEntity(entity);
+
+		if(friend != null && friend.isEnabled())
+		{
+			if(entity instanceof PlayerEntity || !friend.onlyPlayers)
+			{
+				if(FHSettings.getSettings().highlightThroughWalls || FHUtils.canSeeEntity(MinecraftClient.getInstance().player, entity))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

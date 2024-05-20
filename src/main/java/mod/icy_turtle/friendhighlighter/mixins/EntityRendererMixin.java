@@ -44,6 +44,7 @@ public class EntityRendererMixin
         return entity.getDisplayName();
     }
 
+    // enhanced name tag
     @ModifyArgs(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I"))
     private void modify(Args args) {
         if (FHSettings.getSettings().enhancedNametags){
