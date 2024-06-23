@@ -4,27 +4,39 @@ import mod.icy_turtle.friendhighlighter.FriendHighlighter;
 import mod.icy_turtle.friendhighlighter.config.FHSettings;
 import mod.icy_turtle.friendhighlighter.config.FriendsListHandler;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
+import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin
 {
+    private Entity currentEntity;
+
+    @Inject(method = "renderLabelIfPresent", at = @At(value = "HEAD"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
+    private void captureEntity(Entity entity, Text text, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
+        this.currentEntity = entity;
+    }
+
     //  to override whether the entities name tag should be rendered.
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRenderer;hasLabel(Lnet/minecraft/entity/Entity;)Z"))
     public boolean renderNameTag(EntityRenderer renderer, Entity entity) {
-        if(FriendHighlighter.isHighlighterEnabled && FHSettings.getSettings().highlightInvisibleFriends)
+        if(FriendsListHandler.shouldRenderNametag(entity))
         {
-            var friend = FriendsListHandler.getFriendFromEntity(entity);
-            if(friend != null && friend.isEnabled() && (entity instanceof PlayerEntity || (!friend.onlyPlayers && entity.hasCustomName())))
-                return true;
+            return true;
         }
         return renderer.hasLabel(entity);
     }
@@ -33,23 +45,36 @@ public class EntityRendererMixin
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getDisplayName()Lnet/minecraft/text/Text;"))
     private Text forceNameColor(Entity entity)
     {
-        if(FriendHighlighter.isHighlighterEnabled && FHSettings.getSettings().highlightInvisibleFriends)
+        var friend = FriendsListHandler.getFriendFromEntity(entity);
+        if(FriendsListHandler.shouldHighlightEntity(entity))
         {
-            var friend = FriendsListHandler.getFriendFromEntity(entity);
-            if(FriendsListHandler.shouldHighlightEntity(entity))
-            {
-                return FHUtils.getBoldAndColored(entity.getDisplayName().getString(), friend.color);
-            }
+            return FHUtils.getBoldAndColored(entity.getDisplayName().getString(), friend.color);
         }
         return entity.getDisplayName();
     }
 
-    // enhanced name tag
-    @ModifyArgs(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I"))
-    private void modify(Args args) {
-        if (FHSettings.getSettings().enhancedNametags){
-            args.set(3, 0xFFFFFFFF);
+    // forces nametag overlay to be transparent and forces nametag visibilty
+    @ModifyArgs(method = "renderLabelIfPresent",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I"))
+    private void modifyNametagRendering(Args args) {
+        if (FriendsListHandler.shouldHighlightEntity(currentEntity))
+        {
+            if(FHSettings.getSettings().enhancedNametags)
+            {
+                args.set(3, 0xFFFFFFFF);
+                // enlarging nametag text
+                //            args.set(5, ((Matrix4f) args.get(5)).scale(5,5,5));
+            }
         }
     }
 
+    // renders nametag while sneaking
+    @Redirect(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isSneaky()Z"))
+    private boolean redirectIsSneaky(Entity entity) {
+        if(FriendsListHandler.shouldHighlightEntity(entity))
+        {
+            return false;
+        }
+        return entity.isSneaky();
+    }
 }

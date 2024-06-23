@@ -1,5 +1,6 @@
 package mod.icy_turtle.friendhighlighter.config;
 
+import mod.icy_turtle.friendhighlighter.FriendHighlighter;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
@@ -37,21 +38,34 @@ public class FriendsListHandler
 	}
 
 	/**
-	 * Whether this entity should be affected by either outlining or name rendering.
+	 * Whether this entity should be highlighted currently
 	 * @param entity the entity to test.
 	 * @return whether this entity should be highlighted.
 	 */
 	public static boolean shouldHighlightEntity(Entity entity)
 	{
+		if(!FriendHighlighter.isHighlighterEnabled)
+		{
+			return false;
+		}
+
 		var friend = getFriendFromEntity(entity);
 
-		if(friend != null && friend.isEnabled())
+		if(friend == null || !friend.isEnabled())
 		{
-			if(entity instanceof PlayerEntity || !friend.onlyPlayers)
+			return false;
+		}
+
+		if(entity instanceof PlayerEntity || !friend.onlyPlayers)
+		{
+			if(FHSettings.getSettings().highlightWhileSneaking || !entity.isSneaky())
 			{
-				if(FHSettings.getSettings().highlightThroughWalls || FHUtils.canSeeEntity(MinecraftClient.getInstance().player, entity))
+				if(FHSettings.getSettings().highlightInvisibleFriends || !entity.isInvisible())
 				{
-					return true;
+					if(FHSettings.getSettings().highlightThroughWalls || FHUtils.canSeeEntity(MinecraftClient.getInstance().player, entity))
+					{
+						return true;
+					}
 				}
 			}
 		}
@@ -60,18 +74,17 @@ public class FriendsListHandler
 
 	public static boolean shouldRenderNametag(Entity entity)
 	{
-		var friend = getFriendFromEntity(entity);
-
-		if(friend != null && friend.isEnabled())
+		if(!shouldHighlightEntity(entity))
 		{
-			if(entity instanceof PlayerEntity || !friend.onlyPlayers)
-			{
-				if(FHSettings.getSettings().highlightThroughWalls || FHUtils.canSeeEntity(MinecraftClient.getInstance().player, entity))
-				{
-					return true;
-				}
-			}
+			return false;
 		}
+
+		if(entity.hasCustomName())
+		{
+			return true;
+		}
+
 		return false;
 	}
+
 }

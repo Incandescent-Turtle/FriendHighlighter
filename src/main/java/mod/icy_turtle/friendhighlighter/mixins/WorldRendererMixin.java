@@ -18,13 +18,10 @@ public abstract class WorldRendererMixin
 	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getTeamColorValue()I"))
 	private int forceHighlightColor(Entity entity)
 	{
-		if(FriendHighlighter.isHighlighterEnabled)
+		var friend = FriendsListHandler.getFriendFromEntity(entity);
+		if(FriendsListHandler.shouldHighlightEntity(entity))
 		{
-			var friend = FriendsListHandler.getFriendFromEntity(entity);
-			if(FriendsListHandler.shouldHighlightEntity(entity))
-			{
-				return friend.color;
-			}
+			return friend.color;
 		}
 		return entity.getTeamColorValue();
 	}
@@ -33,17 +30,10 @@ public abstract class WorldRendererMixin
 	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;hasOutline(Lnet/minecraft/entity/Entity;)Z"))
 	public boolean forceHighlight(MinecraftClient client, Entity entity)
 	{
-		if(FriendHighlighter.isHighlighterEnabled)
+		var friend = FriendsListHandler.getFriendFromEntity(entity);
+		if(FriendsListHandler.shouldHighlightEntity(entity) && !friend.justNameTag)
 		{
-			var friend = FriendsListHandler.getFriendFromEntity(entity);
-			if(FriendsListHandler.shouldHighlightEntity(entity) && !friend.justNameTag)
-			{
-				if(!FHSettings.getSettings().highlightThroughWalls && !FHUtils.canSeeEntity(client.player, entity))
-				{
-					return false;
-				}
-				return true;
-			}
+			return true;
 		}
 		return client.hasOutline(entity);
 	}

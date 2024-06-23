@@ -20,6 +20,8 @@ public class FHSettings
 	public boolean enhancedNametags = false;
 	public boolean highlightThroughWalls = true;
 
+	public boolean highlightWhileSneaking = true;
+
 	public enum MessageDisplayMethod
 	{
 		ACTION_BAR, CHAT, BOTH

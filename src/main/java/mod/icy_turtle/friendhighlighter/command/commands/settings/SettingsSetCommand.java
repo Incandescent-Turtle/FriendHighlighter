@@ -55,7 +55,11 @@ public class SettingsSetCommand extends Command
 
 				.then(literal("highlightThroughBlocks")
 						.then(argument(VALUE, new BooleanWithWords("highlight", "dontHighlight"))
-								.executes(this::setHighlightThroughBlocks)));
+								.executes(this::setHighlightThroughBlocks)))
+
+				.then(literal("highlightWhileSneaking")
+						.then(argument(VALUE, new BooleanWithWords("highlight", "dontHighlight"))
+								.executes(this::setHighlightWhileSneaking)));
 	}
 
 	private int setDisplayMethod(CommandContext<FabricClientCommandSource> context)
@@ -116,6 +120,15 @@ public class SettingsSetCommand extends Command
 		boolean highlight = CommandUtils.getArgumentFromContext(context, VALUE, false);
 		FHSettings.getSettings().highlightThroughWalls = highlight;
 		FriendHighlighter.sendMessage(Text.literal("Friends will " + (highlight ? "be" : "not be") + " highlighted if blocks are in the way."));
+		cmdHandler.settingsChatMsg.updateContent();
+		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
+	}
+
+	private int setHighlightWhileSneaking(CommandContext<FabricClientCommandSource> context)
+	{
+		boolean highlight = CommandUtils.getArgumentFromContext(context, VALUE, false);
+		FHSettings.getSettings().highlightWhileSneaking = highlight;
+		FriendHighlighter.sendMessage(Text.literal("Players will " + (highlight ? "be" : "not be") + " highlighted if they are sneaking/crouched."));
 		cmdHandler.settingsChatMsg.updateContent();
 		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
 	}

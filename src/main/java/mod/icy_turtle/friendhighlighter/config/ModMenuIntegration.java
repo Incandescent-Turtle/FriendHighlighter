@@ -239,6 +239,12 @@ public class ModMenuIntegration implements ModMenuApi
                         .setTooltipSupplier(createToolTip("When enabled, friends will be highlighted even when you cannot see them (aka when they are behind blocks)."))
                         .build()
         );
+        settingsCategory.addEntry(
+                entryBuilder.startBooleanToggle(Text.literal("Highlight While Sneaking"), FHSettings.getSettings().highlightWhileSneaking)
+                        .setSaveConsumer(highlight -> FHSettings.getSettings().highlightWhileSneaking = highlight)
+                        .setTooltipSupplier(createToolTip("When enabled, players will be highlighted even when they are sneaking/crouched."))
+                        .build()
+        );
     }
 
     /**
