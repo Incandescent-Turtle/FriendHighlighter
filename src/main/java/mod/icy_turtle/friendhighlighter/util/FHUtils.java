@@ -267,8 +267,8 @@ public class FHUtils
 		RaycastContext rayEyeContext = new LavaBlockedRaycastContext(playerEye, targetEyePos, RaycastContext.ShapeType.VISUAL, player);
 		RaycastContext rayBottomContext = new LavaBlockedRaycastContext(playerEye, targetBottomPos, RaycastContext.ShapeType.VISUAL, player);
 		// Perform the raycast
-		var resultEye = player.world.raycast(rayEyeContext);
-		var resultBottom = player.world.raycast(rayBottomContext);
+		var resultEye = player.getWorld().raycast(rayEyeContext);
+		var resultBottom = player.getWorld().raycast(rayBottomContext);
 
 		// Check if the raycast hit a block before reaching the target
 		boolean isVisible = (resultEye.getType() == HitResult.Type.MISS || resultEye.getPos().distanceTo(playerEye) >= distance) || (resultBottom.getType() == HitResult.Type.MISS || resultBottom.getPos().distanceTo(playerEye) >= distance);

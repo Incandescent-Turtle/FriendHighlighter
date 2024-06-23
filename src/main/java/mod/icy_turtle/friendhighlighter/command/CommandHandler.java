@@ -50,5 +50,6 @@ public class CommandHandler
     {
         simpleListChatMsg.updateContent();
         advancedListChatMsg.updateContent();
+        settingsChatMsg.updateContent();
     }
 }
