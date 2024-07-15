@@ -17,7 +17,7 @@ loom {
 	splitEnvironmentSourceSets()
 
 	mods {
-		"modid" {
+		"friendhighlighter" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}
