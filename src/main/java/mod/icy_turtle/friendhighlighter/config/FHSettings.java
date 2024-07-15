@@ -17,9 +17,8 @@ public class FHSettings
 	public boolean highlightInvisibleFriends = true;
 	public Integer defaultColor = 0xFFFFFF;
 	public boolean defaultPlayersOnly = false;
-	public boolean enhancedNametags = false;
+	public boolean enhancedNametags = true;
 	public boolean highlightThroughWalls = true;
-
 	public boolean highlightWhileSneaking = true;
 
 	public enum MessageDisplayMethod
