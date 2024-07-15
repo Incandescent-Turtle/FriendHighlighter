@@ -51,6 +51,8 @@ public class SettingsDisplayCommand extends Command
 		txt.append(createHighlightThroughBlocksText(settings));
 		txt.append("\n\n");
 		txt.append(createHighlightWhileSneakingText(settings));
+		txt.append("\n\n");
+		txt.append(createHighlightAllPlayersText(settings));
 		return txt;
 	}
 
@@ -232,6 +234,31 @@ public class SettingsDisplayCommand extends Command
 				Text.literal("Don't Highlight").styled(style -> style.withColor(status ? Formatting.RED : Formatting.GREEN).withBold(!status)),
 				"PLACEHOLDER - LINK VIA LANG",
 				"/fh settings set highlightWhileSneaking dontHighlight"
+		);
+
+		var tooltipText = Text.literal("");
+		tooltipText.append(title);
+		tooltipText.append("\n ↳ ");
+		tooltipText.append(highlight);
+		tooltipText.append(" | ");
+		tooltipText.append(dontHighlight);
+		return tooltipText;
+	}
+
+	private static MutableText createHighlightAllPlayersText(FHSettings settings) {
+		var title = FHUtils.colorText("Highlight All Players", Color.ORANGE.getRGB());
+
+		var status = settings.highlightAllPlayers;
+		var highlight = CommandUtils.addHoverAndClickEvent(
+				Text.literal("Highlight").styled(style -> style.withColor(status ? Formatting.GREEN : Formatting.RED).withBold(status)),
+				"PLACEHOLDER - LINK VIA LANG",
+				"/fh settings set highlightALlPlayers highlight"
+		);
+
+		var dontHighlight = CommandUtils.addHoverAndClickEvent(
+				Text.literal("Don't Highlight").styled(style -> style.withColor(status ? Formatting.RED : Formatting.GREEN).withBold(!status)),
+				"PLACEHOLDER - LINK VIA LANG",
+				"/fh settings set highlightALlPlayers dontHighlight"
 		);
 
 		var tooltipText = Text.literal("");

@@ -78,7 +78,7 @@ public class KeyInputHandler
         }
         if(highlightPlayers.wasPressed()) {
             FHSettings.getSettings().highlightAllPlayers = !FHSettings.getSettings().highlightAllPlayers;
-            FriendHighlighter.sendMessage(Text.of("All player highlight toggled"));
+            FriendHighlighter.sendMessage(FHUtils.getMessageWithConnotation("ENABLED", "DISABLED", FHSettings.getSettings().highlightAllPlayers));
             FriendHighlighter.COMMAND_HANDLER.updateLists();
         }
     }

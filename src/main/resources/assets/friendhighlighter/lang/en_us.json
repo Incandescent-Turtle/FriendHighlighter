@@ -2,6 +2,7 @@
   "key.category.friendhighlighter.utils": "Friend Highlighter",
   "key.friendhighlighter.opengui": "Open Mod Settings",
   "key.friendhighlighter.highlight": "Toggle Highlighter",
+  "key.friendhighlighter.highlightplayers": "Toggle Highlighting All players",
 
   "config.friendHighlighter.title": "Friend Highlighter Config",
   "config.friendHighlighter.category.friendsList": "Friends List"
