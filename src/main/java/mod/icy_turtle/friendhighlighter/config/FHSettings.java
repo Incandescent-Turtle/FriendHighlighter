@@ -29,7 +29,7 @@ public class FHSettings
 
 	public MessageDisplayMethod getNextDisplayMethod()
 	{
-		var vals = List.of(FHSettings.MessageDisplayMethod.values());
+		var vals = List.of(MessageDisplayMethod.values());
 		var pos = vals.indexOf(messageDisplayMethod);
 		pos += 1;
 		pos %= vals.size();

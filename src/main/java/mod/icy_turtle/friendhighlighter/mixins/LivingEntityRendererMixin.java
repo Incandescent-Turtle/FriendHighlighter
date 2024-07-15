@@ -1,4 +1,4 @@
-package mod.icy_turtle.friendhighlighter.mixins;
+package mod.icy_turtle.friendhighlighter.mixins;//package mod.icy_turtle.friendhighlighter.mixins;
 
 import mod.icy_turtle.friendhighlighter.FriendHighlighter;
 import mod.icy_turtle.friendhighlighter.config.FHSettings;

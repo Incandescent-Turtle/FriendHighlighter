@@ -1,4 +1,4 @@
-package mod.icy_turtle.friendhighlighter.mixins;
+package mod.icy_turtle.friendhighlighter.mixins;//package mod.icy_turtle.friendhighlighter.mixins;
 
 import mod.icy_turtle.friendhighlighter.FriendHighlighter;
 import net.minecraft.client.gui.hud.ChatHud;
