@@ -16,10 +16,13 @@ public class FHSettings
 	public boolean tooltipsEnabled = true;
 	public boolean highlightInvisibleFriends = true;
 	public Integer defaultColor = 0xFFFFFF;
+	public Integer defaultPlayerColor = 0xFFFFFF;
 	public boolean defaultPlayersOnly = false;
 	public boolean enhancedNametags = true;
 	public boolean highlightThroughWalls = true;
 	public boolean highlightWhileSneaking = true;
+	public boolean highlightAllPlayers = false;
+
 
 	public enum MessageDisplayMethod
 	{

@@ -7,6 +7,7 @@ import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -21,7 +22,12 @@ public abstract class WorldRendererMixin
 		var friend = FriendsListHandler.getFriendFromEntity(entity);
 		if(FriendsListHandler.shouldHighlightEntity(entity))
 		{
-			return friend.color;
+			if(friend != null)
+			{
+				return friend.color;
+			} else if(FHSettings.getSettings().highlightAllPlayers && entity instanceof PlayerEntity) {
+				return FHSettings.getSettings().defaultPlayerColor;
+			}
 		}
 		return entity.getTeamColorValue();
 	}
@@ -31,7 +37,7 @@ public abstract class WorldRendererMixin
 	public boolean forceHighlight(MinecraftClient client, Entity entity)
 	{
 		var friend = FriendsListHandler.getFriendFromEntity(entity);
-		if(FriendsListHandler.shouldHighlightEntity(entity) && !friend.justNameTag)
+		if(FriendsListHandler.shouldHighlightEntity(entity) && ((friend != null && !friend.justNameTag) || (FHSettings.getSettings().highlightAllPlayers && entity instanceof PlayerEntity)))
 		{
 			return true;
 		}

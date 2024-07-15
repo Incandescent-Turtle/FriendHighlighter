@@ -6,6 +6,7 @@ import mod.icy_turtle.friendhighlighter.config.FriendsListHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -17,7 +18,7 @@ public class LivingEntityRendererMixin
 	public boolean forceHighlight(MinecraftClient client, Entity entity)
 	{
 		var friend = FriendsListHandler.getFriendFromEntity(entity);
-		if(FriendsListHandler.shouldHighlightEntity(entity) && !friend.justNameTag)
+		if(FriendsListHandler.shouldHighlightEntity(entity) && ((friend != null && !friend.justNameTag) || (FHSettings.getSettings().highlightAllPlayers && entity instanceof PlayerEntity)))
 		{
 			return true;
 		}

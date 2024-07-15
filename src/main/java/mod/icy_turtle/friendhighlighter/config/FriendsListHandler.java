@@ -16,7 +16,6 @@ public class FriendsListHandler
 	 * The map to be used throughout the mod to check which names are on the friends list.
 	 */
 	public LinkedHashMap<String, HighlightedFriend> friendsMap = new LinkedHashMap<>();
-
 	public static LinkedHashMap<String, HighlightedFriend> getFriendsMap()
 	{
 		return FHConfig.getFriendsListHandler().friendsMap;
@@ -49,6 +48,22 @@ public class FriendsListHandler
 			return false;
 		}
 
+		var settings = FHSettings.getSettings();
+
+		if(entity instanceof PlayerEntity && settings.highlightAllPlayers)
+		{
+			if(settings.highlightWhileSneaking || !entity.isSneaky())
+			{
+				if(settings.highlightInvisibleFriends || !entity.isInvisible())
+				{
+					if(settings.highlightThroughWalls || FHUtils.canSeeEntity(MinecraftClient.getInstance().player, entity))
+					{
+						return true;
+					}
+				}
+			}
+		}
+
 		var friend = getFriendFromEntity(entity);
 
 		if(friend == null || !friend.isEnabled())
@@ -58,11 +73,11 @@ public class FriendsListHandler
 
 		if(entity instanceof PlayerEntity || !friend.onlyPlayers)
 		{
-			if(FHSettings.getSettings().highlightWhileSneaking || !entity.isSneaky())
+			if(settings.highlightWhileSneaking || !entity.isSneaky())
 			{
-				if(FHSettings.getSettings().highlightInvisibleFriends || !entity.isInvisible())
+				if(settings.highlightInvisibleFriends || !entity.isInvisible())
 				{
-					if(FHSettings.getSettings().highlightThroughWalls || FHUtils.canSeeEntity(MinecraftClient.getInstance().player, entity))
+					if(settings.highlightThroughWalls || FHUtils.canSeeEntity(MinecraftClient.getInstance().player, entity))
 					{
 						return true;
 					}
@@ -86,5 +101,4 @@ public class FriendsListHandler
 
 		return false;
 	}
-
 }

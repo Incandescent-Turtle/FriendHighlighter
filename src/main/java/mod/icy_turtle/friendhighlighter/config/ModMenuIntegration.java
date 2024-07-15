@@ -199,6 +199,11 @@ public class ModMenuIntegration implements ModMenuApi
                         .build()
         );
         settingsCategory.addEntry(
+                entryBuilder.startColorField(Text.literal("Default Player Color"), settings.defaultPlayerColor)
+                        .setSaveConsumer(color -> settings.defaultPlayerColor = color)
+                        .build()
+        );
+        settingsCategory.addEntry(
                 entryBuilder.startBooleanToggle(Text.literal("Highlight Only Players by Default"), settings.defaultPlayersOnly)
                         .setSaveConsumer(onlyPlayers -> FHSettings.getSettings().defaultPlayersOnly = onlyPlayers)
                         .setTooltipSupplier(createToolTip("When using commands to add a friend, you can select whether you want to highlight only players of that name or all mobs. If you don't specify, this default value will be given to that friend."))
@@ -232,6 +237,12 @@ public class ModMenuIntegration implements ModMenuApi
                 entryBuilder.startBooleanToggle(Text.literal("Highlight While Sneaking"), FHSettings.getSettings().highlightWhileSneaking)
                         .setSaveConsumer(highlight -> FHSettings.getSettings().highlightWhileSneaking = highlight)
                         .setTooltipSupplier(createToolTip("When enabled, players will be highlighted even when they are sneaking/crouched."))
+                        .build()
+        );
+        settingsCategory.addEntry(
+                entryBuilder.startBooleanToggle(Text.literal("Highlight All Players"), FHSettings.getSettings().highlightAllPlayers)
+                        .setSaveConsumer(highlight -> FHSettings.getSettings().highlightAllPlayers = highlight)
+                        .setTooltipSupplier(createToolTip("When enabled, all players will be highlighted when highlighter is enabled."))
                         .build()
         );
     }

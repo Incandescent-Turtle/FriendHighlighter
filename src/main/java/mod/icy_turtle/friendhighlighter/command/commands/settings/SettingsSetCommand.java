@@ -59,7 +59,15 @@ public class SettingsSetCommand extends Command
 
 				.then(literal("highlightWhileSneaking")
 						.then(argument(VALUE, new BooleanWithWords("highlight", "dontHighlight"))
-								.executes(this::setHighlightWhileSneaking)));
+								.executes(this::setHighlightWhileSneaking)))
+
+				.then(literal("highlightAllPlayers")
+						.then(argument(VALUE, new BooleanWithWords("highlight", "dontHighlight"))
+								.executes(this::setHighlightAllPlayers)))
+
+				.then(literal("defaultPlayerColor")
+						.then(argument(VALUE, new ColorArgumentType())
+								.executes(this::setDefaultPlayerColor)));
 	}
 
 	private int setDisplayMethod(CommandContext<FabricClientCommandSource> context)
@@ -97,6 +105,15 @@ public class SettingsSetCommand extends Command
 		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
 	}
 
+	private int setDefaultPlayerColor(CommandContext<FabricClientCommandSource> context)
+	{
+		String color = CommandUtils.getArgumentFromContext(context, VALUE, "#FFFFFF");
+		FHSettings.getSettings().defaultPlayerColor = FHUtils.hexToRGB(color);
+		FriendHighlighter.sendMessage(Text.literal("Default highlight color set to ").append(FHUtils.colorText(color, FHUtils.hexToRGB(color))));
+		cmdHandler.settingsChatMsg.updateContent();
+		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
+	}
+
 	private int setDefaultPlayersOnly(CommandContext<FabricClientCommandSource> context)
 	{
 		boolean playersOnly = CommandUtils.getArgumentFromContext(context, VALUE, true);
@@ -129,6 +146,15 @@ public class SettingsSetCommand extends Command
 		boolean highlight = CommandUtils.getArgumentFromContext(context, VALUE, false);
 		FHSettings.getSettings().highlightWhileSneaking = highlight;
 		FriendHighlighter.sendMessage(Text.literal("Players will " + (highlight ? "be" : "not be") + " highlighted if they are sneaking/crouched."));
+		cmdHandler.settingsChatMsg.updateContent();
+		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
+	}
+
+	private int setHighlightAllPlayers(CommandContext<FabricClientCommandSource> context)
+	{
+		boolean highlight = CommandUtils.getArgumentFromContext(context, VALUE, false);
+		FHSettings.getSettings().highlightAllPlayers = highlight;
+		FriendHighlighter.sendMessage(Text.literal("All players will " + (highlight ? "be " : "un-") + "highlighted."));
 		cmdHandler.settingsChatMsg.updateContent();
 		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
 	}
