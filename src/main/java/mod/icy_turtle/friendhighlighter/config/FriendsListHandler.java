@@ -56,13 +56,15 @@ public class FriendsListHandler
 			return false;
 		}
 
+		var settings = FHSettings.getSettings();
+
 		if(entity instanceof PlayerEntity || !friend.onlyPlayers)
 		{
-			if(FHSettings.getSettings().highlightWhileSneaking || !entity.isSneaky())
+			if(settings.highlightWhileSneaking || !entity.isSneaky())
 			{
-				if(FHSettings.getSettings().highlightInvisibleFriends || !entity.isInvisible())
+				if(settings.highlightInvisibleFriends || !entity.isInvisible())
 				{
-					if(FHSettings.getSettings().highlightThroughWalls || FHUtils.canSeeEntity(MinecraftClient.getInstance().player, entity))
+					if(settings.highlightThroughWalls || FHUtils.canSeeEntity(MinecraftClient.getInstance().player, entity))
 					{
 						return true;
 					}
