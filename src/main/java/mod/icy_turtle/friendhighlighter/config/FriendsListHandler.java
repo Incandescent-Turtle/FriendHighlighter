@@ -16,10 +16,16 @@ public class FriendsListHandler
 	 * The map to be used throughout the mod to check which names are on the friends list.
 	 */
 	public LinkedHashMap<String, HighlightedFriend> friendsMap = new LinkedHashMap<>();
+	public LinkedHashMap<String, HighlightedEntity> entityMap = new LinkedHashMap<>();
 
 	public static LinkedHashMap<String, HighlightedFriend> getFriendsMap()
 	{
 		return FHConfig.getFriendsListHandler().friendsMap;
+	}
+
+	public static LinkedHashMap<String, HighlightedEntity> getEntityMap()
+	{
+		return FHConfig.getFriendsListHandler().entityMap;
 	}
 
 	public static void setFriendsMap(LinkedHashMap<String, HighlightedFriend> map)
@@ -28,13 +34,18 @@ public class FriendsListHandler
 	}
 
 	/**
-	 * Returns the instance of {@link HighlightedFriend} associated to this entity via {@link Entity#getName()}.
+	 * Returns the instance of {@link HighlightedBase} associated to this entity. If it exists in the friends list, that entry is returned.
 	 * @param entity the entity to use to get the friend.
-	 * @return the associated {@link HighlightedFriend} instance, or null if there isn't one.
+	 * @return the associated {@link HighlightedBase} instance, or null if there isn't one.
 	 */
-	public static @Nullable HighlightedFriend getFriendFromEntity(Entity entity)
+	public static @Nullable HighlightedBase getFriendFromEntity(Entity entity)
 	{
-		return getFriendsMap().get(entity.getName().getString());
+		var friend = getFriendsMap().get(entity.getName().getString());
+		if(friend != null)
+		{
+			return friend;
+		}
+		return getEntityMap().get(FHUtils.getNameFromEntityType(entity.getType()).getString());
 	}
 
 	/**
@@ -51,14 +62,14 @@ public class FriendsListHandler
 
 		var friend = getFriendFromEntity(entity);
 
-		if(friend == null || !friend.isEnabled())
+		if((friend == null || !friend.isEnabled()))
 		{
 			return false;
 		}
 
 		var settings = FHSettings.getSettings();
 
-		if(entity instanceof PlayerEntity || !friend.onlyPlayers)
+		if(entity instanceof PlayerEntity || !friend.isOnlyPlayers())
 		{
 			if(settings.highlightWhileSneaking || !entity.isSneaky())
 			{
@@ -88,5 +99,4 @@ public class FriendsListHandler
 
 		return false;
 	}
-
 }

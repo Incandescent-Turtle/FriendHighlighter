@@ -49,7 +49,7 @@ public abstract class EntityRendererMixin
         var friend = FriendsListHandler.getFriendFromEntity(entity);
         if(FriendsListHandler.shouldHighlightEntity(entity))
         {
-            return FHUtils.getBoldAndColored(entity.getDisplayName().getString(), friend.color);
+            return FHUtils.getBoldAndColored(entity.getDisplayName().getString(), friend.getColor());
         }
         return entity.getDisplayName();
     }

@@ -3,20 +3,17 @@ package mod.icy_turtle.friendhighlighter.config;
 /**
  * Represents an entity that can be highlighted through this mod.
  */
-public class HighlightedFriend
+public class HighlightedFriend extends HighlightedBase
 {
-    public String name;
-    public int color;
-
     /**
      * Whether this only represents players, instead of all entities.
      */
-    public boolean onlyPlayers;
+    private boolean onlyPlayers;
 
     /**
      * Whether this friend should be highlighted, or just have their name tag show and be colored.
      */
-    public boolean justNameTag;
+    private boolean justNameTag;
 
     /**
      * Whether this friend should be affected by the highlighter.
@@ -30,8 +27,7 @@ public class HighlightedFriend
      */
     public HighlightedFriend()
     {
-        name = "";
-        color = 0xFFFFFF;
+        super(0xFFFFFF, "");
         onlyPlayers = true;
         justNameTag = true;
         enabled = true;
@@ -44,8 +40,7 @@ public class HighlightedFriend
      */
     public HighlightedFriend(String name, int color)
     {
-        this.name = name;
-        this.color = color;
+        super(color, name);
         this.onlyPlayers = true;
         this.justNameTag = true;
     }
@@ -61,8 +56,7 @@ public class HighlightedFriend
      */
     public HighlightedFriend(String name, int color, boolean onlyPlayers, boolean justNameTag)
     {
-        this.name = name;
-        this.color = color;
+        super(color, name);
         this.onlyPlayers = onlyPlayers;
         this.justNameTag = justNameTag;
         this.enabled = true;
@@ -74,8 +68,35 @@ public class HighlightedFriend
         return this;
     }
 
+    @Override
     public boolean isEnabled()
     {
         return enabled;
+    }
+
+    public boolean isOnlyPlayers()
+    {
+        return onlyPlayers;
+    }
+
+    public void setOnlyPlayers(boolean onlyPlayers)
+    {
+        this.onlyPlayers = onlyPlayers;
+    }
+
+    @Override
+    public boolean isJustNameTag()
+    {
+        return justNameTag;
+    }
+
+    public void setJustNameTag(boolean justNameTag)
+    {
+        this.justNameTag = justNameTag;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
     }
 }

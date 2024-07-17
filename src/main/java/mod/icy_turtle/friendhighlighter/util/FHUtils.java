@@ -1,6 +1,7 @@
 package mod.icy_turtle.friendhighlighter.util;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
@@ -255,6 +256,9 @@ public class FHUtils
 		return String.join(" ", words);
 	}
 
+	/**
+	 * Whether the entity can be seen by the player
+	 */
 	public static boolean canSeeEntity(PlayerEntity player, Entity target) {
 		Vec3d playerEye = player.getEyePos();  // Get player's eye position
 		Vec3d targetEyePos = target.getEyePos();            // Get target's position
@@ -274,5 +278,13 @@ public class FHUtils
 		boolean isVisible = (resultEye.getType() == HitResult.Type.MISS || resultEye.getPos().distanceTo(playerEye) >= distance) || (resultBottom.getType() == HitResult.Type.MISS || resultBottom.getPos().distanceTo(playerEye) >= distance);
 
 		return isVisible;
+	}
+
+	/**
+	 * Returns a {@link Text} object representing the name of this entity. Used to standardize entity names across the mod.
+	 */
+	public static Text getNameFromEntityType(EntityType<?> type)
+	{
+		return Text.of(type.getName().getString());
 	}
 }

@@ -17,7 +17,7 @@ public class LivingEntityRendererMixin
 	public boolean forceHighlight(MinecraftClient client, Entity entity)
 	{
 		var friend = FriendsListHandler.getFriendFromEntity(entity);
-		if(FriendsListHandler.shouldHighlightEntity(entity) && !friend.justNameTag)
+		if(FriendsListHandler.shouldHighlightEntity(entity) && !friend.isJustNameTag())
 		{
 			return true;
 		}
