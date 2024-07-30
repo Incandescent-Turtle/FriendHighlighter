@@ -1,6 +1,7 @@
 package mod.icy_turtle.friendhighlighter.config;
 
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.EntityType;
 
 public class HighlightedEntity extends HighlightedBase

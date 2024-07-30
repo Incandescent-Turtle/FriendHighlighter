@@ -51,10 +51,14 @@ public class FriendsListHandler
 	/**
 	 * Whether this entity should be highlighted currently
 	 * @param entity the entity to test.
-	 * @return whether this entity should be highlighted.
+	 * @return whether this entity should be highlighted. Returns false if entity is null.
 	 */
-	public static boolean shouldHighlightEntity(Entity entity)
+	public static boolean shouldHighlightEntity(@Nullable Entity entity)
 	{
+		if(entity == null)
+		{
+			return false;
+		}
 		if(!FriendHighlighter.isHighlighterEnabled)
 		{
 			return false;
