@@ -8,13 +8,7 @@ public class HighlightedEntity extends HighlightedBase
 {
     public HighlightedEntity(EntityType type)
     {
-        super(FHSettings.getSettings().defaultColor, FHUtils.getNameFromEntityType(type).getString());
-    }
-
-    @Override
-    public boolean isEnabled()
-    {
-        return true;
+        super(FHSettings.getSettings().defaultColor, FHUtils.getNameFromEntityType(type).getString(), false);
     }
 
     @Override

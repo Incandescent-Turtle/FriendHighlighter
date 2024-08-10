@@ -4,11 +4,13 @@ public abstract class HighlightedBase
 {
 	private int color;
 	protected String name;
+	private boolean enabled;
 
-	public HighlightedBase(int color, String name)
+	public HighlightedBase(int color, String name, boolean enabled)
 	{
 		this.color = color;
 		this.name = name;
+		this.enabled = enabled;
 	}
 	final public int getColor()
 	{
@@ -24,7 +26,16 @@ public abstract class HighlightedBase
 	{
 		return name;
 	}
-	public abstract boolean isEnabled();
+	final public boolean isEnabled()
+	{
+		return enabled;
+	}
+
+	final public void setEnabled(boolean enabled)
+	{
+		this.enabled = enabled;
+	}
+
 	public abstract boolean isJustNameTag();
 	public abstract boolean isOnlyPlayers();
 }

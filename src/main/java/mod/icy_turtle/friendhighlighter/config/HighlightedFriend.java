@@ -16,33 +16,14 @@ public class HighlightedFriend extends HighlightedBase
     private boolean justNameTag;
 
     /**
-     * Whether this friend should be affected by the highlighter.
-     */
-    private boolean enabled;
-
-    /**
      * Creates a default friend with initialized values.
-     * @see #HighlightedFriend(String, int)
      * @see #HighlightedFriend(String, int, boolean, boolean)
      */
     public HighlightedFriend()
     {
-        super(0xFFFFFF, "");
+        super(0xFFFFFF, "", true);
         onlyPlayers = true;
         justNameTag = true;
-        enabled = true;
-    }
-
-    /**
-     * Works like {@link #HighlightedFriend(String, int, boolean, boolean)}, but the booleans default to true.
-     * @see #HighlightedFriend()
-     * @see #HighlightedFriend(String, int, boolean, boolean)
-     */
-    public HighlightedFriend(String name, int color)
-    {
-        super(color, name);
-        this.onlyPlayers = true;
-        this.justNameTag = true;
     }
 
     /**
@@ -52,26 +33,12 @@ public class HighlightedFriend extends HighlightedBase
      * @param onlyPlayers whether this friend only includes players, as opposed to all entities.
      * @param justNameTag whether this friend should get highlighted, or just have its name show and be colored.
      * @see #HighlightedFriend()
-     * @see #HighlightedFriend(String, int)
      */
     public HighlightedFriend(String name, int color, boolean onlyPlayers, boolean justNameTag)
     {
-        super(color, name);
+        super(color, name, true);
         this.onlyPlayers = onlyPlayers;
         this.justNameTag = justNameTag;
-        this.enabled = true;
-    }
-
-    public HighlightedFriend setEnabled(boolean enabled)
-    {
-        this.enabled = enabled;
-        return this;
-    }
-
-    @Override
-    public boolean isEnabled()
-    {
-        return enabled;
     }
 
     public boolean isOnlyPlayers()
