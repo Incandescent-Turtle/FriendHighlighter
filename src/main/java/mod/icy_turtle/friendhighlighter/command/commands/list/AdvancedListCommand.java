@@ -86,7 +86,7 @@ public class AdvancedListCommand extends Command
 	private static Text createDeleteButton(HighlightedFriend friend)
 	{
 		return CommandUtils.addHoverAndClickEvent(
-				FHUtils.colorText("✖", Formatting.RED.getColorValue()),
+				FHUtils.colorText("\uD83D\uDDD1", Formatting.RED.getColorValue()),
 				"Remove " + friend.getName() + " from friends list",
 				"/fh remove \"" + friend.getName() + "\""
 		);
