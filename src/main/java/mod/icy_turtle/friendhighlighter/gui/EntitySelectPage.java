@@ -41,7 +41,6 @@ public class EntitySelectPage
 				highlightedEntity = new HighlightedEntity(type);
 				isNew = true;
 			}
-
 			// if enabled, make sure it gets stored in our map
 			// otherwise, make sure it isnt in our map
 			var enabledField = entryBuilder.startBooleanToggle(Text.literal("Enabled"), isNew ? false : true)
@@ -49,19 +48,12 @@ public class EntitySelectPage
 					{
 						var map = FriendsListHandler.getEntityMap();
 						var inEntityMap = map.containsKey(name);
-						if(name.equals("Sheep"))
-						{
-							System.out.println("enabled: " + enabled);
-							System.out.println("inmap: " + inEntityMap);
-							System.out.println("map " + map);
-						}
+
 						if(enabled)
 						{
 							if(!inEntityMap)
 							{
 								map.put(name, highlightedEntity);
-								System.out.println("putting " + name + " in");
-								System.out.println("current: " + highlightedEntityMap);
 							}
 						} else if(inEntityMap){
 							map.remove(name);
@@ -74,7 +66,12 @@ public class EntitySelectPage
 					.setDefaultValue(highlightedEntity.getColor())
 					.build();
 
-			category.addEntry(new MultiPartGUIElement(FHUtils.colorText(name, Formatting.RED.getColorValue()), entityTypeMap.get(name), Arrays.asList(colorField, enabledField), false));
+			category.addEntry(new MultiPartGUIElement(
+					FHUtils.colorText(name, highlightedEntity.getColor()),
+					entityTypeMap.get(name),
+					Arrays.asList(colorField, enabledField),
+					false)
+			);
 		}
 	}
 

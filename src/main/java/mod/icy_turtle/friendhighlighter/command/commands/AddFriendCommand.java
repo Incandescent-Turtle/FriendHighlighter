@@ -63,7 +63,7 @@ public class AddFriendCommand extends Command
 		{
 			txt = FHUtils.getPositiveMessage(friendName + " Updated");
 		}
-		friendsMap.put(friendName, new HighlightedFriend(friendName, FHUtils.hexToRGB(color), onlyPlayer, justNameTag).setEnabled(friendsMap.getOrDefault(friendName, new HighlightedFriend()).isEnabled()));
+		friendsMap.put(friendName, new HighlightedFriend(friendName, FHUtils.hexToRGB(color), onlyPlayer, justNameTag, friendsMap.getOrDefault(friendName, new HighlightedFriend()).isEnabled()));
 		cmdHandler.updateLists();
 		FriendHighlighter.sendMessage(txt);
 		FHConfig.saveConfig();

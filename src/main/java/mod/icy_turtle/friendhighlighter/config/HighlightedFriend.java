@@ -17,7 +17,7 @@ public class HighlightedFriend extends HighlightedBase
 
     /**
      * Creates a default friend with initialized values.
-     * @see #HighlightedFriend(String, int, boolean, boolean)
+     * @see #HighlightedFriend(String, int, boolean, boolean, boolean)
      */
     public HighlightedFriend()
     {
@@ -34,9 +34,9 @@ public class HighlightedFriend extends HighlightedBase
      * @param justNameTag whether this friend should get highlighted, or just have its name show and be colored.
      * @see #HighlightedFriend()
      */
-    public HighlightedFriend(String name, int color, boolean onlyPlayers, boolean justNameTag)
+    public HighlightedFriend(String name, int color, boolean onlyPlayers, boolean justNameTag, boolean enabled)
     {
-        super(color, name, true);
+        super(color, name, enabled);
         this.onlyPlayers = onlyPlayers;
         this.justNameTag = justNameTag;
     }

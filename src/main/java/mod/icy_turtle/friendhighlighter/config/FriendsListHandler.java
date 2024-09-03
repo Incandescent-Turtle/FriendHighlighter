@@ -4,6 +4,7 @@ import mod.icy_turtle.friendhighlighter.FriendHighlighter;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,6 +45,10 @@ public class FriendsListHandler
 		if(friend != null)
 		{
 			return friend;
+		}
+		if(entity instanceof ItemEntity)
+		{
+			System.out.println(FHUtils.getNameFromEntityType(entity.getType()).getString());
 		}
 		return getEntityMap().get(FHUtils.getNameFromEntityType(entity.getType()).getString());
 	}
