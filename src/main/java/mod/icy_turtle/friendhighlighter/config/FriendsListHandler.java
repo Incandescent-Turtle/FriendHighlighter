@@ -4,6 +4,7 @@ import mod.icy_turtle.friendhighlighter.FriendHighlighter;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,10 +17,16 @@ public class FriendsListHandler
 	 * The map to be used throughout the mod to check which names are on the friends list.
 	 */
 	public LinkedHashMap<String, HighlightedFriend> friendsMap = new LinkedHashMap<>();
+	public LinkedHashMap<String, HighlightedEntity> entityMap = new LinkedHashMap<>();
 
 	public static LinkedHashMap<String, HighlightedFriend> getFriendsMap()
 	{
 		return FHConfig.getFriendsListHandler().friendsMap;
+	}
+
+	public static LinkedHashMap<String, HighlightedEntity> getEntityMap()
+	{
+		return FHConfig.getFriendsListHandler().entityMap;
 	}
 
 	public static void setFriendsMap(LinkedHashMap<String, HighlightedFriend> map)
@@ -28,22 +35,35 @@ public class FriendsListHandler
 	}
 
 	/**
-	 * Returns the instance of {@link HighlightedFriend} associated to this entity via {@link Entity#getName()}.
+	 * Returns the instance of {@link HighlightedBase} associated to this entity. If it exists in the friends list, that entry is returned.
 	 * @param entity the entity to use to get the friend.
-	 * @return the associated {@link HighlightedFriend} instance, or null if there isn't one.
+	 * @return the associated {@link HighlightedBase} instance, or null if there isn't one.
 	 */
-	public static @Nullable HighlightedFriend getFriendFromEntity(Entity entity)
+	public static @Nullable HighlightedBase getFriendFromEntity(Entity entity)
 	{
-		return getFriendsMap().get(entity.getName().getString());
+		var friend = getFriendsMap().get(entity.getName().getString());
+		if(friend != null)
+		{
+			return friend;
+		}
+		if(entity instanceof ItemEntity)
+		{
+			System.out.println(FHUtils.getNameFromEntityType(entity.getType()).getString());
+		}
+		return getEntityMap().get(FHUtils.getNameFromEntityType(entity.getType()).getString());
 	}
 
 	/**
 	 * Whether this entity should be highlighted currently
 	 * @param entity the entity to test.
-	 * @return whether this entity should be highlighted.
+	 * @return whether this entity should be highlighted. Returns false if entity is null.
 	 */
-	public static boolean shouldHighlightEntity(Entity entity)
+	public static boolean shouldHighlightEntity(@Nullable Entity entity)
 	{
+		if(entity == null)
+		{
+			return false;
+		}
 		if(!FriendHighlighter.isHighlighterEnabled)
 		{
 			return false;
@@ -51,18 +71,20 @@ public class FriendsListHandler
 
 		var friend = getFriendFromEntity(entity);
 
-		if(friend == null || !friend.isEnabled())
+		if((friend == null || !friend.isEnabled()))
 		{
 			return false;
 		}
 
-		if(entity instanceof PlayerEntity || !friend.onlyPlayers)
+		var settings = FHSettings.getSettings();
+
+		if(entity instanceof PlayerEntity || !friend.isOnlyPlayers())
 		{
-			if(FHSettings.getSettings().highlightWhileSneaking || !entity.isSneaky())
+			if(settings.highlightWhileSneaking || !entity.isSneaky())
 			{
-				if(FHSettings.getSettings().highlightInvisibleFriends || !entity.isInvisible())
+				if(settings.highlightInvisibleFriends || !entity.isInvisible())
 				{
-					if(FHSettings.getSettings().highlightThroughWalls || FHUtils.canSeeEntity(MinecraftClient.getInstance().player, entity))
+					if(settings.highlightThroughWalls || FHUtils.canSeeEntity(MinecraftClient.getInstance().player, entity))
 					{
 						return true;
 					}
@@ -86,5 +108,4 @@ public class FriendsListHandler
 
 		return false;
 	}
-
 }

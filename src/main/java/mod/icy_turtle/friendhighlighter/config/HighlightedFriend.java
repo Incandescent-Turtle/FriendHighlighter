@@ -3,51 +3,27 @@ package mod.icy_turtle.friendhighlighter.config;
 /**
  * Represents an entity that can be highlighted through this mod.
  */
-public class HighlightedFriend
+public class HighlightedFriend extends HighlightedBase
 {
-    public String name;
-    public int color;
-
     /**
      * Whether this only represents players, instead of all entities.
      */
-    public boolean onlyPlayers;
+    private boolean onlyPlayers;
 
     /**
      * Whether this friend should be highlighted, or just have their name tag show and be colored.
      */
-    public boolean justNameTag;
-
-    /**
-     * Whether this friend should be affected by the highlighter.
-     */
-    private boolean enabled;
+    private boolean justNameTag;
 
     /**
      * Creates a default friend with initialized values.
-     * @see #HighlightedFriend(String, int)
-     * @see #HighlightedFriend(String, int, boolean, boolean)
+     * @see #HighlightedFriend(String, int, boolean, boolean, boolean)
      */
     public HighlightedFriend()
     {
-        name = "";
-        color = 0xFFFFFF;
+        super(0xFFFFFF, "", true);
         onlyPlayers = true;
         justNameTag = true;
-        enabled = true;
-    }
-
-    /**
-     * Works like {@link #HighlightedFriend(String, int, boolean, boolean)}, but the booleans default to true.
-     * @see #HighlightedFriend()
-     * @see #HighlightedFriend(String, int, boolean, boolean)
-     */
-    public HighlightedFriend(String name, int color)
-    {
-        this.name = name;
-        this.color = color;
-        this.onlyPlayers = true;
-        this.justNameTag = true;
     }
 
     /**
@@ -57,25 +33,37 @@ public class HighlightedFriend
      * @param onlyPlayers whether this friend only includes players, as opposed to all entities.
      * @param justNameTag whether this friend should get highlighted, or just have its name show and be colored.
      * @see #HighlightedFriend()
-     * @see #HighlightedFriend(String, int)
      */
-    public HighlightedFriend(String name, int color, boolean onlyPlayers, boolean justNameTag)
+    public HighlightedFriend(String name, int color, boolean onlyPlayers, boolean justNameTag, boolean enabled)
     {
-        this.name = name;
-        this.color = color;
+        super(color, name, enabled);
         this.onlyPlayers = onlyPlayers;
         this.justNameTag = justNameTag;
-        this.enabled = true;
     }
 
-    public HighlightedFriend setEnabled(boolean enabled)
+    public boolean isOnlyPlayers()
     {
-        this.enabled = enabled;
-        return this;
+        return onlyPlayers;
     }
 
-    public boolean isEnabled()
+    public void setOnlyPlayers(boolean onlyPlayers)
     {
-        return enabled;
+        this.onlyPlayers = onlyPlayers;
+    }
+
+    @Override
+    public boolean isJustNameTag()
+    {
+        return justNameTag;
+    }
+
+    public void setJustNameTag(boolean justNameTag)
+    {
+        this.justNameTag = justNameTag;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
     }
 }

@@ -32,7 +32,7 @@ public abstract class EntityRendererMixin
         this.currentEntity = entity;
     }
 
-    //  to override whether the entities name tag should be rendered.
+    //  to override whether the entities name tag should be rendered (ei. when far away).
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRenderer;hasLabel(Lnet/minecraft/entity/Entity;)Z"))
     public boolean renderNameTag(EntityRenderer renderer, Entity entity) {
         if(FriendsListHandler.shouldRenderNametag(entity))
@@ -49,7 +49,7 @@ public abstract class EntityRendererMixin
         var friend = FriendsListHandler.getFriendFromEntity(entity);
         if(FriendsListHandler.shouldHighlightEntity(entity))
         {
-            return FHUtils.getBoldAndColored(entity.getDisplayName().getString(), friend.color);
+            return FHUtils.getBoldAndColored(entity.getDisplayName().getString(), friend.getColor());
         }
         return entity.getDisplayName();
     }
@@ -58,6 +58,10 @@ public abstract class EntityRendererMixin
     @ModifyArgs(method = "renderLabelIfPresent",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I"))
     private void modifyNametagRendering(Args args) {
+        if(currentEntity == null)
+        {
+            return;
+        }
         if (FriendsListHandler.shouldHighlightEntity(currentEntity))
         {
             if(FHSettings.getSettings().enhancedNametags)

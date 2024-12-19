@@ -86,9 +86,9 @@ public class AdvancedListCommand extends Command
 	private static Text createDeleteButton(HighlightedFriend friend)
 	{
 		return CommandUtils.addHoverAndClickEvent(
-				FHUtils.colorText("✖", Formatting.RED.getColorValue()),
-				"Remove " + friend.name + " from friends list",
-				"/fh remove \"" + friend.name + "\""
+				FHUtils.colorText("\uD83D\uDDD1", Formatting.RED.getColorValue()),
+				"Remove " + friend.getName() + " from friends list",
+				"/fh remove \"" + friend.getName() + "\""
 		);
 	}
 
@@ -100,19 +100,19 @@ public class AdvancedListCommand extends Command
 	private static Text createFriendBooleans(HighlightedFriend friend)
 	{
 		//  click event to send a chat message to toggle the booleans
-		BiFunction<Boolean, Boolean, String> clickEvent = (onlyPlayers, outlineFriend) ->  "/fh add " + String.join(" ", "\"" + friend.name + "\"", FHUtils.rgbToHex(friend.color), ""+onlyPlayers, ""+outlineFriend);
+		BiFunction<Boolean, Boolean, String> clickEvent = (onlyPlayers, outlineFriend) ->  "/fh add " + String.join(" ", "\"" + friend.getName() + "\"", FHUtils.rgbToHex(friend.getColor()), ""+onlyPlayers, ""+outlineFriend);
 
-		FHUtils.colorText(friend.onlyPlayers ? "Only Players" : "All Entities", friend.onlyPlayers ? 0xA7C7E7 : 0xFF5F1F);
+		FHUtils.colorText(friend.isOnlyPlayers() ? "Only Players" : "All Entities", friend.isOnlyPlayers() ? 0xA7C7E7 : 0xFF5F1F);
 		MutableText onlyPlayers = CommandUtils.addHoverAndClickEvent(
-				friend.onlyPlayers ? FHUtils.colorText("Only Player", 0xA7C7E7) : FHUtils.colorText("All entities", 0xFF5F1F),
-				"Click to change to " + (!friend.onlyPlayers ? "only players" : "all entities"),
-				clickEvent.apply(!friend.onlyPlayers, friend.justNameTag));
+				friend.isOnlyPlayers() ? FHUtils.colorText("Only Player", 0xA7C7E7) : FHUtils.colorText("All entities", 0xFF5F1F),
+				"Click to change to " + (!friend.isOnlyPlayers() ? "only players" : "all entities"),
+				clickEvent.apply(!friend.isOnlyPlayers(), friend.isJustNameTag()));
 
 
 		MutableText outlineFriend = CommandUtils.addHoverAndClickEvent(
-				friend.justNameTag ? FHUtils.colorText("Nametag Only", 0xFFFFFF) : FHUtils.colorText("Nametag & Outline", 0x008800),
-				"Click to change to " + (friend.justNameTag ? "nametag & outline" : "nametag only"),
-				clickEvent.apply(friend.onlyPlayers, !friend.justNameTag));
+				friend.isJustNameTag() ? FHUtils.colorText("Nametag Only", 0xFFFFFF) : FHUtils.colorText("Nametag & Outline", 0x008800),
+				"Click to change to " + (friend.isJustNameTag() ? "nametag & outline" : "nametag only"),
+				clickEvent.apply(friend.isOnlyPlayers(), !friend.isJustNameTag()));
 
 		return Text.literal("   ↳ ").append(onlyPlayers).append(" | ").append(outlineFriend);
 	}

@@ -5,11 +5,11 @@
   "compatibilityLevel": "JAVA_17",
   "client": [
     "EntityRendererMixin",
-    "WorldRendererMixin",
     "ChatScreenMixin",
     "SleepingChatScreenMixin",
-    "ChatHudMixin",
-    "LivingEntityRendererMixin"
+    "MinecraftClientMixin",
+    "EntityMixin",
+    "WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

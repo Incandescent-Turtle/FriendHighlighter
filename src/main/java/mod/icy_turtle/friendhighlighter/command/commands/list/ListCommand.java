@@ -30,10 +30,10 @@ public class ListCommand extends Command
 
 	protected static Text createToggleableName(HighlightedFriend friend)
 	{
-		return FHUtils.colorText(friend.name, friend.color)
+		return FHUtils.colorText(friend.getName(), friend.getColor())
 				.styled(style -> style
 						.withStrikethrough(!friend.isEnabled())
-						.withHoverEvent(CommandUtils.createToolTip(Text.literal(friend.name + " is ").append(FHUtils.getMessageWithConnotation("ENABLED", "DISABLED", friend.isEnabled()).append(" | Click to " + (friend.isEnabled() ? "disable" : "enable")))))
-						.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh toggle \""+friend.name+"\"")));
+						.withHoverEvent(CommandUtils.createToolTip(Text.literal(friend.getName() + " is ").append(FHUtils.getMessageWithConnotation("ENABLED", "DISABLED", friend.isEnabled()).append(" | Click to " + (friend.isEnabled() ? "disable" : "enable")))))
+						.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh toggle \""+friend.getName()+"\"")));
 	}
 }
