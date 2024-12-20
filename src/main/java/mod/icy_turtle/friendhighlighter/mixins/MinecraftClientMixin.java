@@ -3,6 +3,7 @@ package mod.icy_turtle.friendhighlighter.mixins;
 import mod.icy_turtle.friendhighlighter.config.FriendsListHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.mob.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

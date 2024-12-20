@@ -36,15 +36,19 @@ public class SettingsSetCommand extends Command
 				.then(literal("messageDisplayMethod")
 						.then(argument(DISPLAY_METHOD, new StringListArgumentType(() -> Arrays.stream(FHSettings.MessageDisplayMethod.values()).map(dm -> dm.name()).collect(Collectors.toList())))
 								.executes(this::setDisplayMethod)))
+
 				.then(literal("tooltipVisibility")
 						.then(argument(VALUE, new BooleanWithWords("visible", "hidden"))
 								.executes(this::setTooltipVisibility)))
+
 				.then(literal("highlightInvisibleFriends")
 						.then(argument(VALUE, new BooleanWithWords("enabled", "disabled"))
 								.executes(this::setHighlightInvisibleFriends)))
+
 				.then(literal("defaultColor")
 						.then(argument(VALUE, new ColorArgumentType())
 								.executes(this::setDefaultColor)))
+
 				.then(literal("defaultPlayersOnly")
 						.then(argument(VALUE, new BooleanWithWords("onlyPlayers", "allEntities"))
 								.executes(this::setDefaultPlayersOnly)))
@@ -59,7 +63,11 @@ public class SettingsSetCommand extends Command
 
 				.then(literal("highlightWhileSneaking")
 						.then(argument(VALUE, new BooleanWithWords("highlight", "dontHighlight"))
-								.executes(this::setHighlightWhileSneaking)));
+								.executes(this::setHighlightWhileSneaking)))
+
+				.then(literal("ignoreTeamColor")
+						.then(argument(VALUE, new BooleanWithWords("ignoreTeamColor", "useTeamColor"))
+								.executes(this::setRespectTeamColors)));
 	}
 
 	private int setDisplayMethod(CommandContext<FabricClientCommandSource> context)
@@ -129,6 +137,15 @@ public class SettingsSetCommand extends Command
 		boolean highlight = CommandUtils.getArgumentFromContext(context, VALUE, false);
 		FHSettings.getSettings().highlightWhileSneaking = highlight;
 		FriendHighlighter.sendMessage(Text.literal("Players will " + (highlight ? "be" : "not be") + " highlighted if they are sneaking/crouched."));
+		cmdHandler.settingsChatMsg.updateContent();
+		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
+	}
+
+	private int setRespectTeamColors(CommandContext<FabricClientCommandSource> context)
+	{
+		boolean respect = CommandUtils.getArgumentFromContext(context, VALUE, false);
+		FHSettings.getSettings().ignoreTeamColor = respect;
+		FriendHighlighter.sendMessage(Text.literal(!respect ? "Friends will be highlighted by their team color if applicable." : "The set color will override friends' team color."));
 		cmdHandler.settingsChatMsg.updateContent();
 		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
 	}

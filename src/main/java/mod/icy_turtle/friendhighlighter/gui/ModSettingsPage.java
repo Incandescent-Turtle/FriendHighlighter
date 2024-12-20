@@ -64,5 +64,11 @@ public class ModSettingsPage
 						.setTooltipSupplier(GuiUtil.createToolTip("When enabled, players will be highlighted even when they are sneaking/crouched."))
 						.build()
 		);
+		settingsCategory.addEntry(
+				entryBuilder.startBooleanToggle(Text.literal("Ignore Team Colors"), FHSettings.getSettings().ignoreTeamColor)
+						.setSaveConsumer(respect -> FHSettings.getSettings().ignoreTeamColor = respect)
+						.setTooltipSupplier(GuiUtil.createToolTip("When disabled, if a friend is on a team, their team color will be used instead of the set color."))
+						.build()
+		);
 	}
 }

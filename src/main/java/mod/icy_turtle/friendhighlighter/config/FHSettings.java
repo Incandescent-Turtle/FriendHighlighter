@@ -20,6 +20,8 @@ public class FHSettings
 	public boolean enhancedNametags = true;
 	public boolean highlightThroughWalls = true;
 	public boolean highlightWhileSneaking = true;
+	// When friend is on a team, respect the team colour.
+	public boolean ignoreTeamColor = true;
 
 	public enum MessageDisplayMethod
 	{

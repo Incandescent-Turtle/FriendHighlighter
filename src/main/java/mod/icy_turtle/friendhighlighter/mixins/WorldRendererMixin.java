@@ -1,5 +1,6 @@
 package mod.icy_turtle.friendhighlighter.mixins;
 
+import mod.icy_turtle.friendhighlighter.config.FHSettings;
 import mod.icy_turtle.friendhighlighter.config.FriendsListHandler;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.entity.Entity;
@@ -17,6 +18,11 @@ public abstract class WorldRendererMixin
 		var friend = FriendsListHandler.getFriendFromEntity(entity);
 		if(FriendsListHandler.shouldHighlightEntity(entity))
 		{
+			// If respecting team colours, and not on a team, the team colour will be used
+			if(!FHSettings.getSettings().ignoreTeamColor && entity.getScoreboardTeam() != null)
+			{
+				return entity.getTeamColorValue();
+			}
 			return friend.getColor();
 		}
 		return entity.getTeamColorValue();

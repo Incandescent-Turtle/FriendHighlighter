@@ -51,6 +51,8 @@ public class SettingsDisplayCommand extends Command
 		txt.append(createHighlightThroughBlocksText(settings));
 		txt.append("\n\n");
 		txt.append(createHighlightWhileSneakingText(settings));
+		txt.append("\n\n");
+		txt.append(createIgnoreTeamColorText(settings));
 		return txt;
 	}
 
@@ -240,6 +242,32 @@ public class SettingsDisplayCommand extends Command
 		tooltipText.append(highlight);
 		tooltipText.append(" | ");
 		tooltipText.append(dontHighlight);
+		return tooltipText;
+	}
+
+	private static MutableText createIgnoreTeamColorText(FHSettings settings) {
+		var title = FHUtils.colorText("Ignore Team Color", Color.ORANGE.getRGB());
+		CommandUtils.addToolTip(title, "Toggles ignoring the team color of friends");
+
+		var status = settings.ignoreTeamColor;
+		var ignore = CommandUtils.addHoverAndClickEvent(
+				Text.literal("Ignore").styled(style -> style.withColor(status ? Formatting.GREEN : Formatting.RED).withBold(status)),
+				"PLACEHOLDER - LINK VIA LANG",
+				"/fh settings set ignoreTeamColor ignoreTeamColor"
+		);
+
+		var respect = CommandUtils.addHoverAndClickEvent(
+				Text.literal("Respect").styled(style -> style.withColor(status ? Formatting.RED : Formatting.GREEN).withBold(!status)),
+				"PLACEHOLDER - LINK VIA LANG",
+				"/fh settings set ignoreTeamColor useTeamColor"
+		);
+
+		var tooltipText = Text.literal("");
+		tooltipText.append(title);
+		tooltipText.append("\n ↳ ");
+		tooltipText.append(ignore);
+		tooltipText.append(" | ");
+		tooltipText.append(respect);
 		return tooltipText;
 	}
 }
