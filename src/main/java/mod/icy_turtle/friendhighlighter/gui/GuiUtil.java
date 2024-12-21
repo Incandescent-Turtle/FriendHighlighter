@@ -2,6 +2,7 @@ package mod.icy_turtle.friendhighlighter.gui;
 
 import mod.icy_turtle.friendhighlighter.config.FHSettings;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.Optional;
@@ -9,6 +10,8 @@ import java.util.function.Supplier;
 
 public class GuiUtil
 {
+	protected static String INDICATOR_SQUARE = "■";
+
 	private GuiUtil(){}
 
 	protected static Supplier<Optional<Text[]>> createToolTip(String str)

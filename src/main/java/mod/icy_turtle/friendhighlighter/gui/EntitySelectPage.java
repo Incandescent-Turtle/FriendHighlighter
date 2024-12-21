@@ -23,8 +23,10 @@ public class EntitySelectPage
 		// Loading all entities into a map
 		final Map<String, EntityType<?>> entityTypeMap = getEntityTypeMap();
 
-		// Building the GUI components for each mob
+		// Entities pulled from the config (entities that have had their color changed, may be enabled or disabled)
 		final var highlightedEntityMap = FriendsListHandler.getEntityMap();
+
+		// Building the GUI components for each mob in the game
 		for(final var entry : entityTypeMap.entrySet())
 		{
 			final var name = entry.getKey();
@@ -32,6 +34,7 @@ public class EntitySelectPage
 
 			HighlightedEntity highlightedEntity;
 
+			// Whether this mob exists in the config yet
 			boolean isNew = false;
 			// if this entity is already registered, pull that entry
 			if(highlightedEntityMap.containsKey(name))
@@ -43,31 +46,38 @@ public class EntitySelectPage
 			}
 			// if enabled, make sure it gets stored in our map
 			// otherwise, make sure it isnt in our map
-			var enabledField = entryBuilder.startBooleanToggle(Text.literal("Enabled"), isNew ? false : true)
+			var enabledField = entryBuilder.startBooleanToggle(Text.literal("Enabled"), highlightedEntity.isEnabled())
 					.setSaveConsumer((enabled) ->
 					{
 						var map = FriendsListHandler.getEntityMap();
-						var inEntityMap = map.containsKey(name);
 
-						if(enabled)
+						if(highlightedEntity.isEnabled() != enabled)
 						{
-							if(!inEntityMap)
-							{
-								map.put(name, highlightedEntity);
-							}
-						} else if(inEntityMap){
-							map.remove(name);
+							map.put(name, highlightedEntity);
 						}
+
+						highlightedEntity.setEnabled(enabled);
+
 					})
 					.build();
 
 			var colorField = entryBuilder.startColorField(Text.literal("Color"), highlightedEntity.getColor())
-					.setSaveConsumer(color -> highlightedEntity.setColor(color))
+					.setSaveConsumer(color ->{
+						var map = FriendsListHandler.getEntityMap();
+
+						if(highlightedEntity.getColor() != color)
+						{
+							map.put(name, highlightedEntity);
+						}
+
+						highlightedEntity.setColor(color);
+					})
 					.setDefaultValue(highlightedEntity.getColor())
 					.build();
 
+			var indicator = FHUtils.getMessageWithConnotation(GuiUtil.INDICATOR_SQUARE, highlightedEntity.isEnabled());
 			category.addEntry(new MultiPartGUIElement(
-					FHUtils.colorText(name, highlightedEntity.getColor()),
+					Text.literal("").append(FHUtils.colorText(name, highlightedEntity.getColor())).append(" ").append(indicator),
 					entityTypeMap.get(name),
 					Arrays.asList(colorField, enabledField),
 					false)

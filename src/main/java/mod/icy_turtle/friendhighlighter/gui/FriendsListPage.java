@@ -48,7 +48,7 @@ public class FriendsListPage
 	private static Text getFriendHeading(HighlightedFriend friend)
 	{
 		var coloredName = FHUtils.colorText(friend.getName(), friend.getColor());
-		var enabledSymbol = FHUtils.getMessageWithConnotation("✓", "✖", friend.isEnabled());
+		var enabledSymbol = FHUtils.getMessageWithConnotation(GuiUtil.INDICATOR_SQUARE, friend.isEnabled());
 
 		var heading = Text.literal("");
 		heading.append(coloredName);
