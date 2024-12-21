@@ -19,7 +19,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * Used to allow and suggest strings from the given list.
+ * Is used to allow and suggest strings from the given list.
  */
 public class StringListArgumentType implements ArgumentType<String>
 {

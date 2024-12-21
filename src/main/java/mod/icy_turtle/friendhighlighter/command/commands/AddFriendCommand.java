@@ -23,7 +23,10 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class AddFriendCommand extends Command
 {
-	private static final String FRIEND_NAME = "friendName", COLOR = "color", ONLY_PLAYERS = "onlyPlayers", JUST_NAME_TAG = "justNameTag";
+	private static final String FRIEND_NAME = "friendName",
+			COLOR = "color",
+			ONLY_PLAYERS = "onlyPlayers",
+			JUST_NAME_TAG = "justNameTag";
 
 	public AddFriendCommand(CommandHandler cmdHandler)
 	{
@@ -34,7 +37,7 @@ public class AddFriendCommand extends Command
 	public LiteralArgumentBuilder<FabricClientCommandSource> createCommand()
 	{
 		// boolean arguments are optional and default to false
-		return literal("add")
+		return literal("addFriend")
 				.then(argument(FRIEND_NAME, new PossibleFriendNameArgumentType())
 						.executes(this::addFriend)
 						.then(argument(COLOR, new ColorArgumentType())

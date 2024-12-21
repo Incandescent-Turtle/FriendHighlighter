@@ -3,6 +3,7 @@ package mod.icy_turtle.friendhighlighter.util;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
@@ -13,7 +14,9 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -286,5 +289,16 @@ public class FHUtils
 	public static Text getNameFromEntityType(EntityType<?> type)
 	{
 		return Text.of(type.getName().getString());
+	}
+
+	// gets a map of all the entities in the game
+	public static Map<String, EntityType<?>> getEntityTypeMap()
+	{
+		final Map<String, EntityType<?>> entityTypeMap = new HashMap<>();
+		for (EntityType<?> entityType : Registries.ENTITY_TYPE) {
+			var s = FHUtils.getNameFromEntityType(entityType).getString();
+			entityTypeMap.put(s, entityType);
+		}
+		return entityTypeMap;
 	}
 }

@@ -21,7 +21,7 @@ public class EntitySelectPage
 	public static void addEntitySelectionElements(ConfigCategory category, ConfigEntryBuilder entryBuilder)
 	{
 		// Loading all entities into a map
-		final Map<String, EntityType<?>> entityTypeMap = getEntityTypeMap();
+		final Map<String, EntityType<?>> entityTypeMap = FHUtils.getEntityTypeMap();
 
 		// Entities pulled from the config (entities that have had their color changed, may be enabled or disabled)
 		final var highlightedEntityMap = FriendsListHandler.getEntityMap();
@@ -83,15 +83,5 @@ public class EntitySelectPage
 					false)
 			);
 		}
-	}
-
-	private static Map<String, EntityType<?>> getEntityTypeMap()
-	{
-		final Map<String, EntityType<?>> entityTypeMap = new HashMap<>();
-		for (EntityType<?> entityType : Registries.ENTITY_TYPE) {
-			var s = FHUtils.getNameFromEntityType(entityType).getString();
-			entityTypeMap.put(s, entityType);
-		}
-		return entityTypeMap;
 	}
 }

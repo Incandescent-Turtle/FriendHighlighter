@@ -1,13 +1,11 @@
 package mod.icy_turtle.friendhighlighter.command;
 
 import com.mojang.brigadier.CommandDispatcher;
-import mod.icy_turtle.friendhighlighter.command.commands.AddFriendCommand;
-import mod.icy_turtle.friendhighlighter.command.commands.ClearCommand;
-import mod.icy_turtle.friendhighlighter.command.commands.RemoveCommand;
-import mod.icy_turtle.friendhighlighter.command.commands.ToggleCommand;
-import mod.icy_turtle.friendhighlighter.command.commands.list.AdvancedListCommand;
-import mod.icy_turtle.friendhighlighter.command.commands.list.ListCommand;
-import mod.icy_turtle.friendhighlighter.command.commands.list.SimpleListCommand;
+import mod.icy_turtle.friendhighlighter.command.commands.*;
+import mod.icy_turtle.friendhighlighter.command.commands.list.AdvancedListFriendsCommand;
+import mod.icy_turtle.friendhighlighter.command.commands.list.ListFriendsCommand;
+import mod.icy_turtle.friendhighlighter.command.commands.list.SimpleListEntitiesCommand;
+import mod.icy_turtle.friendhighlighter.command.commands.list.SimpleListFriendsCommand;
 import mod.icy_turtle.friendhighlighter.command.commands.settings.SettingsCommand;
 import mod.icy_turtle.friendhighlighter.command.commands.settings.SettingsDisplayCommand;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -21,17 +19,22 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class CommandHandler
 {
     public final ChatMessage
-            simpleListChatMsg = new ChatMessage(SimpleListCommand::createSimpleList),
-            advancedListChatMsg = new ChatMessage(AdvancedListCommand::createAdvancedList),
-            settingsChatMsg = new ChatMessage(SettingsDisplayCommand::createSettings);
+            simpleFriendsListChatMsg = new ChatMessage(SimpleListFriendsCommand::createSimpleFriendsList),
+            advancedFriendsListChatMsg = new ChatMessage(AdvancedListFriendsCommand::createAdvancedFriendsList),
+            settingsChatMsg = new ChatMessage(SettingsDisplayCommand::createSettings),
+            simpleEntityListChatMsg = new ChatMessage(SimpleListEntitiesCommand::createSimpleEntityList);
 
     public void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess)
     {
         dispatcher.register(literal("fh")
                 //  toggles either the highlighter or an individual friend
                 .then(new ToggleCommand(this).createCommand())
+
                 //  adds a friend to the list.
                 .then(new AddFriendCommand(this).createCommand())
+
+                // adds a new entity to the entity list
+                .then(new AddEntityCommand(this).createCommand())
 
                 //  removes a friend from the list
                 .then(new RemoveCommand(this).createCommand())
@@ -40,7 +43,10 @@ public class CommandHandler
                 .then(new ClearCommand(this).createCommand())
 
                 //  sends a list containing the names of friends and (if advanced) other info about them
-                .then(new ListCommand(this).createCommand())
+                .then(new ListFriendsCommand(this).createCommand())
+
+                // sends a list contains the entities that are being highlighted
+                .then(new SimpleListEntitiesCommand(this).createCommand())
 
                 .then(new SettingsCommand(this).createCommand())
         );
@@ -48,8 +54,9 @@ public class CommandHandler
 
     public void updateLists()
     {
-        simpleListChatMsg.updateContent();
-        advancedListChatMsg.updateContent();
+        simpleFriendsListChatMsg.updateContent();
+        advancedFriendsListChatMsg.updateContent();
         settingsChatMsg.updateContent();
+        simpleEntityListChatMsg.updateContent();
     }
 }

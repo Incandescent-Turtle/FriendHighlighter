@@ -30,6 +30,7 @@ public class ClearCommand extends Command
 	{
 		var friendsMap = FriendsListHandler.getFriendsMap();
 		friendsMap.clear();
+		FriendsListHandler.getEntityMap().clear();
 		FriendHighlighter.sendMessage(FHUtils.getNegativeMessage("Cleared Friends List"));
 		cmdHandler.updateLists();
 		FHConfig.saveConfig();

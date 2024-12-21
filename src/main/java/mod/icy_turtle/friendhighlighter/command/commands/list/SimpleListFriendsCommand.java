@@ -13,9 +13,9 @@ import net.minecraft.text.Text;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class SimpleListCommand extends Command
+public class SimpleListFriendsCommand extends Command
 {
-	public SimpleListCommand(CommandHandler cmdHandler)
+	public SimpleListFriendsCommand(CommandHandler cmdHandler)
 	{
 		super(cmdHandler);
 	}
@@ -24,10 +24,10 @@ public class SimpleListCommand extends Command
 	public LiteralArgumentBuilder<FabricClientCommandSource> createCommand()
 	{
 		return literal("simple")
-				.executes(context -> cmdHandler.simpleListChatMsg.sendInChat());
+				.executes(context -> cmdHandler.simpleFriendsListChatMsg.sendInChat());
 	}
 
-	public static MutableText createSimpleList()
+	public static MutableText createSimpleFriendsList()
 	{
 		MutableText txt = Text.literal("").append(CommandUtils.addHoverAndClickEvent(
 				FHUtils.getMessageWithConnotation("Friends List: ", FriendHighlighter.isHighlighterEnabled),
@@ -40,7 +40,7 @@ public class SimpleListCommand extends Command
 		while(itr.hasNext())
 		{
 			var friend = itr.next().getValue();
-			txt.append(ListCommand.createToggleableName(friend))
+			txt.append(ListFriendsCommand.createToggleableFriendName(friend))
 					.append(itr.hasNext() ? ", " : ".");
 		}
 		return txt;

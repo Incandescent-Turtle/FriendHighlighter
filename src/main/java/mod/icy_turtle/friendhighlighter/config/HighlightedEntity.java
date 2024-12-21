@@ -11,6 +11,11 @@ public class HighlightedEntity extends HighlightedBase
         super(FHSettings.getSettings().defaultColor, FHUtils.getNameFromEntityType(type).getString(), false);
     }
 
+    public HighlightedEntity(String type, int color)
+    {
+        super(color, type, true);
+    }
+
     @Override
     public boolean isJustNameTag()
     {

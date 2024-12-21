@@ -4,7 +4,6 @@ import mod.icy_turtle.friendhighlighter.FriendHighlighter;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,15 +40,14 @@ public class FriendsListHandler
 	 */
 	public static @Nullable HighlightedBase getFriendFromEntity(Entity entity)
 	{
+		// Checks friends list for the entity's name
 		var friend = getFriendsMap().get(entity.getName().getString());
 		if(friend != null)
 		{
 			return friend;
 		}
-		if(entity instanceof ItemEntity)
-		{
-			System.out.println(FHUtils.getNameFromEntityType(entity.getType()).getString());
-		}
+
+		// Checks to see if this entity is tagged
 		return getEntityMap().get(FHUtils.getNameFromEntityType(entity.getType()).getString());
 	}
 

@@ -8,6 +8,7 @@ import mod.icy_turtle.friendhighlighter.FriendHighlighter;
 import mod.icy_turtle.friendhighlighter.command.arguments.StringListArgumentType;
 import mod.icy_turtle.friendhighlighter.config.FHSettings;
 import mod.icy_turtle.friendhighlighter.config.FriendsListHandler;
+import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.ClickEvent;
@@ -254,5 +255,29 @@ public class CommandUtils
 	public static MutableText addHoverAndClickEvent(MutableText parent, String hoverText, String command)
 	{
 		return addHoverAndClickEvent(parent, Text.literal(hoverText), command);
+	}
+
+	// suggests/restricts arguments to be an entity type registered in minecraft
+	public static RequiredArgumentBuilder<FabricClientCommandSource, String> createEntityArgument(String argName)
+	{
+		return argument(argName,
+				new StringListArgumentType(
+						() -> FHUtils.getEntityTypeMap().keySet().stream().toList(),
+						name -> Text.literal(name + " is not a valid entity name."),
+						List.of("Zombie", "Minecart with Chest", "Pig")
+				).setSuggestWithQuotes(true)
+		);
+	}
+
+	// suggests/restricts arguments to be an entity that has already been added/modified.
+	public static RequiredArgumentBuilder<FabricClientCommandSource, String> createExistingEntityArgument(String argName)
+	{
+		return argument(argName,
+				new StringListArgumentType(
+						() -> FriendsListHandler.getEntityMap().keySet().stream().toList(),
+						name -> Text.literal(name + " is not added."),
+						List.of("Zombie", "Minecart with Chest", "Pig")
+				).setSuggestWithQuotes(true)
+		);
 	}
 }

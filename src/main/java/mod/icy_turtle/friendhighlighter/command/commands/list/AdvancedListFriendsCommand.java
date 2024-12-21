@@ -17,9 +17,9 @@ import java.util.function.BiFunction;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class AdvancedListCommand extends Command
+public class AdvancedListFriendsCommand extends Command
 {
-	public AdvancedListCommand(CommandHandler cmdHandler)
+	public AdvancedListFriendsCommand(CommandHandler cmdHandler)
 	{
 		super(cmdHandler);
 	}
@@ -28,10 +28,10 @@ public class AdvancedListCommand extends Command
 	public LiteralArgumentBuilder<FabricClientCommandSource> createCommand()
 	{
 		return literal("advanced")
-				.executes(context -> cmdHandler.advancedListChatMsg.sendInChat());
+				.executes(context -> cmdHandler.advancedFriendsListChatMsg.sendInChat());
 	}
 
-	public static MutableText createAdvancedList()
+	public static MutableText createAdvancedFriendsList()
 	{
 		var map = FriendsListHandler.getFriendsMap();
 		var title = Text.literal("\nFriends List").styled(style -> style.withUnderline(true).withBold(true));
@@ -41,7 +41,7 @@ public class AdvancedListCommand extends Command
 		{
 			friends.append(createDeleteButton(friend))
 					.append(" ")
-					.append(ListCommand.createToggleableName(friend))
+					.append(ListFriendsCommand.createToggleableFriendName(friend))
 					.append("\n")
 					.append(createFriendBooleans(friend))
 					.append("\n");
@@ -88,7 +88,7 @@ public class AdvancedListCommand extends Command
 		return CommandUtils.addHoverAndClickEvent(
 				FHUtils.colorText("\uD83D\uDDD1", Formatting.RED.getColorValue()),
 				"Remove " + friend.getName() + " from friends list",
-				"/fh remove \"" + friend.getName() + "\""
+				"/fh remove friend \"" + friend.getName() + "\""
 		);
 	}
 

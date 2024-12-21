@@ -15,7 +15,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class ToggleCommand extends Command
 {
-	private static final String FRIEND_NAME = "friendName";
+	private static final String NAME = "name";
 
 	public ToggleCommand(CommandHandler cmdHandler)
 	{
@@ -28,14 +28,18 @@ public class ToggleCommand extends Command
 		//  toggles either the highlighter or an individual friend
 		//  toggles a friend
 		return literal("toggle")
-			.then(CommandUtils.createExistingFriendArgument(FRIEND_NAME)
-					.executes(this::toggleFriend))
+				.then(literal("friend")
+						.then(CommandUtils.createExistingFriendArgument(NAME)
+						.executes(this::toggleFriend)))
+				.then(literal("entity")
+						.then(CommandUtils.createEntityArgument(NAME)
+								.executes(this::toggleEntity)))
 			.executes(ctx -> FriendHighlighter.toggleHighlight());
 	}
 
 	private int toggleFriend(CommandContext<FabricClientCommandSource> context)
 	{
-		String friendName = context.getArgument(FRIEND_NAME, String.class);
+		String friendName = context.getArgument(NAME, String.class);
 		var friend = FriendsListHandler.getFriendsMap().get(friendName);
 		if(friend != null)
 		{
@@ -44,6 +48,22 @@ public class ToggleCommand extends Command
 			FriendHighlighter.sendMessage(Text.literal(friendName)
 					.append(" ")
 					.append(FHUtils.getMessageWithConnotation("ENABLED", "DISABLED", friend.isEnabled()))
+			);
+		}
+		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
+	}
+
+	private int toggleEntity(CommandContext<FabricClientCommandSource> context)
+	{
+		String entityName = context.getArgument(NAME, String.class);
+		var entity = FriendsListHandler.getEntityMap().get(entityName);
+		if(entity != null)
+		{
+			entity.setEnabled(!entity.isEnabled());
+			cmdHandler.updateLists();
+			FriendHighlighter.sendMessage(Text.literal(entityName)
+					.append(" ")
+					.append(FHUtils.getMessageWithConnotation("ENABLED", "DISABLED", entity.isEnabled()))
 			);
 		}
 		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
