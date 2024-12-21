@@ -9,6 +9,7 @@ import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -18,7 +19,12 @@ import org.slf4j.LoggerFactory;
 
 /*
     TODO:
+        entities are highlighted upon loading in
+
         add lang file
+
+
+
 
         custom dropdown to allow using color names in the GUI
         custom dropdown for
@@ -56,6 +62,15 @@ public class FriendHighlighter implements ClientModInitializer
         KeyInputHandler.register();
         ClientTickEvents.START_CLIENT_TICK.register(new PlayerTickHandler());
         ClientCommandRegistrationCallback.EVENT.register(COMMAND_HANDLER::registerCommands);
+
+        // Used so the highlighter is disabled when joining a server, as this was causing issues (highlighter being on when joining server makes friends/entities forever highlighted, as their flags get set based on the mixed in fnc.
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+            isHighlighterEnabled = false;
+        });
+
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            isHighlighterEnabled = false;
+        });
     }
 
     /**

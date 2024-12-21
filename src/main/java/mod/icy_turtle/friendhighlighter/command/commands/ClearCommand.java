@@ -22,16 +22,29 @@ public class ClearCommand extends Command
 	@Override
 	public LiteralArgumentBuilder<FabricClientCommandSource> createCommand()
 	{
-		return literal("clear").then(literal("confirm")
-				.executes(this::clearFriendsList));
+		return literal("clear")
+				.then(literal("entities")
+						.executes(this::clearEntitiesList))
+
+				.then(literal("friends")
+						.executes(this::clearFriendsList));
 	}
 
 	private int clearFriendsList(CommandContext<FabricClientCommandSource> context)
 	{
 		var friendsMap = FriendsListHandler.getFriendsMap();
 		friendsMap.clear();
-		FriendsListHandler.getEntityMap().clear();
 		FriendHighlighter.sendMessage(FHUtils.getNegativeMessage("Cleared Friends List"));
+		cmdHandler.updateLists();
+		FHConfig.saveConfig();
+		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
+	}
+
+	private int clearEntitiesList(CommandContext<FabricClientCommandSource> context)
+	{
+		var entityMap = FriendsListHandler.getEntityMap();
+		entityMap.clear();
+		FriendHighlighter.sendMessage(FHUtils.getNegativeMessage("Cleared Entity List"));
 		cmdHandler.updateLists();
 		FHConfig.saveConfig();
 		return com.mojang.brigadier.Command.SINGLE_SUCCESS;

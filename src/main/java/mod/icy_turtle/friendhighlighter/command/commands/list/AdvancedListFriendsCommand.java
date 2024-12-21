@@ -100,7 +100,7 @@ public class AdvancedListFriendsCommand extends Command
 	private static Text createFriendBooleans(HighlightedFriend friend)
 	{
 		//  click event to send a chat message to toggle the booleans
-		BiFunction<Boolean, Boolean, String> clickEvent = (onlyPlayers, outlineFriend) ->  "/fh add " + String.join(" ", "\"" + friend.getName() + "\"", FHUtils.rgbToHex(friend.getColor()), ""+onlyPlayers, ""+outlineFriend);
+		BiFunction<Boolean, Boolean, String> clickEvent = (onlyPlayers, outlineFriend) ->  "/fh addFriend " + String.join(" ", "\"" + friend.getName() + "\"", FHUtils.rgbToHex(friend.getColor()), ""+onlyPlayers, ""+outlineFriend);
 
 		FHUtils.colorText(friend.isOnlyPlayers() ? "Only Players" : "All Entities", friend.isOnlyPlayers() ? 0xA7C7E7 : 0xFF5F1F);
 		MutableText onlyPlayers = CommandUtils.addHoverAndClickEvent(
@@ -126,7 +126,7 @@ public class AdvancedListFriendsCommand extends Command
 		return CommandUtils.addHoverAndClickEvent(
 				FHUtils.getNegativeMessage("Clear"),
 				Text.literal("Clear Friends List"),
-				"/fh clear confirm"
+				"/fh clear friends"
 		);
 	}
 }
