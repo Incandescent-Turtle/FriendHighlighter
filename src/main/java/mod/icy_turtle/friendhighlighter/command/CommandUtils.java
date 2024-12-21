@@ -6,8 +6,10 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import mod.icy_turtle.friendhighlighter.FriendHighlighter;
 import mod.icy_turtle.friendhighlighter.command.arguments.StringListArgumentType;
+import mod.icy_turtle.friendhighlighter.config.FHConfig;
 import mod.icy_turtle.friendhighlighter.config.FHSettings;
 import mod.icy_turtle.friendhighlighter.config.FriendsListHandler;
+import mod.icy_turtle.friendhighlighter.config.HighlightedBase;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
@@ -17,6 +19,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.List;
+import java.util.Map;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 
@@ -279,5 +282,24 @@ public class CommandUtils
 						List.of("Zombie", "Minecart with Chest", "Pig")
 				).setSuggestWithQuotes(true)
 		);
+	}
+
+	public static int removeFromList(CommandContext<FabricClientCommandSource> context, String argName, CommandHandler cmdHandler, Map<String, ? extends HighlightedBase> map)
+	{
+		String name = context.getArgument(argName, String.class);
+		map.remove(name);
+
+		MutableText txt = Text.literal("");
+		txt.append(name)
+				.append(" ")
+				.append(FHUtils.getNegativeMessage("REMOVED"))
+				.append(" ")
+				.append(Text.of("from highlighting"));
+		cmdHandler.updateLists();
+		FriendHighlighter.sendMessage(txt);
+		FHConfig.saveConfig();
+		if(!name.isEmpty())
+			MinecraftClient.getInstance().inGameHud.getChatHud().scroll(-2);
+		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
 	}
 }

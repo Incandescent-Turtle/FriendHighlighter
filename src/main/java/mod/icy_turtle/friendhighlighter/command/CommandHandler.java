@@ -8,6 +8,7 @@ import mod.icy_turtle.friendhighlighter.command.commands.list.SimpleListEntities
 import mod.icy_turtle.friendhighlighter.command.commands.list.SimpleListFriendsCommand;
 import mod.icy_turtle.friendhighlighter.command.commands.settings.SettingsCommand;
 import mod.icy_turtle.friendhighlighter.command.commands.settings.SettingsDisplayCommand;
+import mod.icy_turtle.friendhighlighter.config.FriendsListHandler;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
 
@@ -36,10 +37,20 @@ public class CommandHandler
                 // adds a new entity to the entity list
                 .then(new AddEntityCommand(this).createCommand())
 
-                //  removes a friend from the list
-                .then(new RemoveCommand(this).createCommand())
+                // removes friend from friendlist
+                .then(literal("removeFriend")
+                        .then(CommandUtils.createExistingFriendArgument("friendName")
+                                .executes(ctx -> CommandUtils.removeFromList(ctx, "friendName", this, FriendsListHandler.getFriendsMap()))
+                        ))
 
-                //  removes all friends from the list
+                // removes entity from entity list
+                .then(literal("removeEntity")
+                        .then(CommandUtils.createExistingEntityArgument("entityName")
+                                .executes(ctx -> CommandUtils.removeFromList(ctx, "entityName", this, FriendsListHandler.getEntityMap()))
+                        ))
+
+
+        //  removes all friends from the list
                 .then(new ClearCommand(this).createCommand())
 
                 //  sends a list containing the names of friends and (if advanced) other info about them
