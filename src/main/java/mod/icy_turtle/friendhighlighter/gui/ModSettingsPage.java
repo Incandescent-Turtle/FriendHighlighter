@@ -70,5 +70,11 @@ public class ModSettingsPage
 						.setTooltipSupplier(GuiUtil.createToolTip("When disabled, if a friend is on a team, their team color will be used instead of the set color."))
 						.build()
 		);
+		settingsCategory.addEntry(
+				entryBuilder.startBooleanToggle(Text.literal("Highlight Friend/Entity Projectiles"), FHSettings.getSettings().highlightProjectiles)
+						.setSaveConsumer(highlight -> FHSettings.getSettings().highlightProjectiles = highlight)
+						.setTooltipSupplier(GuiUtil.createToolTip("When enabled, if a friend/entity is highlighted, any projectiles they throw/shot by them will be highlighted with the same colour."))
+						.build()
+		);
 	}
 }

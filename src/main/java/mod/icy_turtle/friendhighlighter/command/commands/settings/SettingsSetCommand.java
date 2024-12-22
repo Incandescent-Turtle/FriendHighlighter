@@ -67,7 +67,11 @@ public class SettingsSetCommand extends Command
 
 				.then(literal("ignoreTeamColor")
 						.then(argument(VALUE, new BooleanWithWords("ignoreTeamColor", "useTeamColor"))
-								.executes(this::setRespectTeamColors)));
+								.executes(this::setRespectTeamColors)))
+
+				.then(literal("highlightThrownProjectiles")
+						.then(argument(VALUE, new BooleanWithWords("highlightThrownProjectiles", "ignoreThrownProjectiles"))
+								.executes(this::setHighlightProjectiles)));
 	}
 
 	private int setDisplayMethod(CommandContext<FabricClientCommandSource> context)
@@ -146,6 +150,15 @@ public class SettingsSetCommand extends Command
 		boolean respect = CommandUtils.getArgumentFromContext(context, VALUE, false);
 		FHSettings.getSettings().ignoreTeamColor = respect;
 		FriendHighlighter.sendMessage(Text.literal(!respect ? "Friends will be highlighted by their team color if applicable." : "The set color will override friends' team color."));
+		cmdHandler.settingsChatMsg.updateContent();
+		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
+	}
+
+	private int setHighlightProjectiles(CommandContext<FabricClientCommandSource> context)
+	{
+		boolean highlight = CommandUtils.getArgumentFromContext(context, VALUE, false);
+		FHSettings.getSettings().highlightProjectiles = highlight;
+		FriendHighlighter.sendMessage(Text.literal(highlight ? "Projectiles will be highlighted the same colour as their thrower/shooter." : "Projectiles will be highlighted independently of their thrower."));
 		cmdHandler.settingsChatMsg.updateContent();
 		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
 	}

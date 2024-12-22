@@ -5,6 +5,7 @@ import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
@@ -104,6 +105,21 @@ public class FriendsListHandler
 			return true;
 		}
 
+		return false;
+	}
+
+	// Returns whether this 1. is a projectile 2. projectile highlighting is on and 3. projectile was shot/thrown by a friend/entity that is highlighted currently
+	public static boolean shouldOutlineProjectile(@Nullable Entity entity)
+	{
+		if(!FHSettings.getSettings().highlightProjectiles)
+		{
+			return false;
+		}
+		if(entity instanceof ProjectileEntity projectile)
+		{
+			var owner = projectile.getOwner();
+			return shouldHighlightEntity(owner) && !FriendsListHandler.getFriendFromEntity(owner).isJustNameTag();
+		}
 		return false;
 	}
 }

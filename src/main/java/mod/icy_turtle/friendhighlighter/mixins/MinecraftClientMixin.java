@@ -4,6 +4,7 @@ import mod.icy_turtle.friendhighlighter.config.FriendsListHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.*;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -16,6 +17,11 @@ public class MinecraftClientMixin
 	@Inject(method = "hasOutline", at = @At(value = "HEAD"), cancellable = true)
 	public void overrideHasOutline(Entity entity, CallbackInfoReturnable<Boolean> cir)
 	{
+		if(FriendsListHandler.shouldOutlineProjectile(entity))
+		{
+			cir.setReturnValue(true);
+		}
+
 		var friend = FriendsListHandler.getFriendFromEntity(entity);
 		if(FriendsListHandler.shouldHighlightEntity(entity) && !friend.isJustNameTag())
 		{

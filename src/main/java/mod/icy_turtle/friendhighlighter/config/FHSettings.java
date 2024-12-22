@@ -22,6 +22,8 @@ public class FHSettings
 	public boolean highlightWhileSneaking = true;
 	// When friend is on a team, respect the team colour.
 	public boolean ignoreTeamColor = true;
+	// Whether projectiles shot by friends/entities will be highlighted in their highlight colour.
+	public boolean highlightProjectiles = true;
 
 	public enum MessageDisplayMethod
 	{
