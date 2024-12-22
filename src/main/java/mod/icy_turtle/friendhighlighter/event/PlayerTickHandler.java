@@ -15,6 +15,5 @@ public class PlayerTickHandler implements ClientTickEvents.StartTick
     @Override
     public void onStartTick(MinecraftClient client)
     {
-
     }
 }

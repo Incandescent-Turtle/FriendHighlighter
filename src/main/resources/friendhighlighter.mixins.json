@@ -8,7 +8,6 @@
     "ChatScreenMixin",
     "SleepingChatScreenMixin",
     "MinecraftClientMixin",
-    "EntityMixin",
     "WorldRendererMixin"
   ],
   "injectors": {

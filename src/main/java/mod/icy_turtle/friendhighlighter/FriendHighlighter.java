@@ -62,15 +62,6 @@ public class FriendHighlighter implements ClientModInitializer
         KeyInputHandler.register();
         ClientTickEvents.START_CLIENT_TICK.register(new PlayerTickHandler());
         ClientCommandRegistrationCallback.EVENT.register(COMMAND_HANDLER::registerCommands);
-
-        // Used so the highlighter is disabled when joining a server, as this was causing issues (highlighter being on when joining server makes friends/entities forever highlighted, as their flags get set based on the mixed in fnc.
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
-            isHighlighterEnabled = false;
-        });
-
-        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-            isHighlighterEnabled = false;
-        });
     }
 
     /**
