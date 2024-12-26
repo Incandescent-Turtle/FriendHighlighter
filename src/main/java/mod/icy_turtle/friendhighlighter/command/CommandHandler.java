@@ -30,8 +30,9 @@ public class CommandHandler
         dispatcher.register(literal("fh")
                 //  toggles either the highlighter or an individual friend
                 .then(new ToggleCommand(this).createCommand())
-
-                //  adds a friend to the list.
+                .then(new ToggleFriendCommand(this).createCommand())
+                .then(new ToggleEntityCommand(this).createCommand())
+                        //  adds a friend to the list.
                 .then(new AddFriendCommand(this).createCommand())
 
                 // adds a new entity to the entity list
