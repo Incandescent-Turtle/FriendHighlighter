@@ -23,7 +23,13 @@ public class FHSettings
 	// When friend is on a team, respect the team colour.
 	public boolean ignoreTeamColor = true;
 	// Whether projectiles shot by friends/entities will be highlighted in their highlight colour.
-	public boolean highlightProjectiles = true;
+	public boolean highlightProjectiles = false;
+	// whether a mob will get highlighted temporarily after getting hit by the player
+	public boolean highlightMobsYouHit = false;
+	// default color mobs highlight when hit by player
+	public Integer hitHighlightColor = 0xFFFF00;
+	// amount of seconds it will stay up
+	public Integer hitHighlightSeconds = 3;
 
 	public enum MessageDisplayMethod
 	{

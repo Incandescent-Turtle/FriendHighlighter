@@ -1,11 +1,13 @@
 package mod.icy_turtle.friendhighlighter.mixins;
 
+import mod.icy_turtle.friendhighlighter.FriendHighlighter;
 import mod.icy_turtle.friendhighlighter.config.FHSettings;
 import mod.icy_turtle.friendhighlighter.config.FriendsListHandler;
 import mod.icy_turtle.friendhighlighter.config.HighlightedBase;
 import mod.icy_turtle.friendhighlighter.config.HighlightedEntity;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,6 +20,14 @@ public abstract class WorldRendererMixin
 	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getTeamColorValue()I"))
 	private int forceHighlightColor(Entity entity)
 	{
+		if(FriendHighlighter.isHighlighterEnabled && FHSettings.getSettings().highlightMobsYouHit && entity instanceof LivingEntity le)
+		{
+			var hitMap = FriendsListHandler.getRecentHitMap();
+			if(hitMap.containsKey(entity))
+			{
+				return FHSettings.getSettings().hitHighlightColor;
+			}
+		}
 		// if it is a projectile that should be highlighted, use owners colour
 		if(FriendsListHandler.shouldOutlineProjectile(entity))
 		{

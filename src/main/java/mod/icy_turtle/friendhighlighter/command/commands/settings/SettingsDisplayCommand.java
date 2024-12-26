@@ -53,6 +53,10 @@ public class SettingsDisplayCommand extends Command
 		txt.append(createHighlightWhileSneakingText(settings));
 		txt.append("\n\n");
 		txt.append(createIgnoreTeamColorText(settings));
+		txt.append("\n\n");
+		txt.append(createHighlightProjectilesText(settings));
+		txt.append("\n\n");
+		txt.append(createHighlightMobsYouHit(settings));
 		return txt;
 	}
 
@@ -268,6 +272,58 @@ public class SettingsDisplayCommand extends Command
 		tooltipText.append(ignore);
 		tooltipText.append(" | ");
 		tooltipText.append(respect);
+		return tooltipText;
+	}
+
+	private static MutableText createHighlightProjectilesText(FHSettings settings) {
+		var title = FHUtils.colorText("Highlight Projectiles", Color.ORANGE.getRGB());
+		CommandUtils.addToolTip(title, "Toggles the highlighting of shot/thrown projectiles");
+
+		var status = settings.highlightProjectiles;
+		var highlight = CommandUtils.addHoverAndClickEvent(
+				Text.literal("Highlight").styled(style -> style.withColor(status ? Formatting.GREEN : Formatting.RED).withBold(status)),
+				"PLACEHOLDER - LINK VIA LANG",
+				"/fh settings set highlightThrownProjectiles highlight"
+		);
+
+		var dontHighlight = CommandUtils.addHoverAndClickEvent(
+				Text.literal("Don't Highlight").styled(style -> style.withColor(status ? Formatting.RED : Formatting.GREEN).withBold(!status)),
+				"PLACEHOLDER - LINK VIA LANG",
+				"/fh settings set highlightThrownProjectiles dontHighlight"
+		);
+
+		var tooltipText = Text.literal("");
+		tooltipText.append(title);
+		tooltipText.append("\n ↳ ");
+		tooltipText.append(highlight);
+		tooltipText.append(" | ");
+		tooltipText.append(dontHighlight);
+		return tooltipText;
+	}
+
+	private static MutableText createHighlightMobsYouHit(FHSettings settings) {
+		var title = FHUtils.colorText("Highlight Mobs You Hit", Color.ORANGE.getRGB());
+		CommandUtils.addToolTip(title, "Whether a mob will become highlighted when you hit it");
+
+		var status = settings.highlightMobsYouHit;
+		var highlight = CommandUtils.addHoverAndClickEvent(
+				Text.literal("Highlight").styled(style -> style.withColor(status ? Formatting.GREEN : Formatting.RED).withBold(status)),
+				"PLACEHOLDER - LINK VIA LANG",
+				"/fh settings set highlightMobsYouHit highlight"
+		);
+
+		var dontHighlight = CommandUtils.addHoverAndClickEvent(
+				Text.literal("Don't Highlight").styled(style -> style.withColor(status ? Formatting.RED : Formatting.GREEN).withBold(!status)),
+				"PLACEHOLDER - LINK VIA LANG",
+				"/fh settings set highlightMobsYouHit dontHighlight"
+		);
+
+		var tooltipText = Text.literal("");
+		tooltipText.append(title);
+		tooltipText.append("\n ↳ ");
+		tooltipText.append(highlight);
+		tooltipText.append(" | ");
+		tooltipText.append(dontHighlight);
 		return tooltipText;
 	}
 }

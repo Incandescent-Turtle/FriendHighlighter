@@ -1,5 +1,6 @@
 package mod.icy_turtle.friendhighlighter.command.commands.settings;
 
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import mod.icy_turtle.friendhighlighter.FriendHighlighter;
@@ -70,8 +71,20 @@ public class SettingsSetCommand extends Command
 								.executes(this::setRespectTeamColors)))
 
 				.then(literal("highlightThrownProjectiles")
-						.then(argument(VALUE, new BooleanWithWords("highlightThrownProjectiles", "ignoreThrownProjectiles"))
-								.executes(this::setHighlightProjectiles)));
+						.then(argument(VALUE, new BooleanWithWords("highlight", "dontHighlight"))
+								.executes(this::setHighlightProjectiles)))
+
+				.then(literal("highlightMobsYouHit")
+						.then(argument(VALUE, new BooleanWithWords("highlight", "dontHighlight"))
+								.executes(this::setHighlightMobsYouHit)))
+
+				.then(literal("hitHighlightColor")
+						.then(argument(VALUE, new ColorArgumentType())
+								.executes(this::setHitHighlightColor)))
+
+				.then(literal("hitHighlightSeconds")
+						.then(argument(VALUE, IntegerArgumentType.integer(1, 100))
+								.executes(this::setHitHighlightSeconds)));
 	}
 
 	private int setDisplayMethod(CommandContext<FabricClientCommandSource> context)
@@ -159,6 +172,33 @@ public class SettingsSetCommand extends Command
 		boolean highlight = CommandUtils.getArgumentFromContext(context, VALUE, false);
 		FHSettings.getSettings().highlightProjectiles = highlight;
 		FriendHighlighter.sendMessage(Text.literal(highlight ? "Projectiles will be highlighted the same colour as their thrower/shooter." : "Projectiles will be highlighted independently of their thrower."));
+		cmdHandler.settingsChatMsg.updateContent();
+		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
+	}
+
+	private int setHighlightMobsYouHit(CommandContext<FabricClientCommandSource> context)
+	{
+		boolean highlight = CommandUtils.getArgumentFromContext(context, VALUE, false);
+		FHSettings.getSettings().highlightMobsYouHit = highlight;
+		FriendHighlighter.sendMessage(Text.literal(highlight ? "Entities you hit will now stay highlighted for a period of time." : "Hitting an entity will not highlight them."));
+		cmdHandler.settingsChatMsg.updateContent();
+		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
+	}
+
+	private int setHitHighlightColor(CommandContext<FabricClientCommandSource> context)
+	{
+		String color = CommandUtils.getArgumentFromContext(context, VALUE, "#FFFF00");
+		FHSettings.getSettings().hitHighlightColor = FHUtils.hexToRGB(color);;
+		FriendHighlighter.sendMessage(Text.literal("").append("When hit, mobs will now be highlighted ").append(FHUtils.colorText(color, FHUtils.hexToRGB(color))));
+		cmdHandler.settingsChatMsg.updateContent();
+		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
+	}
+
+	private int setHitHighlightSeconds(CommandContext<FabricClientCommandSource> context)
+	{
+		int seconds = CommandUtils.getArgumentFromContext(context, VALUE, 3);
+		FHSettings.getSettings().hitHighlightSeconds = seconds;
+		FriendHighlighter.sendMessage(Text.literal("").append("When hit, mobs will now be highlighted for " + seconds + " seconds."));
 		cmdHandler.settingsChatMsg.updateContent();
 		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
 	}

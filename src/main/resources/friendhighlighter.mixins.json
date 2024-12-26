@@ -8,7 +8,8 @@
     "ChatScreenMixin",
     "SleepingChatScreenMixin",
     "MinecraftClientMixin",
-    "WorldRendererMixin"
+    "WorldRendererMixin",
+    "LivingEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

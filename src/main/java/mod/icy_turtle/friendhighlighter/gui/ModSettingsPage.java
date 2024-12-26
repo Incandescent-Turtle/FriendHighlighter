@@ -76,5 +76,21 @@ public class ModSettingsPage
 						.setTooltipSupplier(GuiUtil.createToolTip("When enabled, if a friend/entity is highlighted, any projectiles they throw/shot by them will be highlighted with the same colour."))
 						.build()
 		);
+		settingsCategory.addEntry(
+				entryBuilder.startBooleanToggle(Text.literal("Highlight Mobs You Hit"), FHSettings.getSettings().highlightMobsYouHit)
+						.setSaveConsumer(highlight -> FHSettings.getSettings().highlightMobsYouHit = highlight)
+						.setTooltipSupplier(GuiUtil.createToolTip("When enabled, if you hit a mob, it will start glowing."))
+						.build()
+		);
+		settingsCategory.addEntry(
+				entryBuilder.startColorField(Text.literal("Hit Highlight Color"), settings.hitHighlightColor)
+						.setSaveConsumer(color -> settings.hitHighlightColor = color)
+						.build()
+		);
+		settingsCategory.addEntry(
+				entryBuilder.startIntSlider(Text.literal("Hit Highlight Seconds"), settings.hitHighlightSeconds, 1, 100)
+						.setSaveConsumer(seconds -> settings.hitHighlightSeconds = seconds)
+						.build()
+		);
 	}
 }

@@ -4,10 +4,12 @@ import mod.icy_turtle.friendhighlighter.FriendHighlighter;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import org.jetbrains.annotations.Nullable;
 
+import java.beans.Transient;
 import java.util.LinkedHashMap;
 
 
@@ -16,8 +18,10 @@ public class FriendsListHandler
 	/**
 	 * The map to be used throughout the mod to check which names are on the friends list.
 	 */
-	public LinkedHashMap<String, HighlightedFriend> friendsMap = new LinkedHashMap<>();
-	public LinkedHashMap<String, HighlightedEntity> entityMap = new LinkedHashMap<>();
+	private LinkedHashMap<String, HighlightedFriend> friendsMap = new LinkedHashMap<>();
+	private final LinkedHashMap<String, HighlightedEntity> entityMap = new LinkedHashMap<>();
+	// map of mobs the player has hit recently
+	private final transient LinkedHashMap<LivingEntity, Integer> recentHitMap = new LinkedHashMap<>();
 
 	public static LinkedHashMap<String, HighlightedFriend> getFriendsMap()
 	{
@@ -28,6 +32,12 @@ public class FriendsListHandler
 	{
 		return FHConfig.getFriendsListHandler().entityMap;
 	}
+
+	public static LinkedHashMap<LivingEntity, Integer> getRecentHitMap()
+	{
+		return FHConfig.getFriendsListHandler().recentHitMap;
+	}
+
 
 	public static void setFriendsMap(LinkedHashMap<String, HighlightedFriend> map)
 	{

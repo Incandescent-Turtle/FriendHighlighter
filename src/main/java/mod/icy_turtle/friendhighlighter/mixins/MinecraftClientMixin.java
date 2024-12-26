@@ -1,8 +1,11 @@
 package mod.icy_turtle.friendhighlighter.mixins;
 
+import mod.icy_turtle.friendhighlighter.FriendHighlighter;
+import mod.icy_turtle.friendhighlighter.config.FHSettings;
 import mod.icy_turtle.friendhighlighter.config.FriendsListHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,6 +20,14 @@ public class MinecraftClientMixin
 	@Inject(method = "hasOutline", at = @At(value = "HEAD"), cancellable = true)
 	public void overrideHasOutline(Entity entity, CallbackInfoReturnable<Boolean> cir)
 	{
+		if(FriendHighlighter.isHighlighterEnabled && FHSettings.getSettings().highlightMobsYouHit && entity instanceof LivingEntity le)
+		{
+			if(FriendsListHandler.getRecentHitMap().containsKey(le))
+			{
+				cir.setReturnValue(true);
+			}
+		}
+
 		if(FriendsListHandler.shouldOutlineProjectile(entity))
 		{
 			cir.setReturnValue(true);
