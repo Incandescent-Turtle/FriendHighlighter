@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "friendhighlighter",
-  "version": "2.0.0b",
+  "version": "2.0.1b",
 
   "name": "Friend Highlighter",
   "description": "This is a mod allows you to highlight any entity through blocks, including players!",
