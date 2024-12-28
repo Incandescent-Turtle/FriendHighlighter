@@ -28,7 +28,7 @@ public abstract class EntityRendererMixin
     // stores a variable for use in the enhanced nametag mixin
     private Entity currentEntity;
     @Inject(method = "renderLabelIfPresent", at = @At(value = "HEAD"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-    private void captureEntity(Entity entity, Text text, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, float tickDelta, CallbackInfo ci) {
+    private void captureEntity(Entity entity, Text text, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
         this.currentEntity = entity;
     }
 
