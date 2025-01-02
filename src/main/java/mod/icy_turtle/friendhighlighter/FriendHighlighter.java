@@ -46,8 +46,10 @@ public class FriendHighlighter implements ClientModInitializer
 
     /**
      *  Whether friends should be highlighted/have their names be colored.
+     *  Activated by default (user expects mod to be active after download, otherwise one might think that the mod is broken)
+     *  One needs to add an entity anyways to have it visible.
      */
-    public static boolean isHighlighterEnabled = false;
+    public static boolean isHighlighterEnabled = true;
 
     /**
      * The time stamp of when a chat message was sent with enter (closing the chat window, not while sleeping).
