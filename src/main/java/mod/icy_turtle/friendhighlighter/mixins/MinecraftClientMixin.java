@@ -20,23 +20,28 @@ public class MinecraftClientMixin
 	@Inject(method = "hasOutline", at = @At(value = "HEAD"), cancellable = true)
 	public void overrideHasOutline(Entity entity, CallbackInfoReturnable<Boolean> cir)
 	{
-		if(FriendHighlighter.isHighlighterEnabled && FHSettings.getSettings().highlightMobsYouHit && entity instanceof LivingEntity le)
+		if(FriendHighlighter.isHighlighterEnabled && FHSettings.getSettings().highlightEverything)
 		{
-			if(FriendsListHandler.getRecentHitMap().containsKey(le))
+			cir.setReturnValue(true);
+		} else {
+			if(FriendHighlighter.isHighlighterEnabled && FHSettings.getSettings().highlightMobsYouHit && entity instanceof LivingEntity le)
+			{
+				if(FriendsListHandler.getRecentHitMap().containsKey(le))
+				{
+					cir.setReturnValue(true);
+				}
+			}
+
+			if(FriendsListHandler.shouldOutlineProjectile(entity))
 			{
 				cir.setReturnValue(true);
 			}
-		}
 
-		if(FriendsListHandler.shouldOutlineProjectile(entity))
-		{
-			cir.setReturnValue(true);
-		}
-
-		var friend = FriendsListHandler.getFriendFromEntity(entity);
-		if(FriendsListHandler.shouldHighlightEntity(entity) && !friend.isJustNameTag())
-		{
-			cir.setReturnValue(true);
+			var friend = FriendsListHandler.getFriendFromEntity(entity);
+			if(FriendsListHandler.shouldHighlightEntity(entity) && !friend.isJustNameTag())
+			{
+				cir.setReturnValue(true);
+			}
 		}
 	}
 }

@@ -30,6 +30,8 @@ public class FHSettings
 	public Integer hitHighlightColor = 0xFFFF00;
 	// amount of seconds it will stay up
 	public Integer hitHighlightSeconds = 3;
+	// highlights every entity (if enabled, skips every other check for highlighting)
+	public boolean highlightEverything = false;
 
 	public enum MessageDisplayMethod
 	{
