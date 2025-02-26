@@ -34,7 +34,7 @@ public class MinecraftClientMixin
 		}
 
 		var friend = FriendsListHandler.getFriendFromEntity(entity);
-		if(FriendsListHandler.shouldHighlightEntity(entity) && !friend.isJustNameTag())
+		if(FHSettings.getSettings().highlightAllEntities || FriendsListHandler.shouldHighlightEntity(entity) && !friend.isJustNameTag())
 		{
 			cir.setReturnValue(true);
 		}

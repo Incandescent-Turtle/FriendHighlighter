@@ -68,7 +68,7 @@ public abstract class EntityRendererMixin
             {
                 args.set(3, 0xFFFFFFFF);
                 // enlarging nametag text
-                //            args.set(5, ((Matrix4f) args.get(5)).scale(5,5,5));
+                //           args.set(5, ((Matrix4f) args.get(5)).scale(5,5,5));
             }
         }
     }

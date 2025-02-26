@@ -1,6 +1,7 @@
 package mod.icy_turtle.friendhighlighter.event;
 
 import mod.icy_turtle.friendhighlighter.FriendHighlighter;
+import mod.icy_turtle.friendhighlighter.config.FHSettings;
 import mod.icy_turtle.friendhighlighter.config.ModMenuIntegration;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -33,11 +34,13 @@ public class KeyInputHandler
      */
     private static final String KEY_HIGHLIGHT_FRIENDS = "key.friendhighlighter.highlight";
     private static final String KEY_OPEN_GUI = "key.friendhighlighter.opengui";
+    private static final String KEY_HIGHLIGHT_ALL = "key.friendhighlighter.highlightAll";
+
 
     /**
      * The {@link KeyBinding} to toggle the highlighting feature.
      */
-    private static KeyBinding highlightKey, openGUIKey;
+    private static KeyBinding highlightKey, openGUIKey, highlightAllKey;
 
     /**
      * Registers the mod's {@link KeyBinding}s.
@@ -55,6 +58,11 @@ public class KeyInputHandler
                 GLFW.GLFW_KEY_O,
                 KEY_CATEGORY_ICY_UTILITIES
         ));
+        highlightAllKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(KEY_HIGHLIGHT_ALL,
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_U,
+                KEY_CATEGORY_ICY_UTILITIES
+        ));
         ClientTickEvents.END_CLIENT_TICK.register(KeyInputHandler::registerKeyInputs);
     }
 
@@ -66,12 +74,24 @@ public class KeyInputHandler
             FriendHighlighter.enterHitAt = System.currentTimeMillis();
             FriendHighlighter.toggleHighlight();
         }
-        if(openGUIKey.wasPressed()) {
+        if(openGUIKey.wasPressed())
+        {
             if(FabricLoader.getInstance().isModLoaded("modmenu")) {
                 MinecraftClient.getInstance().setScreen(new ModMenuIntegration().getModConfigScreenFactory().create(null));
             } else {
                 FriendHighlighter.sendMessage(FHUtils.getNegativeMessage("To use the GUI download Mod Menu and Cloth Config"));
             }
+        }
+        if(highlightAllKey.wasPressed())
+        {
+            FHSettings.getSettings().highlightAllEntities = !FHSettings.getSettings().highlightAllEntities;
+            if(FHSettings.getSettings().highlightAllEntities)
+            {
+                FriendHighlighter.sendMessage(FHUtils.getPositiveMessage("All entities will now be highlighted."));
+            } else {
+                FriendHighlighter.sendMessage(FHUtils.getNegativeMessage("All entities will no longer be highlighted."));
+            }
+            FriendHighlighter.COMMAND_HANDLER.updateLists();
         }
     }
 }

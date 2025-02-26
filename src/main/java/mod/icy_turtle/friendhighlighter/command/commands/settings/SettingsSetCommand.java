@@ -84,7 +84,11 @@ public class SettingsSetCommand extends Command
 
 				.then(literal("hitHighlightSeconds")
 						.then(argument(VALUE, IntegerArgumentType.integer(1, 100))
-								.executes(this::setHitHighlightSeconds)));
+								.executes(this::setHitHighlightSeconds)))
+
+				.then(literal("highlightAllEntities")
+						.then(argument(VALUE, new BooleanWithWords("highlight", "dontHighlight"))
+								.executes(this::setHighlightAllEntities)));
 	}
 
 	private int setDisplayMethod(CommandContext<FabricClientCommandSource> context)
@@ -199,6 +203,15 @@ public class SettingsSetCommand extends Command
 		int seconds = CommandUtils.getArgumentFromContext(context, VALUE, 3);
 		FHSettings.getSettings().hitHighlightSeconds = seconds;
 		FriendHighlighter.sendMessage(Text.literal("").append("When hit, mobs will now be highlighted for " + seconds + " seconds."));
+		cmdHandler.settingsChatMsg.updateContent();
+		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
+	}
+
+	private int setHighlightAllEntities(CommandContext<FabricClientCommandSource> context)
+	{
+		boolean highlight = CommandUtils.getArgumentFromContext(context, VALUE, false);
+		FHSettings.getSettings().highlightAllEntities = highlight;
+		FriendHighlighter.sendMessage(Text.literal(highlight ? "All entities will be highlighted." : "Entities will be highlighted according to your lists."));
 		cmdHandler.settingsChatMsg.updateContent();
 		return com.mojang.brigadier.Command.SINGLE_SUCCESS;
 	}

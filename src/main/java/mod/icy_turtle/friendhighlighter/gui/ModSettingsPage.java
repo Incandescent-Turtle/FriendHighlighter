@@ -92,5 +92,11 @@ public class ModSettingsPage
 						.setSaveConsumer(seconds -> settings.hitHighlightSeconds = seconds)
 						.build()
 		);
+		settingsCategory.addEntry(
+				entryBuilder.startBooleanToggle(Text.literal("Highlight All Entities"), FHSettings.getSettings().highlightAllEntities)
+						.setSaveConsumer(highlight -> FHSettings.getSettings().highlightAllEntities = highlight)
+						.setTooltipSupplier(GuiUtil.createToolTip("When enabled, all entities will be highlighted."))
+						.build()
+		);
 	}
 }
