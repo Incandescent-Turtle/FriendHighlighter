@@ -88,7 +88,7 @@ public class AdvancedListFriendsCommand extends Command
 		return CommandUtils.addHoverAndClickEvent(
 				FHUtils.colorText("\uD83D\uDDD1", Formatting.RED.getColorValue()),
 				"Remove " + friend.getName() + " from friends list",
-				"/fh remove friend \"" + friend.getName() + "\""
+				"/fh removeFriend \"" + friend.getName() + "\""
 		);
 	}
 

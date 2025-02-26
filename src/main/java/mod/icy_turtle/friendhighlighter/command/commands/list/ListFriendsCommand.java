@@ -35,6 +35,6 @@ public class ListFriendsCommand extends Command
 				.styled(style -> style
 						.withStrikethrough(!friend.isEnabled())
 						.withHoverEvent(CommandUtils.createToolTip(Text.literal(friend.getName() + " is ").append(FHUtils.getMessageWithConnotation("ENABLED", "DISABLED", friend.isEnabled()).append(" | Click to " + (friend.isEnabled() ? "disable" : "enable")))))
-						.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh toggle friend \""+friend.getName()+"\"")));
+						.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh toggleFriend \""+friend.getName()+"\"")));
 	}
 }

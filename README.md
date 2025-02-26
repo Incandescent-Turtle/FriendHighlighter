@@ -1,5 +1,4 @@
-This mod is officially released for fabric 1.19.4 1.20.4.
-
+This mod is officially released for fabric for most versions 1.19.4-1.21.x. 
 # Discord
 Join my discord server to connect, ask questions, post suggestions, etc!
 [https://discord.gg/9PahmgsGBd](https://discord.gg/9PahmgsGBd)
