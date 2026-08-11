@@ -8,6 +8,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.server.world.ServerWorld;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -25,7 +26,7 @@ public class LivingEntityMixin
     }
 
     @Inject(method="damage", at = @At(value = "HEAD"))
-    private void dam(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir)
+    private void dam(ServerWorld world, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir)
     {
         assert MinecraftClient.getInstance().world != null;
         if (source == null)

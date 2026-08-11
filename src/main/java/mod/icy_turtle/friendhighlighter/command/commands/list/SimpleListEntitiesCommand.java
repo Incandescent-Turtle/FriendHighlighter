@@ -58,6 +58,6 @@ public class SimpleListEntitiesCommand extends Command
                 .styled(style -> style
                         .withStrikethrough(!entity.isEnabled())
                         .withHoverEvent(CommandUtils.createToolTip(Text.literal(entity.getName() + " is ").append(FHUtils.getMessageWithConnotation("ENABLED", "DISABLED", entity.isEnabled()).append(" | Click to " + (entity.isEnabled() ? "disable" : "enable")))))
-                        .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh toggle entity \""+entity.getName()+"\"")));
+                        .withClickEvent(new ClickEvent.RunCommand("/fh toggle entity \"" + entity.getName() + "\"")));
     }
 }

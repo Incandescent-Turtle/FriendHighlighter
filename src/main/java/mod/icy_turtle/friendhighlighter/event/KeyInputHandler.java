@@ -10,6 +10,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -18,9 +19,10 @@ import org.lwjgl.glfw.GLFW;
 public class KeyInputHandler {
 
     /**
-     * The language key for the key category for FriendHighlighter's keybindings.
+     * The key binding category for FriendHighlighter's keybindings.
      */
-    private static final String KEY_CATEGORY_ICY_UTILITIES = "key.category.friendhighlighter.utils";
+    private static final KeyBinding.Category KEY_CATEGORY_ICY_UTILITIES = 
+            KeyBinding.Category.create(Identifier.of("friendhighlighter", "utils"));
 
     /**
      * The language key for the key to toggle the highlighting feature.

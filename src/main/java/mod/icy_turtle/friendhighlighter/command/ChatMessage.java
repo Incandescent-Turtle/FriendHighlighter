@@ -19,7 +19,6 @@ public class ChatMessage
 	}
 
 	/**
-	 * 
 	 * Uses this messages supplier to re-generate the text and refresh chat via {@link CommandUtils#refreshChatWithPreservingScroll()}
 	 * @return this message
 	 */
@@ -29,7 +28,6 @@ public class ChatMessage
 		content.getSiblings().addAll(contentCreator.get().getSiblings());
 		CommandUtils.refreshChatWithPreservingScroll();
 		return this;
-
 	}
 
 	/**
@@ -47,13 +45,13 @@ public class ChatMessage
 	 * @return this message
 	 * @see #removeFromChat() 
 	 * @see #updateContent() 
-	 * @see net.minecraft.entity.player.PlayerEntity#sendMessage(Text) 
+	 * @see net.minecraft.entity.player.PlayerEntity#sendMessage(Text, boolean) 
 	 */
 	public int sendInChat()
 	{
 		removeFromChat();
 		updateContent();
-		MinecraftClient.getInstance().player.sendMessage(content);
+		MinecraftClient.getInstance().player.sendMessage(content, false);
 		return Command.SINGLE_SUCCESS;
 	}
 }
