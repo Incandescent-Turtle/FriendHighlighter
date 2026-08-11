@@ -10,24 +10,19 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.registry.Registries;
-import net.minecraft.world.EntityList;
+import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- *  Is used to register and define the functionality of custom keybindings.
+ * Is used to register and define the functionality of custom keybindings.
  */
-public class KeyInputHandler
-{
+public class KeyInputHandler {
+
     /**
-     * The language key for the key category for FriendHighlighter's keybindings.
+     * The key binding category for FriendHighlighter's keybindings.
      */
-    private static final String KEY_CATEGORY_ICY_UTILITIES = "key.category.friendhighlighter.utils";
+    private static final KeyBinding.Category KEY_CATEGORY_ICY_UTILITIES = 
+            KeyBinding.Category.create(Identifier.of("friendhighlighter", "utils"));
 
     /**
      * The language key for the key to toggle the highlighting feature.
@@ -36,57 +31,59 @@ public class KeyInputHandler
     private static final String KEY_OPEN_GUI = "key.friendhighlighter.opengui";
     private static final String KEY_HIGHLIGHT_ALL = "key.friendhighlighter.highlightAll";
 
-
     /**
-     * The {@link KeyBinding} to toggle the highlighting feature.
+     * The {@link KeyBinding} instances.
      */
-    private static KeyBinding highlightKey, openGUIKey, highlightAllKey;
+    private static KeyBinding highlightKey;
+    private static KeyBinding openGUIKey;
+    private static KeyBinding highlightAllKey;
 
     /**
      * Registers the mod's {@link KeyBinding}s.
      */
-    public static void register()
-    {
-        highlightKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(KEY_HIGHLIGHT_FRIENDS,
+    public static void register() {
+        highlightKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                KEY_HIGHLIGHT_FRIENDS,
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_H,
                 KEY_CATEGORY_ICY_UTILITIES
         ));
 
-        openGUIKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(KEY_OPEN_GUI,
+        openGUIKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                KEY_OPEN_GUI,
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_O,
                 KEY_CATEGORY_ICY_UTILITIES
         ));
-        highlightAllKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(KEY_HIGHLIGHT_ALL,
+
+        highlightAllKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                KEY_HIGHLIGHT_ALL,
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_U,
                 KEY_CATEGORY_ICY_UTILITIES
         ));
+
         ClientTickEvents.END_CLIENT_TICK.register(KeyInputHandler::registerKeyInputs);
     }
 
-    private static void registerKeyInputs(MinecraftClient client)
-    {
-        if (highlightKey.wasPressed())
-        {
-            //  hacky solution, makes sure to send chat notification is selected
+    private static void registerKeyInputs(MinecraftClient client) {
+        if (highlightKey.wasPressed()) {
+            // hacky solution, makes sure to send chat notification if selected
             FriendHighlighter.enterHitAt = System.currentTimeMillis();
             FriendHighlighter.toggleHighlight();
         }
-        if(openGUIKey.wasPressed())
-        {
-            if(FabricLoader.getInstance().isModLoaded("modmenu")) {
-                MinecraftClient.getInstance().setScreen(new ModMenuIntegration().getModConfigScreenFactory().create(null));
+
+        if (openGUIKey.wasPressed()) {
+            if (FabricLoader.getInstance().isModLoaded("modmenu")) {
+                client.setScreen(new ModMenuIntegration().getModConfigScreenFactory().create(client.currentScreen));
             } else {
                 FriendHighlighter.sendMessage(FHUtils.getNegativeMessage("To use the GUI download Mod Menu and Cloth Config"));
             }
         }
-        if(highlightAllKey.wasPressed())
-        {
+
+        if (highlightAllKey.wasPressed()) {
             FHSettings.getSettings().highlightAllEntities = !FHSettings.getSettings().highlightAllEntities;
-            if(FHSettings.getSettings().highlightAllEntities)
-            {
+            if (FHSettings.getSettings().highlightAllEntities) {
                 FriendHighlighter.sendMessage(FHUtils.getPositiveMessage("All entities will now be highlighted."));
             } else {
                 FriendHighlighter.sendMessage(FHUtils.getNegativeMessage("All entities will no longer be highlighted."));

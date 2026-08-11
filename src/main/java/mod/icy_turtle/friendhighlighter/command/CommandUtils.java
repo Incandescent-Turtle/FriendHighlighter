@@ -150,7 +150,7 @@ public class CommandUtils
 	 */
 	public static HoverEvent createToolTip(MutableText txt)
 	{
-		return new HoverEvent(HoverEvent.Action.SHOW_TEXT, FHSettings.getSettings().tooltipsEnabled ? txt : null);
+		return FHSettings.getSettings().tooltipsEnabled ? new HoverEvent.ShowText(txt) : null;
 	}
 
 	/**
@@ -242,7 +242,7 @@ public class CommandUtils
 	{
 		return parent.styled(style ->
 				style.withHoverEvent(CommandUtils.createToolTip(hoverText))
-						.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command)));
+						.withClickEvent(new ClickEvent.RunCommand(command)));
 	}
 
 	/**

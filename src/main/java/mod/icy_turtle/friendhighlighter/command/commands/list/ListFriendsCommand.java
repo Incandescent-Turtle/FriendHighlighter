@@ -4,7 +4,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import mod.icy_turtle.friendhighlighter.command.Command;
 import mod.icy_turtle.friendhighlighter.command.CommandHandler;
 import mod.icy_turtle.friendhighlighter.command.CommandUtils;
-import mod.icy_turtle.friendhighlighter.config.HighlightedEntity;
 import mod.icy_turtle.friendhighlighter.config.HighlightedFriend;
 import mod.icy_turtle.friendhighlighter.util.FHUtils;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -35,6 +34,6 @@ public class ListFriendsCommand extends Command
 				.styled(style -> style
 						.withStrikethrough(!friend.isEnabled())
 						.withHoverEvent(CommandUtils.createToolTip(Text.literal(friend.getName() + " is ").append(FHUtils.getMessageWithConnotation("ENABLED", "DISABLED", friend.isEnabled()).append(" | Click to " + (friend.isEnabled() ? "disable" : "enable")))))
-						.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fh toggleFriend \""+friend.getName()+"\"")));
+						.withClickEvent(new ClickEvent.RunCommand("/fh toggleFriend \"" + friend.getName() + "\"")));
 	}
 }

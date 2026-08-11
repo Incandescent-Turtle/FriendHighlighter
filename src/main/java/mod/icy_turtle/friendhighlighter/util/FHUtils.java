@@ -179,8 +179,8 @@ public class FHUtils
 		MutableText txt = Text.literal("");
 		txt.append(input);
 		txt.styled(style -> style
-				.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, withQuotes ? "\""+txt.getString()+"\"" : txt.getString()))
-				.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of("Click to copy!"))));
+				.withClickEvent(new ClickEvent.CopyToClipboard(withQuotes ? "\""+txt.getString()+"\"" : txt.getString()))
+				.withHoverEvent(new HoverEvent.ShowText(Text.of("Click to copy!"))));
 		return txt;
 	}
 
@@ -274,8 +274,8 @@ public class FHUtils
 		RaycastContext rayEyeContext = new LavaBlockedRaycastContext(playerEye, targetEyePos, RaycastContext.ShapeType.VISUAL, player);
 		RaycastContext rayBottomContext = new LavaBlockedRaycastContext(playerEye, targetBottomPos, RaycastContext.ShapeType.VISUAL, player);
 		// Perform the raycast
-		var resultEye = player.getWorld().raycast(rayEyeContext);
-		var resultBottom = player.getWorld().raycast(rayBottomContext);
+		var resultEye = player.getEntityWorld().raycast(rayEyeContext);
+		var resultBottom = player.getEntityWorld().raycast(rayBottomContext);
 
 		// Check if the raycast hit a block before reaching the target
 		boolean isVisible = (resultEye.getType() == HitResult.Type.MISS || resultEye.getPos().distanceTo(playerEye) >= distance) || (resultBottom.getType() == HitResult.Type.MISS || resultBottom.getPos().distanceTo(playerEye) >= distance);
